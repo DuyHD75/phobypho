@@ -7,7 +7,7 @@ import Logo from "./Logo";
 import { Link } from "react-router-dom";
 import SideBar from "./SideBar";
 import { setAuthModalOpen } from "../../redux/features/authModalSlice";
-
+import UserMenu from './UserMenu';
 
 const ScrollAppBar = ({ children, window }) => {
 
@@ -58,7 +58,7 @@ const Topbar = () => {
                                    maxWidth: '1350px',
                                    marginX: "auto",
                                    width: "100%",
-                                   paddingY: '1.6rem'
+                                   paddingY: '1.6rem', position: 'relative'
                               }}
                          >
                               <Stack
@@ -86,7 +86,7 @@ const Topbar = () => {
                               </Stack>
 
                               {/*main menu */}
-                              <Box sx={{ marginRight: '30px', display: {xs: 'none', md: 'block'} }}>
+                              <Box sx={{ marginRight: '30px', display: { xs: 'none', md: 'block' } }}>
                                    <Logo isHeader={true} />
                               </Box>
 
@@ -97,23 +97,48 @@ const Topbar = () => {
                               >
 
                                    <Box  >
-                                        {menuConfigs.main.map((item, index) => (
-                                             <Button
-                                                  component={Link}
-                                                  to={item.path}
-                                                  key={index}
-                                                  variant={appState.includes(item.state) ? "outline" : "text"}
-                                                  sx={{
-                                                       mr: 2,
-                                                       fontFamily: "Saira Condensed",
-                                                       fontSize: '1.04rem',
-                                                       fontWeight: '500',
-                                                       color: appState.includes(item.state) ? "#C48F56" : "inherit",
-                                                  }}
+                                        {menuConfigs.main.map((item, index) => {
+                                             if (!item.role) {
+                                                  return (
+                                                       <Button
+                                                            component={Link}
+                                                            to={item.path}
+                                                            key={index}
+                                                            variant={appState.includes(item.state) ? "outline" : "text"}
+                                                            sx={{
+                                                                 mr: 2,
+                                                                 fontFamily: "Saira Condensed",
+                                                                 fontSize: '1.04rem',
+                                                                 fontWeight: '500',
+                                                                 color: appState.includes(item.state) ? "#C48F56" : "inherit",
+                                                            }}
 
-                                             >{item.display}
-                                             </Button>
-                                        ))}
+                                                       >{item.display}
+                                                       </Button>
+                                                  )
+                                             } else {
+                                                  if (user && item.role === user.role) {
+                                                       return (
+                                                            <Button
+                                                                 component={Link}
+                                                                 to={item.path}
+                                                                 key={index}
+                                                                 variant={appState.includes(item.state) ? "outline" : "text"}
+                                                                 sx={{
+                                                                      mr: 2,
+                                                                      fontFamily: "Saira Condensed",
+                                                                      fontSize: '1.04rem',
+                                                                      fontWeight: '500',
+                                                                      color: appState.includes(item.state) ? "#C48F56" : "inherit",
+                                                                 }}
+                                                            >{item.display}
+                                                            </Button>
+                                                       )
+                                                  }
+                                                  return null;
+                                                 
+                                             }
+                                        })}
                                    </Box>
                               </Box>
 
@@ -134,6 +159,7 @@ const Topbar = () => {
                                         Login
                                    </Button>}
                               </Stack>
+                              {user && <UserMenu />}
 
 
                          </Toolbar>

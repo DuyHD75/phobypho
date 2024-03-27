@@ -92,7 +92,7 @@ const HeroSlide = () => {
               },
               backgroundPosition: "top",
               backgroundSize: "cover",
-              backgroundImage: `url(https://promo-theme.com/novo/wp-content/uploads/2017/08/slide1.jpg})`
+              backgroundImage: `url(https://promo-theme.com/novo/wp-content/uploads/2017/08/slide1.jpg)`
             }}
           />
 

@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState, useCallback } from 'react'
 import { Card, CardMedia, Typography, Box, Stack, Modal, Button } from '@mui/material';
 import uiConfigs from '../../configs/ui.config';
 import dayjs from 'dayjs';
@@ -10,56 +10,40 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { LoadingButton } from "@mui/lab";
 import ConfirmModal from './ConfirmModal';
+import { useParams } from 'react-router-dom';
+import ServicePackageItem from './ServicePackageItem';
 
 
 
 
-const ServicePackage = ({ services }) => {
+const ServicePackage = ({ photo, services }) => {
+
      const [openModal, setOpenModal] = useState(false);
+     const [bookingData, setBookingData] = useState({ photo_id: photo.id });
 
+     const handleModalAction = useCallback(
+          (service_id) => {
+               setOpenModal(true);
+               const service = services.find(e => e._id === service_id)
+               setBookingData({ ...bookingData, service_package: service });
 
+          }, []);
 
      return (
-
-
           <Fragment>
 
-               <ConfirmModal setOpenModal={setOpenModal} openModal={openModal} />
+               <ConfirmModal
+                    setOpenModal={setOpenModal}
+                    openModal={openModal}
+                    setBookingData={setBookingData}
+                    bookingData={bookingData}
+               />
+
                <Stack spacing={3} direction={'column'} padding={'1rem 0.5rem'}>
-                    <Card
-                         sx={{
-                              display: 'flex', width: '100%', padding: 0, zIndex: 99,
-                              transition: 'all .3s ease',
-                              '&:hover': { cursor: 'pointer', transform: 'translateY(-5px)' }
-                         }}
-                         onClick={() => setOpenModal(true)}
-                    >
+                    {services.map((item, index) => (
+                         <ServicePackageItem service={item} index={index} handleModalAction={handleModalAction} />
 
-                         <CardMedia
-                              component="img"
-                              sx={{ width: 100, height: 'max-content' }}
-                              image="https://mui.com/static/images/cards/live-from-space.jpg"
-                              alt="Live from space album cover"
-                         />
-                         <Box
-                              className="card_content"
-                              sx={{
-                                   display: 'flex',
-                                   flexDirection: 'column',
-                                   justifyContent: 'center',
-                                   padding: '3px', marginLeft: '8px',
-                              }}>
-                              <Typography variant="body1" sx={{ ...uiConfigs.style.typoLines(1, 'left'), fontSize: '1.2rem' }}>
-                                   VIP <span style={{ fontFamily: "Saira Condensed", fontSize: '1.6rem', color: '#C48F56' }}>69.000</span>
-                              </Typography>
-                              <Typography variant="subtitle1" color="text.secondary" sx={{
-                                   ...uiConfigs.style.typoLines(2, 'left'),
-                              }}>
-                                   30 minus work, maximum 50 photos width high resolution
-                              </Typography>
-                         </Box>
-
-                    </Card>
+                    ))}
 
                </Stack>
 

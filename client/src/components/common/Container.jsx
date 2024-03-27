@@ -2,7 +2,8 @@ import { Box, Stack, Typography } from '@mui/material';
 import React from 'react';
 import uiConfigs from '../../configs/ui.config';
 
-const Container = ({ header, children }) => {
+const Container = ({ header, size, children }) => {
+     console.log(size)
      return (
           <Box sx={{
                marginX: "auto",
@@ -19,7 +20,10 @@ const Container = ({ header, children }) => {
                          }}>
                               <Typography sx={{
                                    ...uiConfigs.style.typoLines(1, "left"),
-                                   fontSize: { xs: '1.8rem', md: '2rem', lg: '3rem' },
+                                   fontSize: {
+                                        xs: '1.8rem',
+                                        md: `${size ? size : '2rem'}`
+                                   },
                                    fontWeight: 800,
                                    position: 'relative',
                                    "::before": {

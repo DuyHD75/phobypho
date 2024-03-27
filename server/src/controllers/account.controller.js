@@ -7,7 +7,7 @@ import photographerModel from '../models/photographer.model.js';
 
 const signup = async (req, res) => {
      try {
-          const { username, password, role, phoneNumber, email } = req.body;
+          const { username, displayName, password, role, phoneNumber, email } = req.body;
 
           const isExisted = await accountModel.findOne({ username });
 
@@ -15,6 +15,7 @@ const signup = async (req, res) => {
 
           const account = new accountModel({
                username,
+               displayName,
                email,
                phoneNumber,
                role: role === ROLES_LIST.photographer ? ROLES_LIST.photographer : ROLES_LIST.customer
@@ -47,7 +48,7 @@ const login = async (req, res) => {
           const { username, password } = req.body;
 
           const account = await accountModel.findOne({ username })
-               .select("id username password salt phoneNumber email role");
+               .select("id username displayName password salt phoneNumber email role");
 
           if (account == null) return responseHandler.notfound(res, "Account not found !");
 
@@ -65,6 +66,7 @@ const login = async (req, res) => {
           responseHandler.created(res, {
                token,
                ...account._doc,
+               id: account.id
           });
      } catch {
           responseHandler.error(res);

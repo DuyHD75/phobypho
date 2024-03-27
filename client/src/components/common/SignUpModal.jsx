@@ -12,22 +12,26 @@ import { LoadingButton } from '@mui/lab';
 
 
 
-const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
-
 
 
 const SignUpModal = ({ switchAuthState }) => {
+
   const dispatch = useDispatch();
 
   const { authoModalOpen } = useSelector((state) => state.authModal);
   const [isSignUpRequest, setIsSignUpRequest] = useState(false);
 
   const [errorMessage, setErrorMessage] = useState();
+  const [role, setRole] = useState();
 
+  const handleRoleChange = (event) => {
+    setRole(event.target.value);
+  }
 
   const signUpForm = useFormik({
     initialValues: {
       username: "",
+      displayName: "",
       phoneNumber: "",
       email: "",
       password: "",
@@ -38,9 +42,12 @@ const SignUpModal = ({ switchAuthState }) => {
       username: Yup.string()
         .min(8, "Username at least 8 characters !")
         .required("Username is required !"),
+      displayName: Yup.string()
+        .min(8, "Display name at least 8 characters !")
+        .required("Display name is required !"),
       phoneNumber: Yup.string()
-        .matches(phoneRegExp, 'Phone number is not valid')
-        .required("Phone number is required !"),
+        .matches(/^0\d{9}$/, 'Phone number is not valid')
+        .required("Phone number is required!"),
       email: Yup.string()
         .email()
         .required("Email is required !"),
@@ -55,6 +62,7 @@ const SignUpModal = ({ switchAuthState }) => {
       setErrorMessage(undefined);
       setIsSignUpRequest(true)
       const { response, err } = await userApi.signup(values);
+      setIsSignUpRequest(false)
 
       if (response) {
         signUpForm.resetForm();
@@ -62,10 +70,11 @@ const SignUpModal = ({ switchAuthState }) => {
         dispatch(setUser(response));
         toast.success("Sign up successfully !");
       }
-      if (err) setErrorMessage(err.message);
+      if (err) {
+        setErrorMessage(err.message);
+      }
     }
   })
-
 
 
   return (
@@ -73,13 +82,19 @@ const SignUpModal = ({ switchAuthState }) => {
       component={'form'} onSubmit={signUpForm.handleSubmit}
     >
       <Stack spacing={2}>
-        <TextField type='text' placeholder='Enter your user name' name='username'
+        <TextField type='text' placeholder='Enter your username' name='username'
           fullWidth value={signUpForm.values.username} onChange={signUpForm.handleChange} color='warning'
           error={signUpForm.touched.username && signUpForm.errors.username !== undefined}
           helperText={signUpForm.touched.username && signUpForm.errors.username}
         >
         </TextField>
-        <TextField type='number' placeholder='Enter your phone number' name='phoneNumber'
+        <TextField type='text' placeholder='Enter your display name' name='displayName'
+          fullWidth value={signUpForm.values.displayName} onChange={signUpForm.handleChange} color='warning'
+          error={signUpForm.touched.displayName && signUpForm.errors.displayName !== undefined}
+          helperText={signUpForm.touched.displayName && signUpForm.errors.displayName}
+        >
+        </TextField>
+        <TextField type='text' placeholder='Enter your phone number' name='phoneNumber'
           fullWidth value={signUpForm.values.phoneNumber} onChange={signUpForm.handleChange} color='warning'
           error={signUpForm.touched.phoneNumber && signUpForm.errors.phoneNumber !== undefined}
           helperText={signUpForm.touched.phoneNumber && signUpForm.errors.phoneNumber}
@@ -106,11 +121,12 @@ const SignUpModal = ({ switchAuthState }) => {
         </TextField>
 
         <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
+          labelId="role_selection"
+          id="role"
           value={signUpForm.values.role}
           onChange={signUpForm.handleChange}
           placeholder='Select you role'
+          name="role"
         >
           <MenuItem value={"PHOTOGRAPHER"}>Photographer</MenuItem>
           <MenuItem value={"CUSTOMER"}>Customer</MenuItem>

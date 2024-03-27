@@ -10,9 +10,10 @@ import textConfigs from '../../configs/text.config';
 import { Link } from 'react-router-dom';
 import { routesGen } from '../../routers/routes';
 import uiConfigs from '../../configs/ui.config';
-
+import moment from 'moment';
 
 const PostItem = ({ photo }) => {
+
 
 
      const handleChangeLike = () => {
@@ -21,28 +22,34 @@ const PostItem = ({ photo }) => {
 
      return (
           <Card  >
-               <Link style={{ textDecoration: 'none' }} to={routesGen.photoDetail()}>
+               <Link style={{ textDecoration: 'none' }} to={routesGen.photoDetail(photo.photo.id)}>
                     <CardMedia
                          component="img"
                          height="194"
-                         image="https://plus.unsplash.com/premium_photo-1673264933048-3bd3f5b86f9d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                         image={photo.photo.poster}
                          alt="Paella dish"
                     />
                </Link>
 
-               <CardHeader
-                    title="Shrimp and Chorizo Paella"
-                    subheader="September 14, 2016"
-                    titleTypographyProps={textConfigs.style.headerText}
-                    subheaderTypographyProps={textConfigs.style.subText}
-               />
+               <Stack direction={{ xs: 'column', md: 'row' }} alignItems={"center"} justifyContent={"space-between"}>
+                    <CardHeader
+                         title={photo.photo.title}
+                         subheader={moment(photo.photo.createdAt).format('dddd, MMMM YYYY')}
+                         titleTypographyProps={textConfigs.style.headerText}
+                         subheaderTypographyProps={textConfigs.style.subText}
+                    />
+                    <Typography sx={{
+                         ...uiConfigs.style.typoLines(1, 'center'),
+                         padding: '2rem',
+                         fontWeight: '600',
+                         color: photo.photographer.status === "AVAILABLE" ? "green" : "red"
+                    }}>{photo.photographer.status}</Typography>
+               </Stack>
                <CardContent>
                     <Typography variant="body2" color="text.secondary" sx={{
                          ...uiConfigs.style.typoLines(3, "left")
                     }}>
-                         This impressive paella is a perfect party dish and a fun meal to cook
-                         together with your guests. Add 1 cup of frozen peas along with the mussels,
-                         if you like.
+                         {photo.photo.descriptions}
                     </Typography>
                </CardContent>
                <CardActions
@@ -62,7 +69,7 @@ const PostItem = ({ photo }) => {
                          <Typography
                               variant='h5'
                               sx={textConfigs.style.normalText}
-                         >12 likes</Typography>
+                         >{photo.photo.likeCount} likes</Typography>
                     </Stack>
 
                     <Stack

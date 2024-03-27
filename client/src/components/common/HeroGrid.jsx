@@ -87,15 +87,17 @@ const HeroGrid = () => {
 
       <Typography
         sx={{
-
           fontFamily: "Saira Condensed",
           position: 'relative',
+          fontWeight: '800',
+          fontSize: '3rem',
+          textTransform: 'uppercase',
           "&::before": {
             content: "''",
             position: 'absolute',
-            left: '42%',
+            left: '38%',
             bottom: 0,
-            width: "5rem",
+            width: "10rem",
             height: "2px",
             background: '#C48F56'
 
@@ -104,7 +106,7 @@ const HeroGrid = () => {
         fontSize={'2rem'}
         textAlign={"center"}
       >
-        Latest <span style={{ color: '#C48F56', fontSize: '2rem' }}>Works</span>
+        Top 10 <span style={{ color: '#C48F56', fontSize: '3rem', fontWeight: '800', }}>Thợ Chụp ảnh</span>
       </Typography>
 
       <Box sx={{ width: '100%', height: "auto", }}>

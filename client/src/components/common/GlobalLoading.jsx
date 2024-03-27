@@ -13,6 +13,10 @@ const GlobalLoading = () => {
      useEffect(() => {
           if (globalLoading) {
                setIsLoading(true);
+          } else {
+               setTimeout(() => {
+                    setIsLoading(false);
+               }, 1000)
           }
      }, [globalLoading])
 
@@ -26,10 +30,10 @@ const GlobalLoading = () => {
                          position: 'fixed',
                          width: '100vw',
                          height: '100vh',
-                         marginTop: '100px'
+                         marginTop: '90px',
+                         zIndex: isLoading ? 999 : 0
                     }}
                >
-
                     <LinearProgress />
                     <Box
                          sx={{

@@ -14,13 +14,14 @@ const reviewApi = {
           } catch (err) { return { err }; }
      },
      add: async ({
-          mediaType, mediaId, content,
-          mediaPoster, mediaTitle
+          photo_id, content,
+          photo_poster, rating
      }) => {
           try {
+               
                const response = await privateClient.post(reviewEndpoints.add, {
-                    mediaType, mediaId, content,
-                    mediaPoster, mediaTitle
+                    photo_id, content,
+                    photo_poster, rating
                });
                return { response };
           } catch (err) { return { err }; }

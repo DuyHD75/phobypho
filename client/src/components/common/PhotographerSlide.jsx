@@ -5,7 +5,7 @@ import { SwiperSlide } from 'swiper/react';
 import { toast } from 'react-toastify'
 import AutoSwiper from "./AutoSwiper";
 import PhotographerItem from './PhotographerItem';
-import {Typography} from '@mui/material';
+import { Typography } from '@mui/material';
 
 
 
@@ -50,31 +50,10 @@ const PhotographerSlide = () => {
      }, []);
 
 
-
-
      return (
 
           <Fragment>
-               <Typography
-                    sx={{
-                         fontFamily: "Saira Condensed",
-                         position: 'relative',
-                         margin: '3rem 0',
-                         "&::before": {
-                              content: "''",
-                              position: 'absolute',
-                              left: '42%',
-                              bottom: 0,
-                              width: "5rem",
-                              height: "2px",
-                              background: '#C48F56'
-                         }
-                    }}
-                    fontSize={'2rem'}
-                    textAlign={"center"}
-               >
-                    Top <span style={{ color: '#C48F56', fontSize: '2rem' }}>Photographers</span>
-               </Typography>
+              
 
                <AutoSwiper>
                     {photos.map((photo, index) => (

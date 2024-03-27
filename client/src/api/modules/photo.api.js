@@ -3,26 +3,27 @@ import publicClient from "../client/public.client";
 
 
 const photoEndpoints = {
-     list: 'photos',
-     add: 'photos',
-     detail: ({ photoId }) => `photos/${photoId}`,
-     search: ({ query }) => `photos/search?query=${query}`,
-     update: ({ photoId }) => `photos/${photoId}`,
-     remove: ({ photoId }) => `photos/${photoId}`,
+     list: ({ location }) => `/photos?location=${location}`,
+     add: '/photos',
+     detail: ({ photo_id }) => `/photos/${photo_id}`,
+     search: ({ query }) => `/photos/search?query=${query}`,
+     update: ({ photo_id }) => `/photos/${photo_id}`,
+     remove: ({ photo_id }) => `/photos/${photo_id}`,
 }
 
 const photoApi = {
-     getListPhotos: async () => {
+     getListPhotos: async ({ location }) => {
           try {
-               const response = await publicClient.get(photoEndpoints.list());
+               console.log(photoEndpoints.list({ location }))
+               const response = await publicClient.get(photoEndpoints.list({ location }));
                return { response }
           } catch (err) {
                return { err }
           }
      },
-     getPhotoDetail: async ({ photoId }) => {
+     getPhotoDetail: async ({ photo_id }) => {
           try {
-               const response = await publicClient.get(photoEndpoints.detail({ photoId }));
+               const response = await publicClient.get(photoEndpoints.detail({ photo_id }));
                return { response }
           } catch (err) {
                return { err }
@@ -36,9 +37,9 @@ const photoApi = {
                return { err }
           }
      },
-     updatePhoto: async ({ photoId }) => {
+     updatePhoto: async ({ photoId, likeCount }) => {
           try {
-               const response = await privateClient.put(photoEndpoints.update({ photoId }));
+               const response = await privateClient.put(photoEndpoints.update({ photoId }), { likeCount });
                return { response }
           } catch (err) {
                return { err }

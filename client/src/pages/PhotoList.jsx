@@ -1,23 +1,27 @@
 import React, { Fragment, useState, useMemo, useEffect } from 'react'
 import { Box, Button, ListItemButton, ListItemText, Stack, Typography } from '@mui/material';
 import uiConfigs from '../configs/ui.config';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import setAppState from '../redux/features/appStateSlice';
 import PostGrid from '../components/common/PostGrid';
 import { LoadingButton } from "@mui/lab"
-
+import photoApi from '../api/modules/photo.api';
+import { setGlobalLoading } from '../redux/features/globalLoading';
+import { toast } from 'react-toastify';
+import usePrevious from "../hooks/usePrevious";
 
 const PhotoListPage = () => {
 
-     const [photos, setphotos] = useState([]);
+     const dispatch = useDispatch();
+     const { user } = useSelector((state) => state.user);
+     const [photos, setPhotos] = useState([]);
+     const [filteredList, setFilteredList] = useState([]);
 
      const [photoLoading, setPhotoLoading] = useState(false);
-
      const [currCategory, setCurrCategory] = useState(0);
-
-     const dispatch = useDispatch();
+     const [findIndex, setFindIndex] = useState(0);
+     const preCategory = usePrevious(currCategory);
      const [currPage, setCurrPage] = useState(0)
-
      const categoriesMemo = useMemo(() => ["All", "Hue", "Da Nang", "Quang Nam"], []);
 
      const category = ["All", "Hue", "Da Nang", "Quang Nam"]
@@ -25,17 +29,48 @@ const PhotoListPage = () => {
 
      const onLoadMore = () => setCurrPage(currPage + 1);
 
+     useEffect(() => {
+          window.scrollTo(0, 0);
+     }, [dispatch]);
+
+     useEffect(() => {
+          const getListPhotos = async () => {
+               try {
+                    if (currCategory === 0) {
+                         dispatch(setGlobalLoading(true));
+                    }
+
+                    setPhotoLoading(true);
+
+                    const { response, err } = await photoApi.getListPhotos({
+                         location: categoriesMemo[currCategory]
+                    });
+
+                    setPhotoLoading(false);
+                    dispatch(setGlobalLoading(false));
+
+                    if (err) {
+                         toast.error(err.message);
+                    } else if (response) {
+                         setPhotos([...response]);
+                    }
+               } catch (error) {
+                    console.error("Error in getListPhotos:", error);
+                    toast.error("An error occurred while fetching photos.");
+               }
+          };
+
+          getListPhotos();
+     }, [currCategory, preCategory, currPage, dispatch]);
+
+
+
      const onCategoryChange = (categoryIndex) => {
           if (currCategory === categoryIndex) return;
-          setphotos([]);
           setCurrCategory(categoryIndex);
+          setPhotos([]);
+          setCurrPage(1);
      }
-
-     // useEffect(() => {
-     //      dispatch(setAppState(mediaType));
-     //      window.scrollTo(0, 0);
-     // }, [dispatch]);
-
 
      return (
           <Fragment>
@@ -48,7 +83,7 @@ const PhotoListPage = () => {
                     <Stack spacing={3} direction={'column'}
                          alignItems="center"
                          sx={{
-                           marginTop: '8rem'
+                              marginTop: '8rem'
                          }}
                     >
                          <Typography fontWeight={"700"} variant="h5" sx={{
@@ -77,8 +112,8 @@ const PhotoListPage = () => {
                          </Stack>
                     </Stack>
 
-                    
-                    <PostGrid />
+
+                    <PostGrid photos={photos} />
 
 
                     <LoadingButton
@@ -103,3 +138,4 @@ const PhotoListPage = () => {
 }
 
 export default PhotoListPage;
+// Next to me

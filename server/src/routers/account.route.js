@@ -16,6 +16,9 @@ router.post(
                const existed = await accountModel.findOne({ username: value });
                if (existed) return Promise.reject("Username already existed !");
           }),
+     body("displayName")
+          .exists().withMessage("Display name is required !")
+          .isLength({ min: 8 }).withMessage("Display name must be at least 8 characters !"),
      body("phoneNumber")
           .exists().withMessage("Phone number is required")
           .custom(async value => {

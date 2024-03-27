@@ -9,32 +9,54 @@ import textConfigs from '../configs/text.config';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import PhotoReview from '../components/common/PhotoReview';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import SkipNextIcon from '@mui/icons-material/SkipNext';
 import ServicePackage from '../components/common/ServicePackage';
+import { setGlobalLoading } from '../redux/features/globalLoading';
+import { toast } from 'react-toastify';
+import moment from 'moment'
+
 const PhotoDetailPage = () => {
 
-
-
-     const { photo_id } = useParams();
-
+     const dispatch = useDispatch();
      const { user } = useSelector((state) => state.user);
      const [onRequest, setOnRequest] = useState(false);
-     const dispatch = useDispatch();
+     const { photo_id } = useParams();
+     const [photo, setPhoto] = useState();
+     const [isLiked, setIsLiked] = useState(false);
+
+     useEffect(() => {
+          window.scrollTo(0, 0);
+          const getPhotoDetail = async () => {
+               // dispatch(setGlobalLoading(true));
+               const { response, err } = await photoApi.getPhotoDetail({ photo_id });
+               // dispatch(setGlobalLoading(false));
+               if (response) {
+                    setPhoto(response);
+               }
+               if (err) toast.error(err.message);
+          }
+
+          getPhotoDetail();
+
+     }, [photo_id, dispatch])
 
 
+     const handleLikeCountClick = async () => {
+          try {
+               const likeCount = photo.likeCount + 1;
+               console.log(likeCount)
+               const { response, err } = await photoApi.updatePhoto({ photo_id, likeCount });
+               if (err) toast.error(err.message);
 
-
-
+               if (response) console.log(response);
+          } catch (err) {
+               toast.error(err);
+          }
+     }
 
 
      return (
           <Fragment>
-               <Box
+               {photo && <Box
                     sx={{
                          color: 'primary.contrastText',
                          ...uiConfigs.style.mainContent,
@@ -59,7 +81,7 @@ const PhotoDetailPage = () => {
                                    bottom: 0,
                               }
                          }}>
-                              Redhead
+                              {photo.title}
                          </Typography>
 
                          <Typography
@@ -68,7 +90,7 @@ const PhotoDetailPage = () => {
                                    margin: '1rem 0'
                               }}
                          >
-                              September 15, 2017
+                              {moment(photo.createdAt).format('dddd, MMMM YYYY')}
                          </Typography>
                     </Box>
                     {/*End header photo detail */}
@@ -86,7 +108,7 @@ const PhotoDetailPage = () => {
                               <Box sx={{
                                    paddingTop: "50%",
                                    borderRadius: '10px',
-                                   ...uiConfigs.style.backgroundImage('https://promo-theme.com/novo/wp-content/uploads/2017/08/project4.jpg')
+                                   ...uiConfigs.style.backgroundImage(photo.poster)
                               }} />
 
                               <Box>
@@ -108,13 +130,8 @@ const PhotoDetailPage = () => {
                                              }
                                         }}
                                    >
-                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                                        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                                        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-
+                                        {photo.descriptions}
                                    </Typography>
-
-
                               </Box>
 
                               <Box
@@ -136,13 +153,13 @@ const PhotoDetailPage = () => {
                                              paddingRight: ' 1rem'
                                         }}
                                    >
-                                        <IconButton >
+                                        <IconButton onClick={handleLikeCountClick} >
                                              <FavoriteBorderIcon></FavoriteBorderIcon>
                                         </IconButton>
                                         <Typography
                                              variant='body1'
                                              sx={textConfigs.style.normalText}
-                                        >20 likes</Typography>
+                                        > {`${photo.likeCount} ${photo.likeCount > 1 ? 'likes' : 'like'}`}</Typography>
                                    </Stack>
 
                                    <Stack
@@ -230,7 +247,10 @@ const PhotoDetailPage = () => {
 
                                    {/**Servies */}
 
-                                   <ServicePackage services={''} />
+                                   <ServicePackage
+                                        photo={photo}
+                                        services={photo.servicePackages}
+                                   />
 
 
                               </Box>
@@ -256,51 +276,25 @@ const PhotoDetailPage = () => {
                                    </Typography>
 
                                    <Grid container spacing={2}>
-                                        <Grid item xs={6} sm={4} md={3} key={1}>
-                                             <Box sx={{ position: 'relative', paddingTop: '16%' }}>
-                                                  <img src={'https://promo-theme.com/novo/wp-content/uploads/2018/10/project45-150x150.jpg'} alt={`Image1`} className={"kj"} />
-                                             </Box>
-                                        </Grid>
-                                        <Grid item xs={6} sm={4} md={3} key={1}>
-                                             <Box sx={{ position: 'relative', paddingTop: '16%' }}>
-                                                  <img src={'https://promo-theme.com/novo/wp-content/uploads/2018/10/project45-150x150.jpg'} alt={`Image1`} className={"kj"} />
-                                             </Box>
-                                        </Grid>
-                                        <Grid item xs={6} sm={4} md={3} key={1}>
-                                             <Box sx={{ position: 'relative', paddingTop: '16%' }}>
-                                                  <img src={'https://promo-theme.com/novo/wp-content/uploads/2018/10/project45-150x150.jpg'} alt={`Image1`} className={"kj"} />
-                                             </Box>
-                                        </Grid>
-                                        <Grid item xs={6} sm={4} md={3} key={1}>
-                                             <Box sx={{ position: 'relative', paddingTop: '16%' }}>
-                                                  <img src={'https://promo-theme.com/novo/wp-content/uploads/2018/10/project45-150x150.jpg'} alt={`Image1`} className={"kj"} />
-                                             </Box>
-                                        </Grid>
-                                        <Grid item xs={6} sm={4} md={3} key={1}>
-                                             <Box sx={{ position: 'relative', paddingTop: '16%' }}>
-                                                  <img src={'https://promo-theme.com/novo/wp-content/uploads/2018/10/project45-150x150.jpg'} alt={`Image1`} className={"kj"} />
-                                             </Box>
-                                        </Grid>
-                                        <Grid item xs={6} sm={4} md={3} key={1}>
-                                             <Box sx={{ position: 'relative', paddingTop: '16%' }}>
-                                                  <img src={'https://promo-theme.com/novo/wp-content/uploads/2018/10/project45-150x150.jpg'} alt={`Image1`} className={"kj"} />
-                                             </Box>
-                                        </Grid>
-                                        <Grid item xs={6} sm={4} md={3} key={1}>
-                                             <Box sx={{ position: 'relative', paddingTop: '16%' }}>
-                                                  <img src={'https://promo-theme.com/novo/wp-content/uploads/2018/10/project45-150x150.jpg'} alt={`Image1`} className={"kj"} />
-                                             </Box>
-                                        </Grid>
+
+                                        {photo.attachments.map((item, index) => (
+                                             <Grid item xs={6} sm={4} md={3} key={index}>
+                                                  <Box sx={{
+                                                       marginTop: '1rem',
+                                                       position: 'relative', paddingTop: '100%',
+                                                       width: '100%', height: '100%',
+                                                       backgroundImage: `url(${item})`,
+                                                       backgroundPosition: 'top',
+                                                       backgroundSize: 'cover',
+                                                  }} />
+
+                                             </Grid>
+                                        ))}
 
                                    </Grid>
                               </Box>
                          </Box>
                          {/*options */}
-
-
-
-
-
                     </Stack>
 
 
@@ -312,14 +306,12 @@ const PhotoDetailPage = () => {
                               margin: { xs: "0 auto 2rem", md: "0 2rem 0 0" },
                          }}
                     >
-                         <PhotoReview />
-
-
+                         <PhotoReview photo={photo} />
                     </Box>
 
 
 
-               </Box>
+               </Box>}
           </Fragment>
      )
 };

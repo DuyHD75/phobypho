@@ -11,6 +11,11 @@ const accountSchema = new mongoose.Schema({
           required: true,
           unique: true
      },
+     displayName: {
+          type: String,
+          required: true,
+          unique: true
+     },
      password: {
           type: String,
           required: true,
@@ -60,7 +65,7 @@ accountSchema.post('save', async (doc, next) => {
           try {
                const customer = new customerModel({ account: doc._id });
                await customer.save();
-               next();
+               next();  
           } catch (error) {
                next(error);
           }

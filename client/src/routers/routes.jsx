@@ -5,14 +5,17 @@ import BookingHistoryPage from '../pages/BookingHistory';
 import FavoriteListPage from '../pages/FavoriteList';
 import PasswordUpdatePage from '../pages/PasswordUpdate';
 import ProtectedPage from '../components/common/ProtectedPage';
+import Checkout from '../pages/Checkout';
+import PostPhoto from '../pages/PostPhoto';
 
 export const routesGen = {
      home: "/",
      photoList: "/photos",
-     photoDetail: (id) => `/photos/${id}`,
+     photoDetail: (photoId) => `/photos/${photoId}`,
      favoriteList: '/favorites',
      bookingHistory: '/booking_history',
-     passwordUpdate: '/password_update'
+     passwordUpdate: '/password_update',
+     checkOut: '/checkout',
 };
 
 const routes = [
@@ -50,6 +53,11 @@ const routes = [
           state: "photos"
      },
      {
+          path: "/checkout",
+          element: <Checkout />,
+          state: "checkout"
+     },
+     {
           path: "/booking_history",
           element: (
                <ProtectedPage>
@@ -57,6 +65,15 @@ const routes = [
                </ProtectedPage>
           ),
           state: "booking.history"
+     },
+     {
+          path: "/photos/history_post",
+          element: (
+               <ProtectedPage>
+                    <PostPhoto />
+               </ProtectedPage>
+          ),
+          state: "post.history"
      }
 ];
 

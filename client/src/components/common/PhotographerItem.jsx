@@ -11,9 +11,9 @@ const PhotographerItem = ({ photo }) => {
           <Link to={routesGen.photoDetail(photo.id)} style={{ textDecoration: 'none' }} >
                <Box sx={{
                     ...uiConfigs.style.backgroundImage(photo.img),
-                    paddingTop: "100%",
+                    paddingTop: "70%",
                     transition: 'all .9s ease',
-                    "&:hover .photo-option": { top: { md: '48%', lg: '54%' }, opacity: 1, transition: 'all .9s ease' },
+                    "&:hover .photo-option": { top: { md: '32%', lg: '42%' }, opacity: 1, transition: 'all .9s ease' },
                     color: "primary.contrastText",
                     boxShadow: 3,
                     borderColor: 'primary.main'
@@ -36,7 +36,7 @@ const PhotographerItem = ({ photo }) => {
                                    transition: "all .5s ease",
                                    textAlign: 'center',
                                    position: 'relative',
-                                   top: { xs: '-16rem', md: '-30rem', sm: '-20rem' },
+                                   top: { xs: '-6rem', md: '-24rem', sm: '-20rem' },
                                    width: "100%",
                                    height: "max-content",
                                    boxSizing: "border-box",
@@ -59,7 +59,7 @@ const PhotographerItem = ({ photo }) => {
                                         variant="body1"
                                         fontWeight="700"
                                         sx={{
-                                             fontSize: "8rem",
+                                             fontSize: {xs: '4rem', md: '5rem'},
                                              ...uiConfigs.style.typoLines(1, "center")
                                         }}
                                    >
@@ -103,7 +103,7 @@ const PhotographerItem = ({ photo }) => {
                                              fontWeight: '800',
                                              ...uiConfigs.style.typoLines(1, 'center'),
                                              position: 'relative',
-                                             padding: '1rem',
+                                             padding: '0.6rem',
                                              "&::before": {
                                                   content: '""',
                                                   position: 'absolute',
@@ -125,7 +125,7 @@ const PhotographerItem = ({ photo }) => {
                                              fontWeight: '400',
                                              ...uiConfigs.style.typoLines(1, 'center'),
                                              position: 'relative',
-                                             padding: '1rem',
+                                             padding: '0.6rem',
                                              "&::before": {
                                                   content: '""',
                                                   position: 'absolute',
@@ -147,7 +147,7 @@ const PhotographerItem = ({ photo }) => {
                                              fontWeight: '400',
                                              ...uiConfigs.style.typoLines(1, 'center'),
                                              position: 'relative',
-                                             padding: '1rem',
+                                             padding: '0.6rem',
                                              "&::before": {
                                                   content: '""',
                                                   position: 'absolute',
@@ -169,7 +169,7 @@ const PhotographerItem = ({ photo }) => {
                                              fontWeight: '400',
                                              ...uiConfigs.style.typoLines(1, 'center'),
                                              position: 'relative',
-                                             padding: '1rem',
+                                             padding: '0.6rem',
                                              "&::before": {
                                                   content: '""',
                                                   position: 'absolute',
@@ -190,7 +190,7 @@ const PhotographerItem = ({ photo }) => {
                                              fontWeight: '400',
                                              ...uiConfigs.style.typoLines(1, 'center'),
                                              position: 'relative',
-                                             padding: '1rem',
+                                             padding: '0.6rem',
                                              "&::before": {
                                                   content: '""',
                                                   position: 'absolute',

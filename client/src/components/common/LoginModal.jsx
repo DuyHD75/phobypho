@@ -10,11 +10,8 @@ import { Alert, Box, Button, Stack, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
 
-
-
-
-
 const LoginModal = ({ switchAuthState }) => {
+
      const dispatch = useDispatch();
      const [isLoginRequest, setIsLoginRequest] = useState(false);
      const [errorMessage, setErrorMessage] = useState();
@@ -69,13 +66,16 @@ const LoginModal = ({ switchAuthState }) => {
                     ></TextField>
                </Stack>
                <LoadingButton
+                    loadingPosition='start'
                     type='submit'
                     fullWidth
-                    size='large'
-                    sx={{ marginTop: 4, fontFamily: "Saira Condensed", fontSize: '1.2rem' }}
+                    size='medium'
+                    sx={{
+                         marginTop: 4,
+                         fontFamily: "Saira Condensed",
+                         fontSize: '1.2rem'
+                    }}
                     loading={isLoginRequest}
-
-
                >
                     Login
                </LoadingButton>

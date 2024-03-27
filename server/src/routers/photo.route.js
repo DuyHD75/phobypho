@@ -1,13 +1,13 @@
 import express from 'express';
 import {
-     getAllPhoto, getPhotoDetail, searchPhotoByMultiFactor, createNewPost, updatePost, deletePost
+     getAllPhotoInfo, getPhotoDetail, searchPhotoByMultiFactor, createNewPost, updatePost, deletePost
 } from '../controllers/photo.controller.js';
 import tokenMiddleware from '../middlewares/token.middleware.js';
 import { ROLES_LIST } from '../configs/enum.config.js';
 
 const router = express.Router();
 
-router.get("/", getAllPhoto);
+router.get("/", getAllPhotoInfo);
 
 router.get("/:photo_id", getPhotoDetail);
 
@@ -15,9 +15,10 @@ router.get("/search", searchPhotoByMultiFactor);
 
 router.post("/", tokenMiddleware.authenticate, tokenMiddleware.authorize, createNewPost);
 
-router.put("/:photo_id", tokenMiddleware.authenticate, tokenMiddleware.authorize, updatePost);
+router.put("/:photo_id", tokenMiddleware.authenticate, updatePost);
 
 router.delete("/:photo_id", tokenMiddleware.authenticate, tokenMiddleware.authorize, deletePost);
+
 
 // router.route("/:photo_id/services/:package_id")
 //      .get((req, res, next) => {

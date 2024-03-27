@@ -8,7 +8,7 @@ import LockResetOutlinedIcon from "@mui/icons-material/LockResetOutlined";
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import TwitterIcon from '@mui/icons-material/Twitter';
-
+import PostAddIcon from '@mui/icons-material/PostAdd';
 
 const main = [
      {
@@ -22,9 +22,15 @@ const main = [
           state: "aboutus"
      },
      {
-          display: "Photographers",
+          display: "Services",
           path: "/photos",
-          state: "photos"
+          state: "photos",
+     },
+     {
+          display: "Posts",
+          path: "/photos/history_post",
+          state: "post.history",
+          role: "PHOTOGRAPHER"
      },
 ];
 
@@ -35,6 +41,27 @@ const user = [
           path: "/favorites",
           icon: <FavoriteBorderOutlinedIcon />,
           state: "favorite"
+     },
+     {
+          display: "reviews",
+          path: "/reviews",
+          icon: <RateReviewOutlinedIcon />,
+          state: "reviews"
+     },
+     {
+          display: "password update",
+          path: "/password-update",
+          icon: <LockResetOutlinedIcon />,
+          state: "password.update"
+     }
+];
+
+const photographer = [
+     {
+          display: "Post",
+          path: "/photos",
+          icon: <PostAddIcon />,
+          state: "post"
      },
      {
           display: "reviews",
@@ -70,10 +97,10 @@ const social = [
 ];
 
 
-const options =[
+const options = [
      {
-          display: 'All', 
-          
+          display: 'All',
+
      }
 ]
 

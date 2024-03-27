@@ -13,15 +13,17 @@ const HomePage = () => {
           <Fragment>
                <Socialbar />
                <HeroSlide></HeroSlide>
+
+               <Box paddingTop="3rem" >
+                    <PhotographerSlide />
+               </Box>
                <Box marginTop="-3rem" sx={{ ...uiConfigs.style.mainContent }}>
                     <Container>
                          <HeroGrid></HeroGrid>
                     </Container>
 
                </Box>
-               <Box paddingTop="3rem" >
-                    <PhotographerSlide />
-               </Box>
+
 
 
           </Fragment>

@@ -53,7 +53,7 @@ const AuthModal = () => {
           >
                <Box sx={style}>
                     <Box sx={{
-                         padding: 4, boxShadow: 24,
+                         padding: 4,
                          backgroundColor: "background.paper"
                     }}>
                          <Box sx={{
