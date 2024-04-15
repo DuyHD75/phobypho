@@ -25,11 +25,6 @@ const ScrollAppBar = ({ children, window }) => {
     threshold: 50,
     target: window ? window() : undefined,
   });
-  const trigger = useScrollTrigger({
-    disableHysteresis: true,
-    threshold: 50,
-    target: window ? window() : undefined,
-  });
 
   return cloneElement(children, {
     sx: {
@@ -42,25 +37,15 @@ const ScrollAppBar = ({ children, window }) => {
 const Topbar = () => {
   const { user } = useSelector((state) => state.user);
   const { appState } = useSelector((state) => state.appState);
-  const { user } = useSelector((state) => state.user);
-  const { appState } = useSelector((state) => state.appState);
 
   const [openSideBar, setOpenSideBar] = useState(false);
-  const [openSideBar, setOpenSideBar] = useState(false);
 
-  const dispatch = useDispatch();
   const dispatch = useDispatch();
 
   const toggleSidebar = () => {
     setOpenSideBar(!openSideBar);
   };
-  const toggleSidebar = () => {
-    setOpenSideBar(!openSideBar);
-  };
 
-  return (
-    <Box>
-      <SideBar open={openSideBar} toggleSideBar={toggleSidebar} />
   return (
     <Box>
       <SideBar open={openSideBar} toggleSideBar={toggleSidebar} />
@@ -101,49 +86,7 @@ const Topbar = () => {
                 <Logo isHeader={true} />
               </Box>
             </Stack>
-      <ScrollAppBar>
-        <AppBar elevation={0} sx={{ zIndex: 999 }}>
-          <Toolbar
-            sx={{
-              alignItems: "center",
-              justifyContent: "space-between",
-              maxWidth: "1350px",
-              marginX: "auto",
-              width: "100%",
-              paddingY: "1.6rem",
-              position: "relative",
-            }}
-          >
-            <Stack
-              direction={"row"}
-              spacing={1}
-              alignItems={"center"}
-              justifyContent={"space-around"}
-            >
-              <IconButton
-                color="inherit"
-                sx={{ mr: 2, display: { md: "none" } }}
-                onClick={toggleSidebar}
-              >
-                <MenuIcon></MenuIcon>
-              </IconButton>
-              <Box
-                sx={{
-                  display: { xs: "inline-block", md: "none" },
-                  position: "relative",
-                  left: { sm: "40%", sx: "40%" },
-                }}
-              >
-                <Logo isHeader={true} />
-              </Box>
-            </Stack>
 
-            {/*main menu */}
-            <Box
-              sx={{ marginRight: "30px", display: { xs: "none", md: "block" } }}
-            >
-              <Logo isHeader={true} />
-            </Box>
             {/*main menu */}
             <Box
               sx={{ marginRight: "30px", display: { xs: "none", md: "block" } }}
@@ -213,7 +156,6 @@ const Topbar = () => {
             </Box>
 
             {/*main menu */}
-            {/*main menu */}
 
             <Stack spacing={3} direction="row" alignItems="center">
               {!user && (
@@ -239,4 +181,3 @@ const Topbar = () => {
 };
 
 export default Topbar;
-
