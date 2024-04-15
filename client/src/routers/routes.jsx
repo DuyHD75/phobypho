@@ -7,6 +7,8 @@ import PasswordUpdatePage from '../pages/PasswordUpdate';
 import ProtectedPage from '../components/common/ProtectedPage';
 import Checkout from '../pages/Checkout';
 import PostPhoto from '../pages/PostPhoto';
+import Voucher from '../pages/Voucher';
+import AboutUs from './../pages/AboutUs';
 
 export const routesGen = {
      home: "/",
@@ -74,7 +76,17 @@ const routes = [
                </ProtectedPage>
           ),
           state: "post.history"
-     }
+     },
+     {
+          path: "/vouchers",
+          element: <Voucher />,
+          state: "vouchers"
+     },
+     {
+          path: "/aboutus",
+          element: <AboutUs />,
+          state: "aboutus"
+     },
 ];
 
 export default routes;
