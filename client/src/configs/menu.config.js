@@ -31,6 +31,10 @@ const main = [
           path: "/photos/history_post",
           state: "post.history",
           role: "PHOTOGRAPHER"
+     }, {
+          display: "Vouchers",
+          path: "/vouchers",
+          state: "vouchers",
      },
 ];
 

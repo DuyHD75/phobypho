@@ -12,6 +12,7 @@ const PostGrid = ({ photos }) => {
                {photos.map((photo, index) => (
                     <Grid item xs={12} sm={6} md={4} key={index}>
                          <PostItem photo={photo} />
+                         
                     </Grid>
                ))}
           </Grid>
