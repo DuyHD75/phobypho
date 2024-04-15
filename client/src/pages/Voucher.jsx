@@ -96,11 +96,11 @@ const Voucher = () => {
                 size="large"
                 variant="contained"
                 sx={{
-                  fontFamily: "Saira Condensed",
+                 
                   fontWeight: "500",
                   marginY: "15px",
                   padding: "10px 50px",
-                  borderRadius: "9999px",
+                  borderRadius: "50%",
                   fontSize: "1.2rem",
                 }}
                 onClick={() => dispatch(setAuthModalOpen(true))}

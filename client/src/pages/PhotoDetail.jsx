@@ -168,18 +168,21 @@ const PhotoDetailPage = () => {
               sx={{
                 width: { xs: "100%", sm: "100%", md: "40%" },
                 margin: { xs: "0 auto 2rem", md: "0 2rem 0 0" },
-                border: "0.2px solid rgba(0,0,0,0.6)",
                 padding: "2rem",
+                border: "1px solid rgb(221, 221, 221)",
+                borderRadius: "12px",
+                boxShadow: ' rgba(0, 0, 0, 0.12) 0px 6px 16px'
               }}
             >
               <Box>
                 <Typography
                   sx={{
                     ...uiConfigs.style.typoLines(1, "left"),
-                    fontSize: { xs: "1.4rem", md: "1.6rem", lg: "1.8rem" },
+                    fontSize: { xs: "1.2rem", md: "1.4rem", lg: "1.6rem" },
                     fontWeight: 500,
                     position: "relative",
                     marginBottom: "1rem",
+                    textTransform: 'capitalize',
                     "::before": {
                       position: "absolute",
                       content: '""',
@@ -205,8 +208,9 @@ const PhotoDetailPage = () => {
                 <Typography
                   sx={{
                     ...uiConfigs.style.typoLines(1, "left"),
-                    fontSize: { xs: "1.4rem", md: "1.6rem", lg: "1.8rem" },
+                    fontSize: { xs: "1.2rem", md: "1.4rem", lg: "1.6rem" },
                     fontWeight: 500,
+                    textTransform: 'capitalize',
                     position: "relative",
                     "::before": {
                       position: "absolute",
@@ -257,9 +261,9 @@ const PhotoDetailPage = () => {
           >
             <PhotoReview photo={photo} />
           </Box>
-        </Box>
+        </Box >
       )}
-    </Fragment>
+    </Fragment >
   );
 };
 

@@ -26,7 +26,7 @@ const Logo = ({ isHeader }) => {
                     fontSize: '1.3rem',
                     lineHeight: '2rem',
                     fontWeight: 800,
-                    textShadow: '1px 2px 1px #000',
+                    textShadow: '1px 1px 1px #000',
                }}>
                     PHOBYPHO
                </span>

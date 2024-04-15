@@ -80,6 +80,7 @@ const ServicePackageItem = ({
             image="https://mui.com/static/images/cards/live-from-space.jpg"
             alt="Live from space album cover"
           />
+
           <Box
             className="card_content"
             sx={{
@@ -131,10 +132,11 @@ const ServicePackageItem = ({
             zIndex: 99,
             transition: "all .3s ease",
             border: "2px solid #C48F56",
+            position: "relative",
             "&:hover": {
               cursor: "pointer",
               transform: "translateY(-5px)",
-              boxShadow: "rgba(255, 255, 255, 0.35) 0px 5px 15px",
+              boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
               borderRadius: "5px",
             },
           }}
@@ -145,7 +147,12 @@ const ServicePackageItem = ({
             sx={{ width: "32%", height: "max-content" }}
             image="https://mui.com/static/images/cards/live-from-space.jpg"
             alt="Live from space album cover"
+            style={{
+              borderRadius: "5px",
+              position: "absolute",
+            }}
           />
+
           <Box
             className="card_content"
             sx={{
@@ -154,6 +161,7 @@ const ServicePackageItem = ({
               justifyContent: "center",
               padding: "3px",
               marginLeft: "8px",
+
             }}
           >
             <Typography
@@ -161,6 +169,7 @@ const ServicePackageItem = ({
               sx={{
                 ...uiConfigs.style.typoLines(1, "left"),
                 fontSize: "1.3rem",
+                color: 'secondary.colorText'
               }}
             >
               {service.name.split(" ")[0]}
@@ -169,7 +178,7 @@ const ServicePackageItem = ({
                 style={{
                   fontFamily: '"Nunito", sans-serif',
                   fontSize: "1.6rem",
-                  color: "secondary.colorText",
+                  color: "secondary.main",
                   paddingLeft: "12px",
                 }}
               >
@@ -180,10 +189,14 @@ const ServicePackageItem = ({
               variant="subtitle1"
               color="secondary.colorText"
               sx={{
-                ...uiConfigs.style.typoLines(4, "left"),
+
               }}
             >
-              {service.description}
+              {service.description.split(".").map((item, index) => (
+                <ul key={index}>
+                  <li>{item}</li>
+                </ul>
+              ))}
             </Typography>
           </Box>
         </Card>

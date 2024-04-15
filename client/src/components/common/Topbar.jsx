@@ -116,7 +116,6 @@ const Topbar = () => {
                           fontFamily: '"Nunito", sans-serif',
                           fontSize: "0.9rem",
                           fontWeight: "600",
-                          textShadow: '1px 1px 0.4px #fff',
                           color: appState.includes(item.state)
                             ? "#C48F56"
                             : "inherit",
@@ -163,7 +162,7 @@ const Topbar = () => {
                   variant="contained"
                   sx={{
                     fontFamily: '"Nunito", sans-serif',
-                    fontSize: "1rem",
+                    fontSize: "0.8rem",
                     fontWeight: "500",
                   }}
                   onClick={() => dispatch(setAuthModalOpen(true))}

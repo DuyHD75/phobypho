@@ -26,7 +26,7 @@ const style = {
      border: '2px solid #000',
      boxShadow: 24,
      maxWidth: '500px',
-     bgcolor: 'background.paper',
+     bgcolor: 'background.secondaryPaper',
      borderRadius: '10px',
      overflow: 'hidden'
 };
@@ -89,9 +89,10 @@ const ConfirmModal = ({ setOpenModal, openModal, bookingData }) => {
 
                     <Typography
                          sx={{
-                              ...uiConfigs.style.typoLines(1, 'left'),
+                              ...uiConfigs.style.typoLines(2, 'left'),
                               width: '100%',
                               padding: '0.5rem 1rem',
+                              
                          }}
                     >
                          Vui lòng cung cấp thêm các thông tin bên dưới để hoàn tất việc đặt lịch bạn nhé !
@@ -154,7 +155,7 @@ const ConfirmModal = ({ setOpenModal, openModal, bookingData }) => {
                                              display: 'flex',
                                              justifyContent: "center",
                                              alignItems: "center",
-                                             fontSize: '1rem',
+                                             fontSize: '0.8rem',
                                              textTransform: 'capitalize'
 
                                         }}
