@@ -12,22 +12,22 @@ import PostAddIcon from '@mui/icons-material/PostAdd';
 
 const main = [
      {
-          display: "Home",
+          display: "Trang Chủ",
           path: "/",
           state: "home"
      },
      {
-          display: "About Us",
+          display: "Giới Thiệu & Chính Sách",
           path: "/aboutus",
           state: "aboutus"
      },
      {
-          display: "Services",
+          display: "Dịch Vụ",
           path: "/photos",
           state: "photos",
      },
      {
-          display: "Posts",
+          display: "Hồ Sơ Của Bạn",
           path: "/photos/history_post",
           state: "post.history",
           role: "PHOTOGRAPHER"

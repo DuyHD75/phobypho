@@ -12,6 +12,7 @@ const userApi = {
      login: async ({ username, password }) => {
           try {
                const response = await publicClient.post(userEndpoints.login, { username, password })
+     
                return { response };
           } catch (err) { return { err } }
      },

@@ -3,11 +3,10 @@ import React from 'react';
 import uiConfigs from '../../configs/ui.config';
 
 const Container = ({ header, size, children }) => {
-     console.log(size)
      return (
           <Box sx={{
                marginX: "auto",
-               color: "text.primary"
+               color: "secondary.colorText",
           }}>
                <Stack spacing={4}>
                     {header && (

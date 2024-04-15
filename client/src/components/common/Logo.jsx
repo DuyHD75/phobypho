@@ -1,8 +1,10 @@
 import React from 'react'
 import { Typography } from '@mui/material'
 import CameraIcon from '@mui/icons-material/Camera';
+import uiConfigs from '../../configs/ui.config';
 
-const Logo = ({ isHeader}) => {
+
+const Logo = ({ isHeader }) => {
      return (
           isHeader ? (<Typography
                sx={{
@@ -12,11 +14,19 @@ const Logo = ({ isHeader}) => {
 
                }}
           >
-               <CameraIcon sx={{ fontSize: '2.4rem' }} />
+               <CameraIcon sx={{
+                    color: 'inherit', fontSize: '2.4rem',
+                    textShadow: '1px 2px 2px #000',
+                    border: '1px dashed #000',
+                    borderRadius: '50%'
+               }} />
 
                <span style={{
-                    color: '0d1b2a', fontSize: '1.3rem', lineHeight: '2rem',
-                    fontWeight: 700
+                    color: 'text.secondary',
+                    fontSize: '1.3rem',
+                    lineHeight: '2rem',
+                    fontWeight: 800,
+                    textShadow: '1px 2px 1px #000',
                }}>
                     PHOBYPHO
                </span>
@@ -28,14 +38,15 @@ const Logo = ({ isHeader}) => {
                          alignItems: "center",
                     }}
                >
-                    <CameraIcon sx={{ fontSize: { xs: '1rem', md: '3rem' } }} />
+                    <CameraIcon sx={{ color: 'inherit', fontSize: { xs: '1rem', md: '2.4rem' } }} />
 
                     <span style={{
-                         color: '0d1b2a',
+                         color: 'inherit',
                          fontSize: '1.2rem',
                          lineHeight: '1rem',
+                         ...uiConfigs.style.typoLines(1, 'center'),
                     }}>
-                    PHOBYPHO
+                         PHOBYPHO
                     </span>
 
                </Typography>

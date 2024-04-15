@@ -72,8 +72,8 @@ const LoginModal = ({ switchAuthState }) => {
                     size='medium'
                     sx={{
                          marginTop: 4,
-                         fontFamily: "Saira Condensed",
-                         fontSize: '1.2rem'
+                         fontFamily: '"Nunito", sans-serif',
+                         fontSize: '1rem'
                     }}
                     loading={isLoginRequest}
                >
@@ -82,7 +82,7 @@ const LoginModal = ({ switchAuthState }) => {
 
                <Button
                     fullWidth
-                    sx={{ marginTop: 1, fontFamily: "Saira Condensed", fontSize: '1.2rem' }}
+                    sx={{ marginTop: 1, fontFamily: '"Nunito", sans-serif', fontSize: '1rem' }}
                     onClick={() => switchAuthState()}
                >
                     Sign up

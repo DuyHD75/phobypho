@@ -1,6 +1,8 @@
 import express from 'express';
 import {
-     getAllPhotoInfo, getPhotoDetail, searchPhotoByMultiFactor, createNewPost, updatePost, deletePost
+     getAllPhotoInfo, getPhotoDetail, searchPhotoByMultiFactor, createNewPost, updatePost, deletePost,
+     getPhotosByAuthor,
+     updatePostByAuth
 } from '../controllers/photo.controller.js';
 import tokenMiddleware from '../middlewares/token.middleware.js';
 import { ROLES_LIST } from '../configs/enum.config.js';
@@ -9,11 +11,15 @@ const router = express.Router();
 
 router.get("/", getAllPhotoInfo);
 
+router.post("/", tokenMiddleware.authenticate, tokenMiddleware.authorize, createNewPost);
+
+router.put("/post", tokenMiddleware.authenticate, tokenMiddleware.authorize, updatePostByAuth);
+
+router.get("/post/:authorId", getPhotosByAuthor);
+
 router.get("/:photo_id", getPhotoDetail);
 
 router.get("/search", searchPhotoByMultiFactor);
-
-router.post("/", tokenMiddleware.authenticate, tokenMiddleware.authorize, createNewPost);
 
 router.put("/:photo_id", tokenMiddleware.authenticate, updatePost);
 

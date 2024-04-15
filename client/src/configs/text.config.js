@@ -1,22 +1,22 @@
 const textConfigs = {
      style: {
           headerText: {
-               fontFamily: "Saira Condensed",
-               fontSize: "1.4rem",
-               color: '#fff'
+               fontFamily: '"Nunito", sans-serif',
+               fontSize: "1.1rem",
+               color: 'secondary.colorText'
           },
           subText: {
-               fontFamily: "Saira Condensed",
-               fontSize: "1rem",
+               fontFamily: '"Nunito", sans-serif',
+               fontSize: "0.8rem",
                color: "#C48F56"
           },
           normalText: {
-               fontFamily: "Saira Condensed",
+               fontFamily: '"Nunito", sans-serif',
                fontSize: "1rem",
                color: "fff"
           },
           basicFont: {
-               fontFamily: "Saira Condensed"
+               fontFamily: '"Nunito", sans-serif'
           }
      }
 }

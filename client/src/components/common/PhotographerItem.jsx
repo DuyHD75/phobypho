@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import uiConfigs from '../../configs/ui.config';
 import { routesGen } from '../../routers/routes';
-import zIndex from '@mui/material/styles/zIndex';
 
 
 const PhotographerItem = ({ photo }) => {
@@ -13,7 +12,11 @@ const PhotographerItem = ({ photo }) => {
                     ...uiConfigs.style.backgroundImage(photo.img),
                     paddingTop: "70%",
                     transition: 'all .9s ease',
-                    "&:hover .photo-option": { top: { md: '32%', lg: '42%' }, opacity: 1, transition: 'all .9s ease' },
+                    "&:hover .photo-option": {
+                         top: { xs: '20%', md: '35%', lg: '45%' },
+                         opacity: 1,
+                         transition: 'all .9s ease'
+                    },
                     color: "primary.contrastText",
                     boxShadow: 3,
                     borderColor: 'primary.main'
@@ -49,7 +52,7 @@ const PhotographerItem = ({ photo }) => {
                                         fontWeight="600"
 
                                         sx={{
-                                             fontSize: "1.4rem",
+                                             fontSize: "1rem",
                                              ...uiConfigs.style.typoLines(1, "center")
                                         }}
                                    >
@@ -59,7 +62,7 @@ const PhotographerItem = ({ photo }) => {
                                         variant="body1"
                                         fontWeight="700"
                                         sx={{
-                                             fontSize: {xs: '4rem', md: '5rem'},
+                                             fontSize: { xs: '3rem', md: '4rem' },
                                              ...uiConfigs.style.typoLines(1, "center")
                                         }}
                                    >
@@ -70,7 +73,7 @@ const PhotographerItem = ({ photo }) => {
                                              bgcolor: '#C48F56',
                                              width: "max-content",
                                              height: 'max-content',
-                                             fontSize: '1rem',
+                                             fontSize: '0.8rem',
                                              color: '#fff',
                                              padding: "4px 1rem",
                                              ...uiConfigs.style.typoLines(1, "center"),
@@ -99,7 +102,7 @@ const PhotographerItem = ({ photo }) => {
                                    <Typography
                                         variant='h3'
                                         sx={{
-                                             fontSize: '1.8rem',
+                                             fontSize: '1.4rem',
                                              fontWeight: '800',
                                              ...uiConfigs.style.typoLines(1, 'center'),
                                              position: 'relative',
@@ -121,8 +124,7 @@ const PhotographerItem = ({ photo }) => {
 
                                    <Typography
                                         sx={{
-                                             fontSize: '1.2rem',
-                                             fontWeight: '400',
+                                             fontSize: '1rem',
                                              ...uiConfigs.style.typoLines(1, 'center'),
                                              position: 'relative',
                                              padding: '0.6rem',
@@ -143,7 +145,7 @@ const PhotographerItem = ({ photo }) => {
 
                                    <Typography
                                         sx={{
-                                             fontSize: '1.2rem',
+                                             fontSize: '1rem',
                                              fontWeight: '400',
                                              ...uiConfigs.style.typoLines(1, 'center'),
                                              position: 'relative',
@@ -165,7 +167,7 @@ const PhotographerItem = ({ photo }) => {
 
                                    <Typography
                                         sx={{
-                                             fontSize: '1.2rem',
+                                             fontSize: '1rem',
                                              fontWeight: '400',
                                              ...uiConfigs.style.typoLines(1, 'center'),
                                              position: 'relative',
@@ -186,7 +188,7 @@ const PhotographerItem = ({ photo }) => {
 
                                    <Typography
                                         sx={{
-                                             fontSize: '1.2rem',
+                                             fontSize: '1rem',
                                              fontWeight: '400',
                                              ...uiConfigs.style.typoLines(1, 'center'),
                                              position: 'relative',

@@ -15,7 +15,7 @@ const upload = multer({ storage: multer.memoryStorage(), fileFilter: imageFileFi
 
 router.post("/", upload.array('images', 5), uploadImageController.uploadMultiImages);
 
-router.post("/upload-avatar", upload.single('avatar'), uploadImageController.uploadAvatar);
+router.post("/avatar", upload.single('avatar'), uploadImageController.uploadAvatar);
 
 router.delete("/", uploadImageController.removeFileByUrl);
 

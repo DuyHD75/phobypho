@@ -110,7 +110,7 @@ const ConfirmModal = ({ setOpenModal, openModal, bookingData }) => {
                                         <DateTimePicker
                                              value={value}
                                              onChange={(newValue) => setValue(newValue)}
-                                             sx={{ width: '100%', fontSize: '1rem', fontFamily: "Saira Condensed", }}
+                                             sx={{ width: '100%', fontSize: '1rem', fontFamily: '"Nunito", sans-serif', }}
                                         />
                                    </LocalizationProvider>
 

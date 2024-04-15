@@ -34,9 +34,10 @@ const MainLayout = () => {
                          <Outlet />
                     </Box>
                     {/* main */}
+                    
                </Box>
                {/* footer */}
-               <Footer />
+               <Footer />          
                {/* footer */}
           </div>
      )

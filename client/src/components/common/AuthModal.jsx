@@ -19,8 +19,7 @@ const style = {
      left: '50%',
      transform: 'translate(-50%, -50%)',
      width: '100%',
-     bgcolor: 'background.paper',
-     border: '2px solid #000',
+     bgcolor: 'background.secondaryPaper',
      boxShadow: 24,
      p: 4,
      maxWidth: '500px'
@@ -54,7 +53,7 @@ const AuthModal = () => {
                <Box sx={style}>
                     <Box sx={{
                          padding: 4,
-                         backgroundColor: "background.paper"
+                         backgroundColor: "background.secondaryPaper"
                     }}>
                          <Box sx={{
                               textAlign: 'center', marginBottom: "2rem",

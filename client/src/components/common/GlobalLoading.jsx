@@ -31,7 +31,7 @@ const GlobalLoading = () => {
                          width: '100vw',
                          height: '100vh',
                          marginTop: '90px',
-                         zIndex: isLoading ? 999 : 0
+                         zIndex: isLoading ? 10000 : 0, 
                     }}
                >
                     <LinearProgress />
@@ -40,7 +40,8 @@ const GlobalLoading = () => {
                               position: "absolute",
                               top: '50%',
                               left: '50%',
-                              transform: "translate(-50%, -50%)"
+                              transform: "translate(-50%, -50%)",
+                              
                          }}
                     >
                          <Logo />

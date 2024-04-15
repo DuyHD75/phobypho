@@ -52,8 +52,9 @@ const extractFileNameFromUrl = (url) => {
 
 const uploadMultiImages = async (req, res) => {
      try {
+          console.log("This isisisis")
           const files = req.files;
-
+          console.log(files)
           const uploadedFilesUrl = [];
 
           for (const file of files) {

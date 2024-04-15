@@ -14,7 +14,7 @@ const Footer = () => {
                <Paper
                     square={true}
                     sx={{
-                         backgroundColor: "unset",
+                         backgroundColor: "secondary.main",
                          padding: "2rem",
                          paddingX: "4rem",
                          zIndex: 2
@@ -38,9 +38,9 @@ const Footer = () => {
                                    <Button
                                         key={index}
                                         sx={{
-                                             color: 'inherit',
-                                             fontFamily: "Saira Condensed",
-                                             fontSize: '1.1rem',
+                                             color: 'secondary.colorText',
+                                             fontFamily: '"Nunito", sans-serif',
+                                             fontSize: '1rem',
                                              fontWeight: 400
 
                                         }}
@@ -58,7 +58,7 @@ const Footer = () => {
                     <Typography
                          sx={{
                               color: 'inherit',
-                              fontFamily: "Saira Condensed",
+                              fontFamily: '"Nunito", sans-serif',
                               fontSize: '1rem',
                               fontWeight: 400,
                               marginTop: '1rem',

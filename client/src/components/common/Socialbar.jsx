@@ -4,14 +4,14 @@ import menuConfigs from '../../configs/menu.config'
 import Logo from './Logo';
 import { Link } from 'react-router-dom';
 
-const Socialbar = () => {
+const SocialBar = () => {
      return (
           <div>
                <List sx={{
                     paddingX: "30px",
-                    display: {xs: 'none', md: 'flex'},
+                    display: { xs: 'none', md: 'flex' },
                     position: 'absolute',
-                    left: {sx: 0, md: '-13rem' , lg:'-10rem'},
+                    left: { sx: 0, md: '-13rem', lg: '-11rem' },
                     top: '45%',
                     height: '100px',
                     width: 'max-content',
@@ -25,15 +25,16 @@ const Socialbar = () => {
                               component={Link}
                               to={item.path}
                          >
-                              <ListItemIcon>{item.icon}</ListItemIcon>
+                              <ListItemIcon sx={{ color: 'secondary.colorText' }}>{item.icon}</ListItemIcon>
                               <ListItemText
                                    disableTypography
                                    primary={
                                         <Typography
                                              textTransform="uppercase"
-                                             fontFamily={"Saira Condensed"}
+                                             fontFamily={"'Nunito', sans-serif"}
                                              fontSize={'0.9rem'}
-                                             fontWeight={500}
+                                             fontWeight={400}
+                                             color={'secondary.colorText'}
                                         >{item.display}</Typography>}
 
                               >{item.display}</ListItemText>
@@ -47,4 +48,4 @@ const Socialbar = () => {
      )
 }
 
-export default Socialbar
+export default SocialBar;

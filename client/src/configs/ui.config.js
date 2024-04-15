@@ -22,13 +22,12 @@ const uiConfigs = {
                overflow: "hidden",
                WebkitBoxOrient: "vertical",
                WebkitLineClamp: lines, 
-               fontFamily: "Saira Condensed", 
-               
+               fontFamily: '"Nunito", sans-serif', 
           }),
           mainContent: {
                maxWidth: "1366px",
                margin: "auto",
-               padding: 2
+               padding: 4
           },
           backgroundImage: (imgPath) => ({
                position: "relative",

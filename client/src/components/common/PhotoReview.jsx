@@ -81,8 +81,8 @@ const PhotoReviewItem = ({ review, onRemoved }) => {
 
 
                               <Typography variant="caption" sx={{
-                                   fontFamily: "Saira Condensed",
-                                   color: '#C48F56',
+                                   fontFamily: '"Nunito", sans-serif',
+                                   color: "secondary.colorText",
                                    fontSize: '1rem'
                               }}>
                                    {moment(review.createdAt).format('dddd, MMMM YYYY  HH:mm')}
@@ -185,7 +185,7 @@ const PhotoReview = ({ photo }) => {
 
                {user && (
                     <Container header={'Gửi lại những đánh giá'} size={'1rem'}>
-                         <Box sx={{ padding: '0 1rem' }}>
+                         <Box sx={{ padding: '0 1rem', color: "secondary.colorText", }}>
 
                               <Stack direction={'row'} alignItems={'center'} padding={'0.5rem 0'} >
                                    <Typography component="legend"
@@ -193,21 +193,15 @@ const PhotoReview = ({ photo }) => {
                                              ...uiConfigs.style.typoLines(1, 'left'),
                                              fontSize: { xs: '1rem', md: '1.1rem' },
                                              fontWeight: '500',
-                                             marginRight: '10px'
+                                             marginRight: '10px',
+                                             color: "secondary.colorText",
                                         }}
 
                                    >Bạn đánh giá cho photo này bao nhiêu sao nhỉ  </Typography>
-                                   <Rating
-                                        name="rating"
-                                        value={rating}
-                                        size='medium'
-                                        style={{ fontSize: 40 }}
-                                        onChange={(event, newValue) => {
-                                             setRating(newValue);
-                                        }}
-                                   />
+
+
                               </Stack>
-                              
+
                               <TextField
                                    value={content}
                                    onChange={(e) => setContent(e.target.value)}
@@ -215,7 +209,7 @@ const PhotoReview = ({ photo }) => {
                                    rows={4}
                                    fullWidth
                                    sx={{
-                                        border: '1px solid #fff',
+                                        border: '1px solid #000',
                                         outline: 'none',
                                         ...uiConfigs.style.typoLines(1, 'left'),
                                         '&:focus': {
@@ -232,7 +226,7 @@ const PhotoReview = ({ photo }) => {
                                    sx={{
                                         width: "max-content",
                                         border: '1px solid #C48F56',
-                                        color: '#fff',
+                                        color: "secondary.colorText",
                                         marginTop: '2rem',
                                         padding: '0.6rem 1rem',
                                         ...uiConfigs.style.typoLines(1, 'left'),

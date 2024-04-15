@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
      Card, CardActions, CardMedia, CardContent,
-     Stack, Typography, CardHeader, IconButton
+     Stack, Typography, CardHeader, IconButton, Box,
 } from '@mui/material';
+
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import AddCommentIcon from '@mui/icons-material/AddComment';
@@ -11,82 +14,142 @@ import { Link } from 'react-router-dom';
 import { routesGen } from '../../routers/routes';
 import uiConfigs from '../../configs/ui.config';
 import moment from 'moment';
+import WavingHandIcon from '@mui/icons-material/WavingHand';
+import EventBusyIcon from '@mui/icons-material/EventBusy';
+import ExploreIcon from '@mui/icons-material/Explore';
+import GradeIcon from '@mui/icons-material/Grade';
+import { LoadingButton } from "@mui/lab";
 
 const PostItem = ({ photo }) => {
 
+     const [isFavorite, setIsFavorite] = useState(false);
+     const [onRequest, setOnRequest] = useState(false);
 
 
-     const handleChangeLike = () => {
-          console.log("THis")
-     }
+     const onFavoriteClick = async () => {
+
+          // if (!user) return dispatch(setAuthModalOpen(true));
+
+          // if (onRequest) return;
+
+          // if (isFavorite) {
+          //      onRemoveFavorite();
+          //      return;
+          // }
+
+          // setOnRequest(true);
+
+          // const body = {
+          //      mediaId: media.id,
+          //      mediaTitle: media.title || media.name,
+          //      mediaType: mediaType,
+          //      mediaPoster: media.poster_path,
+          //      mediaRate: media.vote_average
+          // };
+
+          // const { response, err } = await favoriteApi.add(body);
+
+          // setOnRequest(false);
+
+          // if (err) toast.error(err.message);
+
+          // if (response) {
+          //      dispatch(addFavorite(response));
+          //      setIsFavorite(true);
+          //      toast.success("Add favorite success");
+          // }
+     };
 
      return (
-          <Card  >
+          <Card sx={{
+               boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
+               position: 'relative',
+               bgcolor: 'transparent'
+          }} >
                <Link style={{ textDecoration: 'none' }} to={routesGen.photoDetail(photo.photo.id)}>
                     <CardMedia
+                         borderRadius={"10px"}
                          component="img"
-                         height="194"
+                         ojectFit="cover"
+                         height="220"
                          image={photo.photo.poster}
                          alt="Paella dish"
                     />
                </Link>
 
-               <Stack direction={{ xs: 'column', md: 'row' }} alignItems={"center"} justifyContent={"space-between"}>
-                    <CardHeader
-                         title={photo.photo.title}
-                         subheader={moment(photo.photo.createdAt).format('dddd, MMMM YYYY')}
-                         titleTypographyProps={textConfigs.style.headerText}
-                         subheaderTypographyProps={textConfigs.style.subText}
-                    />
-                    <Typography sx={{
-                         ...uiConfigs.style.typoLines(1, 'center'),
-                         padding: '2rem',
-                         fontWeight: '600',
-                         color: photo.photographer.status === "AVAILABLE" ? "green" : "red"
-                    }}>{photo.photographer.status}</Typography>
-               </Stack>
-               <CardContent>
-                    <Typography variant="body2" color="text.secondary" sx={{
-                         ...uiConfigs.style.typoLines(3, "left")
-                    }}>
-                         {photo.photo.descriptions}
-                    </Typography>
-               </CardContent>
-               <CardActions
+
+
+               <LoadingButton
+                    variant="text"
                     sx={{
-                         display: 'flex',
-                         alignItems: 'center',
-                         justifyContent: "space-around"
+                         "& .MuiButton-starIcon": { padding: '0' },
+                         position: 'absolute',
+                         top: '10px',
+                         right: '10px',
+                         color: 'secondary.contrastText',
                     }}
-               >
-                    <Stack
-                         direction={"row"}
-                         alignItems={"center"}
-                    >
-                         <IconButton onClick={handleChangeLike}>
-                              <FavoriteBorderIcon></FavoriteBorderIcon>
-                         </IconButton>
-                         <Typography
-                              variant='h5'
-                              sx={textConfigs.style.normalText}
-                         >{photo.photo.likeCount} likes</Typography>
+                    size="large"
+                    startIcon={isFavorite === true ? <FavoriteIcon /> : <FavoriteBorderOutlinedIcon />}
+                    loadingPosition="center"
+                    loading={onRequest}
+                    onClick={onFavoriteClick}
+               />
+
+
+               <CardHeader
+                    title={photo.photo.title}
+                    subheader={moment(photo.photo.createdAt).format('dddd, MMMM YYYY')}
+                    titleTypographyProps={textConfigs.style.headerText}
+                    subheaderTypographyProps={textConfigs.style.subText}
+               />
+
+               <Stack direction={"row"} alignItems={'center'} justifyContent={"space-between"} p={' 0 1rem'}>
+                    <Typography sx={{
+                         ...uiConfigs.style.typoLines(1, 'left'),
+                         fontWeight: '600',
+                         display: 'flex',
+                         textTransform: 'capitalize',
+                    }}>
+                         {photo.photographer.status === 'AVAILABLE' ? (
+                              <Stack direction={'row'} alignItems={'center'} justifyContent={'space-around'}>
+                                   <WavingHandIcon sx={{ fontSize: '1rem', color: "green", mr: '5px' }} />
+                                   <Typography variant='body2' color="green">Available</Typography>
+                              </Stack>
+                         ) : photo.photographer.status === "BUSY" ? (
+                              <Stack direction={'row'} alignItems={'center'} justifyContent={'space-around'}>
+                                   <EventBusyIcon sx={{ fontSize: '1rem', color: "orange", mr: '5px' }} />
+                                   <Typography variant='body2' color="orange">Busy</Typography>
+                              </Stack>
+                         ) : (
+                              <Stack direction={'row'} alignItems={'center'} justifyContent={'space-around'}>
+                                   <EventBusyIcon sx={{ fontSize: '1rem', color: "red", mr: '5px' }} />
+                                   <Typography variant='body2' color="red">Inactive</Typography>
+                              </Stack>
+                         )}
+                    </Typography>
+
+                    <Stack direction={'row'} alignItems={'center'} justifyContent={'space-around'}>
+                         <GradeIcon sx={{ fontSize: '1.2rem', color: 'secondary.main', mr: '5px' }} />
+                         <Typography color='secondary.colorText' sx={{ ...uiConfigs.style.typoLines(1, 'center') }}>4.5</Typography>
                     </Stack>
 
-                    <Stack
-                         direction={"row"}
-                         alignItems={"center"}
+               </Stack>
+
+               <CardContent>
+                    <Box
+                         color="secondary.colorText"
+                         sx={{
+                              display: 'flex',
+                              flexDirection: 'row',
+
+                         }}
                     >
-                         <IconButton>
-                              <AddCommentIcon />
-                         </IconButton>
-                         <Typography
-                              variant='h5'
-                              fontFamily={"Saira Condensed"}
-                              fontSize={"1rem"}
-                         >Comments</Typography>
-                    </Stack>
-               </CardActions>
-          </Card>
+                         <ExploreIcon sx={{ fontSize: '1.2rem', color: "secondary.main", mt: '2px' }} />
+                         <Typography sx={{ ...uiConfigs.style.typoLines(3, "left"), ml: '4px', fontSize: '0.8rem' }}> {photo.photographer.location}</Typography>
+                    </Box>
+               </CardContent>
+
+          </Card >
      )
 }
 
