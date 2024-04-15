@@ -55,4 +55,4 @@ const Logo = ({ isHeader }) => {
      );
 };
 
-export default Logo
+export default Logo;

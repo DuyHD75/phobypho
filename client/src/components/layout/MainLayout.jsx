@@ -5,6 +5,7 @@ import GlobalLoading from '../common/GlobalLoading';
 import Footer from '../common/Footer';
 import Topbar from '../common/Topbar';
 import AuthModal from '../common/AuthModal';
+import ReceiveVouchersModal from '../common/ReceiveVouchersModal';
 
 const MainLayout = () => {
      return (
@@ -17,6 +18,8 @@ const MainLayout = () => {
 
                {/*  <AuthModal />*/}
                <AuthModal />
+
+               <ReceiveVouchersModal/>
                {/* login modal */}
 
                <Box display="flex" minHeight="100vh">
