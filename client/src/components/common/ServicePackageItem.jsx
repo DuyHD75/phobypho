@@ -7,6 +7,8 @@ import {
 } from "@mui/material";
 import uiConfigs from "../../configs/ui.config";
 
+import GrainIcon from '@mui/icons-material/Grain';
+
 const ServicePackageItem = ({
   service,
   index,
@@ -131,7 +133,7 @@ const ServicePackageItem = ({
             padding: 0,
             zIndex: 99,
             transition: "all .3s ease",
-            border: "2px solid #C48F56",
+            border: "1px solid #C48F56",
             position: "relative",
             "&:hover": {
               cursor: "pointer",
@@ -140,16 +142,17 @@ const ServicePackageItem = ({
               borderRadius: "5px",
             },
           }}
-          onClick={handleCardClick}
+          onClick={() => handleCardAction(service._id)}
         >
-          <CardMedia
-            component="img"
-            sx={{ width: "32%", height: "max-content" }}
-            image="https://mui.com/static/images/cards/live-from-space.jpg"
-            alt="Live from space album cover"
+
+          <Box
             style={{
+              width: '30%',
               borderRadius: "5px",
-              position: "absolute",
+              backgroundImage: `url(https://mui.com/static/images/cards/live-from-space.jpg)`,
+              objectFit: 'cover',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
             }}
           />
 
@@ -161,43 +164,49 @@ const ServicePackageItem = ({
               justifyContent: "center",
               padding: "3px",
               marginLeft: "8px",
-
             }}
           >
-            <Typography
-              variant="body1"
+            <Box
               sx={{
-                ...uiConfigs.style.typoLines(1, "left"),
+                display: "flex",
+                alignItems: "center",
+                flexDirection: 'row',
                 fontSize: "1.3rem",
-                color: 'secondary.colorText'
               }}
             >
-              {service.name.split(" ")[0]}
-
-              <span
-                style={{
-                  fontFamily: '"Nunito", sans-serif',
-                  fontSize: "1.6rem",
-                  color: "secondary.main",
-                  paddingLeft: "12px",
+              <Typography
+                sx={{
+                  ...uiConfigs.style.typoLines(1, "left"),
+                  fontSize: "1.3rem",
+                  color: 'secondary.colorText'
                 }}
-              >
-                {service.name.split(" ").slice(1).join(" ")}
-              </span>
-            </Typography>
-            <Typography
-              variant="subtitle1"
-              color="secondary.colorText"
-              sx={{
 
-              }}
-            >
-              {service.description.split(".").map((item, index) => (
-                <ul key={index}>
-                  <li>{item}</li>
-                </ul>
-              ))}
-            </Typography>
+              >{service.name.split(" ")[0]}</Typography>
+
+              <Typography
+                sx={{
+                  ...uiConfigs.style.typoLines(1, "left"),
+                  fontSize: "1.3rem",
+                  color: 'secondary.main',
+                  paddingLeft: "12px"
+                }}
+
+              >{service.name.split(" ").slice(1).join(" ")}</Typography>
+
+            </Box>
+
+            {service.description.split(".").map((item, index) => (
+              <Typography key={index} sx={{
+                display: 'flex',
+                alignItems: 'center',
+                color: 'secondary.colorText',
+                ...uiConfigs.style.typoLines(4, "left"),
+
+              }}>
+                <GrainIcon fontSize="1rem" style={{ marginRight: '4px', color: "secondary.main" }} />
+                {item}
+              </Typography>
+            ))}
           </Box>
         </Card>
       )

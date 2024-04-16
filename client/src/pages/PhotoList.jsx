@@ -54,6 +54,8 @@ const PhotoListPage = () => {
           location: categoriesMemo[currCategory],
         });
 
+        console.log(response)
+
         setPhotoLoading(false);
         dispatch(setGlobalLoading(false));
 

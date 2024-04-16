@@ -1,16 +1,13 @@
 import express from 'express';
 import tokenMiddleware from '../middlewares/token.middleware.js';
 import customerController from '../controllers/customer.controller.js';
-import { ROLES_LIST } from '../configs/enum.config.js';
 import moment from 'moment'
-import { config } from 'dotenv';
 import QueryString from 'qs';
 import crypto from 'crypto';
-import responseHandler from '../handlers/response.handler.js';
 
 const router = express.Router({ mergeParams: true });
 
-router.post("/booking",
+router.post("/checkout",
      tokenMiddleware.authenticate,
      customerController.createNewBooking
 );

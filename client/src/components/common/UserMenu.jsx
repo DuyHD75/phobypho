@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom';
 
 import uiConfigs from '../../configs/ui.config';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import LogoutOutlineIcon from '@mui/icons-material/LogoutOutlined';
+import { setUser } from '../../redux/features/userSlice';
 
 const UserMenu = () => {
 
@@ -17,77 +19,69 @@ const UserMenu = () => {
           <div>
                {user && (
                     <Box>
-
-                         <Box
+                         <Typography
+                              variant='h6'
                               sx={{
-                                   display: 'flex',
-                                   alignItems: 'center',
-                                   justifyContent: 'space-around'
+                                   cursor: "pointer",
+                                   useSelector: "none",
+                                   display: "flex",
+                                   alignItems: "center",
                               }}
-
+                              onClick={toggleMenu}
                          >
-                              <AccountCircleIcon sx={{
-                                   fontSize: '2rem', marginRight: '0.5rem'
-                              }} />
-
-                              <Typography
-                                   variant='h6'
-                                   sx={{
-                                        cursor: "pointer",
-                                        useSelector: "none",
-                                        fontSize: '1.3rem',
-                                        ...uiConfigs.style.typoLines(1, 'center')
-                                   }}
-                                   onClick={toggleMenu}
-
-                              >
-                                   {user.displayName}
-                              </Typography>
-
-                         </Box>
-
+                              <AccountCircleIcon />
+                              {user.displayName}
+                         </Typography>
 
                          <Menu
                               open={Boolean(anchorEl)}
                               anchorEl={anchorEl}
                               onClick={() => setAnchorEl(null)}
-                              PaperProps={{ sx: { padding: 0 } }}
-                              className='menu_user'
+                              PaperProps={{ sx: { padding: 0, top: 0, left: 0 } }}
                          >
-
                               {menuConfigs.user.map((item, index) => (
                                    <ListItemButton
                                         key={index}
                                         component={Link}
                                         to={item.path}
                                         onClick={() => setAnchorEl(null)}
-
                                    >
 
-                                        <ListItemIcon>{item.icon}</ListItemIcon>
+                                        <ListItemIcon color='red'>{item.icon}</ListItemIcon>
 
+                                        <ListItemText disableTypography primary={
+                                             <Typography
+                                                  textTransform="uppercase"
+                                                  sx={{ fontSize: "0.9rem", color: 'secondary.colorText', ...uiConfigs.style.typoLines(1, 'left') }}
+                                             >
+                                                  {item.display}
+                                             </Typography>
+                                        } />
 
-                                        <ListItemText
-                                             disableTypography
-                                             primary={
-                                                  <Typography
-                                                       textTransform={'uppercase'}
-                                                       fontFamily={"Saira Condensed"}
-                                                       fontSize={'1.2rem'}
-                                                  >
-                                                       {item.display}
-                                                  </Typography>
-                                             }
-                                        >{item.display}</ListItemText>
                                    </ListItemButton>
-
-
                               ))}
-                         </Menu>
 
+                              <ListItemButton
+                                   sx={{ borderRadius: '10px' }}
+                                   onClick={() => dispatch(setUser(null))}
+                              >
+                                   <ListItemIcon>
+                                        <LogoutOutlineIcon color='secondary.main' />
+                                   </ListItemIcon>
+
+                                   <ListItemText
+                                        disableTypography
+                                        primary={
+                                             <Typography textTransform="uppercase"
+                                                  sx={{ fontSize: "0.9rem", color: 'secondary.colorText', ...uiConfigs.style.typoLines(1, 'left') }}
+
+                                             >Logout</Typography>
+                                        }
+                                   />
+                              </ListItemButton>
+                         </Menu>
                     </Box>
                )}
-
           </div>
      )
 }

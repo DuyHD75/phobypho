@@ -13,8 +13,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { routesGen } from '../../routers/routes';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-
-
+import { setAuthModalOpen } from '../../redux/features/authModalSlice';
+import moment from 'moment';
 
 
 const style = {
@@ -23,11 +23,10 @@ const style = {
      left: '50%',
      transform: 'translate(-50%, -50%)',
      width: '100%',
-     border: '2px solid #000',
      boxShadow: 24,
      maxWidth: '500px',
      bgcolor: 'background.secondaryPaper',
-     borderRadius: '10px',
+     borderRadius: '5px',
      overflow: 'hidden'
 };
 
@@ -40,7 +39,16 @@ const ConfirmModal = ({ setOpenModal, openModal, bookingData }) => {
      const [errorMessage, setErrorMessage] = useState();
      const [onRequest, setOnRequest] = useState(false);
 
-     const [value, setValue] = useState(dayjs());
+     const [bookingTime, setBookingTime] = useState(dayjs());
+
+
+     const validateBookingTime = (bookingTime) => {
+          const currentTime = moment();
+          const userChosenTime = moment(bookingTime.format('YYYY-MM-DD HH:mm'));
+          const tomorrow = moment().add(1, 'days').startOf('day');
+
+          return userChosenTime.isAfter(currentTime) || userChosenTime.isAfter(tomorrow);
+     }
 
 
      const confirmInfo = useFormik({
@@ -52,13 +60,24 @@ const ConfirmModal = ({ setOpenModal, openModal, bookingData }) => {
                     .required("Location is required !"),
           }),
           onSubmit: async values => {
-               
+
+               if (!user) {
+                    toast.error('Vui lòng đăng nhập để tiếp tục !');
+                    dispatch(setAuthModalOpen(true));
+                    return;
+               }
+
+               if (!validateBookingTime(bookingTime)) {
+                    toast.error('Thời gian đặt lịch không hợp lệ !');
+                    return;
+               }
+
                setErrorMessage(undefined);
                setIsLoginRequest(true);
                const data = {
                     ...bookingData,
                     ...values,
-                    photo_session: value?.format('YYYY-MM-DD HH:mm'),
+                    photo_session: bookingTime?.format('YYYY-MM-DD HH:mm'),
                };
                navigate("/checkout", { state: data });
           }
@@ -92,7 +111,7 @@ const ConfirmModal = ({ setOpenModal, openModal, bookingData }) => {
                               ...uiConfigs.style.typoLines(2, 'left'),
                               width: '100%',
                               padding: '0.5rem 1rem',
-                              
+
                          }}
                     >
                          Vui lòng cung cấp thêm các thông tin bên dưới để hoàn tất việc đặt lịch bạn nhé !
@@ -109,9 +128,9 @@ const ConfirmModal = ({ setOpenModal, openModal, bookingData }) => {
 
                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
                                         <DateTimePicker
-                                             value={value}
-                                             onChange={(newValue) => setValue(newValue)}
-                                             sx={{ width: '100%', fontSize: '1rem', fontFamily: '"Nunito", sans-serif', }}
+                                             value={bookingTime}
+                                             onChange={(newValue) => setBookingTime(newValue)}
+                                             sx={{ width: '100%', fontSize: '1rem', fontFamily: '"Nunito", sans-serif', color: '#000' }}
                                         />
                                    </LocalizationProvider>
 
@@ -162,7 +181,7 @@ const ConfirmModal = ({ setOpenModal, openModal, bookingData }) => {
                                         loadingPosition="start"
                                         loading={onRequest}
                                    >
-                                       HOÀN TẤT
+                                        HOÀN TẤT
                                    </LoadingButton>
 
                                    {errorMessage && (

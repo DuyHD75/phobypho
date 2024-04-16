@@ -22,7 +22,7 @@ const themeConfigs = {
                },
                background: {
                     default: "#ffff",
-                    paper: "#fff", 
+                    paper: "#fff",
                     secondaryPaper: "#333"
                }
           } : {

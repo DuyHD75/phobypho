@@ -22,12 +22,12 @@ const main = [
           state: "aboutus"
      },
      {
-          display: "Dịch Vụ",
+          display: "Thợ Ảnh",
           path: "/photos",
           state: "photos",
      },
      {
-          display: "Hồ Sơ Của Bạn",
+          display: "hồ sơ bài viết",
           path: "/photos/history_post",
           state: "post.history",
           role: "PHOTOGRAPHER"
@@ -35,6 +35,7 @@ const main = [
           display: "Vouchers",
           path: "/vouchers",
           state: "vouchers",
+          role: "CUSTOMER"
      },
 ];
 

@@ -7,6 +7,7 @@ const Container = ({ header, size, children }) => {
           <Box sx={{
                marginX: "auto",
                color: "secondary.colorText",
+               margin: "2rem 0",
           }}>
                <Stack spacing={4}>
                     {header && (

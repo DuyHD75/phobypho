@@ -5,9 +5,9 @@ import {
      updatePostByAuth
 } from '../controllers/photo.controller.js';
 import tokenMiddleware from '../middlewares/token.middleware.js';
-import { ROLES_LIST } from '../configs/enum.config.js';
 
-const router = express.Router();
+
+const router = express.Router({ mergeParams: true });
 
 router.get("/", getAllPhotoInfo);
 

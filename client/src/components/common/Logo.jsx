@@ -36,14 +36,14 @@ const Logo = ({ isHeader }) => {
                     sx={{
                          display: 'flex',
                          alignItems: "center",
+                         color: 'secondary.colorText',
                     }}
                >
-                    <CameraIcon sx={{ color: 'inherit', fontSize: { xs: '1rem', md: '2.4rem' } }} />
+                    <CameraIcon sx={{ color: 'secondary.colorText', fontSize: { xs: '1rem', md: '2.4rem' } }} />
 
                     <span style={{
-                         color: 'inherit',
+                         color: 'secondary.colorText',
                          fontSize: '1.2rem',
-                         lineHeight: '1rem',
                          ...uiConfigs.style.typoLines(1, 'center'),
                     }}>
                          PHOBYPHO

@@ -1,39 +1,50 @@
 import React, { Fragment, useEffect, useState } from 'react'
-import { Box, Stack, TextField, Typography } from '@mui/material';
-
-import Container from '../components/common/Container';
-import uiConfigs from '../configs/ui.config';
 import { Link, useLocation } from 'react-router-dom';
-import Logo from '../components/common/Logo';
-import CameraIcon from '@mui/icons-material/Camera';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { routesGen } from '../routers/routes';
+import { Box, Stack, TextField, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import uiConfigs from '../configs/ui.config';
 
+import customerApi from '../api/modules/customer.api';
 
 const Checkout = () => {
 
      const locationHook = useLocation();
-     console.log(locationHook.state)
 
-     const { photo_id, service_package, location, photo_session } = locationHook.state;
 
-     const [errormessage, setErrormessage] = useState(null)
-
+     const [bookingData, setBookingData] = useState(locationHook.state);
+     const [errorMessage, setErrorMessage] = useState(null);
      const [discount, setDiscount] = useState(null);
 
+     const currentPrice = bookingData.service_package.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+     const [totalPrice, setTotalPrice] = useState(currentPrice); // Initial price
 
      const checkVoucherCode = (event) => {
-          if (event.target.value === "PHPDIS20") {
+          const voucherCode = event.target.value.toUpperCase(); // Convert to uppercase for case-insensitive comparison
+
+          if (voucherCode === "PHPDIS20") {
                setDiscount(20);
-               setErrormessage('');
+               const discountedPrice = bookingData.service_package.price * (1 - 0.2);
+               setTotalPrice(discountedPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
+               setErrorMessage(null);
+          } else {
+               setDiscount(null);
+               setTotalPrice(currentPrice);
+               setErrorMessage('Mã giảm giá không hợp lệ !');
           }
-          else setErrormessage("Code is not valid");
-     }
+     };
 
+     const handleCheckoutProcess = async () => {
+          const updatedBookingData = { ...bookingData, total_price: totalPrice };
+          setBookingData(updatedBookingData);
 
-
-
+          const { response, err } = await customerApi.checkout(updatedBookingData);
+          if (response) {
+               console.log(response);
+          } else {
+               console.log(err);
+          }
+     };
      return (
           <Fragment>
                <Box
@@ -41,7 +52,7 @@ const Checkout = () => {
                          color: 'primary.contrastText',
                          ...uiConfigs.style.mainContent,
                          padding: { xs: '16px', md: '0 4rem' },
-                         marginBottom: '4rem'
+                         marginBottom: '4rem',
                     }}
                >
 
@@ -50,9 +61,10 @@ const Checkout = () => {
                          <Typography
                               sx={{
                                    ...uiConfigs.style.typoLines(1, 'left'),
-                                   fontSize: { xs: '2rem', md: '3rem', lg: '3.6rem' },
+                                   fontSize: { xs: '1rem', md: '2rem', lg: '3rem' },
                                    fontWeight: 800,
                                    position: 'relative',
+                                   color: "secondary.colorText",
                                    "::before": {
                                         position: 'absolute',
                                         content: '""',
@@ -119,12 +131,13 @@ const Checkout = () => {
                                         <Typography
                                              sx={{
                                                   marginTop: '2rem',
-                                                  fontSize: '2rem',
+                                                  fontSize: '1.4rem',
                                                   width: '70%',
                                                   fontWeight: 700,
                                                   ...uiConfigs.style.typoLines(1, 'center'),
                                                   border: '1px groove #C48F56',
-                                                  letterSpacing: '2px'
+                                                  letterSpacing: '2px',
+                                                  color: 'secondary.colorText',
                                              }}
 
                                         >HKDKJSIE</Typography>
@@ -150,11 +163,14 @@ const Checkout = () => {
                                              padding: '1rem',
                                              bgcolor: '#333',
                                              borderBottom: '2px solid #fff',
+                                             textTransform: 'uppercase'
                                         }}
 
-                                   >Your booking</Typography>
+                                   >Hóa đơn của bạn</Typography>
 
-                                   <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'}
+                                   <Stack direction={'row'}
+                                        alignItems={'center'}
+                                        justifyContent={'space-between'}
                                         sx={{
                                              bgcolor: '#333',
                                              borderBottom: '1px solid #000',
@@ -168,15 +184,16 @@ const Checkout = () => {
                                         }}>Thợ chụp ảnh: </Typography>
                                         <Box>
                                              <Link
-                                                  to={routesGen.photoDetail("1")}
+                                                  to={routesGen.photoDetail(bookingData.photo.id)}
                                                   style={{
                                                        textDecoration: 'none',
                                                        fontSize: '1.1rem',
                                                        color: '#C48F56',
-                                                       ...uiConfigs.style.typoLines(1, 'left')
+                                                       ...uiConfigs.style.typoLines(1, 'left'),
+                                                       textTransform: 'capitalize'
                                                   }}
                                              >
-                                                  {photo_id}
+                                                  {bookingData.photo.account.username}
                                              </Link>
 
                                         </Box>
@@ -207,7 +224,7 @@ const Checkout = () => {
                                                   ...uiConfigs.style.typoLines(3, 'right')
                                              }}
                                         >
-                                             {location}
+                                             {bookingData.location}
                                         </Typography>
 
 
@@ -235,7 +252,7 @@ const Checkout = () => {
                                                   ...uiConfigs.style.typoLines(3, 'right')
                                              }}
                                         >
-                                             {photo_session}
+                                             {bookingData.photo_session}
                                         </Typography>
 
 
@@ -263,7 +280,7 @@ const Checkout = () => {
                                                        ...uiConfigs.style.typoLines(2, 'right')
                                                   }}
                                              >
-                                                  {service_package.name}
+                                                  {bookingData.service_package.name}
                                              </Link>
 
                                         </Box>
@@ -293,7 +310,7 @@ const Checkout = () => {
                                                        ...uiConfigs.style.typoLines(2, 'right')
                                                   }}
                                              >
-                                                  {service_package.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                                  {bookingData.service_package.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                                              </Link>
 
                                         </Box>
@@ -319,8 +336,8 @@ const Checkout = () => {
                                                   type='text' placeholder='Enter voucher code' name='voucher_code'
                                                   fullWidth
                                                   color='warning'
-                                                  error={errormessage}
-                                                  helperText={errormessage}
+                                                  error={errorMessage}
+                                                  helperText={errorMessage}
                                              />
 
                                         </Box>
@@ -350,10 +367,7 @@ const Checkout = () => {
                                                   }}
                                              >
                                                   {
-                                                       discount ?
-                                                            (service_package.price - (service_package.price * 0.2)).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) :
-
-                                                            (service_package.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }))
+                                                       totalPrice
 
                                                   }
 
@@ -374,6 +388,7 @@ const Checkout = () => {
                                              left: '50%',
                                              transform: 'translate(-50%, -50%)'
                                         }}
+                                        onClick={handleCheckoutProcess}
                                    >
                                         Hoàn tất thanh toán
                                    </LoadingButton>
@@ -388,17 +403,9 @@ const Checkout = () => {
                                    >
                                         Chỉ bấm hoàn tất thanh toán sau khi bạn đã chuyển khoảng gói dịch vụ để chúng tôi có thể kiểm tra hóa đơn của bạn
                                    </Typography>
-
-
                               </Stack>
-
                          </Stack>
-
                     </Box>
-
-
-
-
                </Box>
           </Fragment >
      )

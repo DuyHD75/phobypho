@@ -35,9 +35,7 @@ const PhotoDetailPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     const getPhotoDetail = async () => {
-      // dispatch(setGlobalLoading(true));
       const { response, err } = await photoApi.getPhotoDetail({ photo_id });
-      // dispatch(setGlobalLoading(false));
       if (response) {
         setPhoto(response);
       }
@@ -80,7 +78,7 @@ const PhotoDetailPage = () => {
       {photo && (
         <Box
           sx={{
-            color: "secondary.colorText",
+
             ...uiConfigs.style.mainContent,
             padding: { xs: "16px", md: "0 4rem" },
             marginBottom: "4rem",
@@ -91,8 +89,9 @@ const PhotoDetailPage = () => {
             <Typography
               sx={{
                 ...uiConfigs.style.typoLines(1, "left"),
-                fontSize: { xs: "2rem", md: "3rem", lg: "4rem" },
+                fontSize: { xs: "1rem", md: "2rem", lg: "3rem" },
                 fontWeight: 800,
+                color: "secondary.colorText",
                 position: "relative",
                 "::before": {
                   position: "absolute",
@@ -112,6 +111,8 @@ const PhotoDetailPage = () => {
               sx={{
                 ...uiConfigs.style.typoLines(1, "left"),
                 margin: "1rem 0",
+                color: 'secondary.main',
+                textShadow: '1px 1px 0.8px #333',
               }}
             >
               {moment(photo.createdAt).format("dddd, MMMM YYYY")}
@@ -124,51 +125,74 @@ const PhotoDetailPage = () => {
             <Box
               className="photo_detail_info"
               sx={{
-                width: { xs: "100%", sm: "100%", md: "60%" },
+                width: { xs: "100%", sm: "100%", md: "55%" },
                 margin: { xs: "0 auto 2rem", md: "0 2rem 0 0" },
+                color: "secondary.colorText",
               }}
             >
               <Box
                 sx={{
                   paddingTop: "50%",
                   ...uiConfigs.style.backgroundImage(photo.poster),
-                  boxShadow: 'rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px'
+                  boxShadow: ' rgba(0, 0, 0, 0.24) 0px 3px 8px'
                 }}
               />
 
-              <Box>
+              <Box sx={{ marginTop: '2rem' }}>
                 <Typography
                   sx={{
-                    ...uiConfigs.style.typoLines(80, "left"),
-                    padding: { xs: "1rem 0", md: "1.6rem 0" },
+                    ...uiConfigs.style.typoLines(1, "left"),
+                    fontSize: { xs: "1.2rem", md: "1.4rem", lg: "1.6rem" },
+                    fontWeight: 500,
+                    textTransform: 'capitalize',
                     position: "relative",
                     "::before": {
-                      content: '""',
                       position: "absolute",
-                      width: "100%",
-                      height: "0.6px",
+                      content: '""',
+                      width: "2rem",
+                      height: "2px",
                       borderRadius: "10px",
-                      bgcolor: "rgba(255,255,255,0.6)",
+                      bgcolor: "#C48F56",
                       bottom: 0,
-                      left: "50%",
-                      transform: "translate(-50%, -50%)",
                     },
                   }}
                 >
-                  {photo.descriptions}
+                  Albums
                 </Typography>
+
+                <Grid container spacing={2}>
+                  {photo.attachments.map((album, index) => (
+                    <Grid item xs={6} sm={4} md={3} key={index} >
+                      <Box
+                        sx={{
+                          marginTop: "1rem",
+                          position: "relative",
+                          paddingTop: "100%",
+                          width: "100%",
+                          height: "100%",
+                          backgroundImage: `url(${album.images[0]})`,
+                          backgroundPosition: "top",
+                          backgroundSize: "cover",
+                          border: '1px solid #fff',
+                          borderRadius: '10px'
+                        }}
+                        onClick={() => handleAlbumClick(album)}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
               </Box>
-
-
             </Box>
+
+
 
             {/*options */}
             <Box
               className="photo_detail_options"
               sx={{
-                width: { xs: "100%", sm: "100%", md: "40%" },
-                margin: { xs: "0 auto 2rem", md: "0 2rem 0 0" },
-                padding: "2rem",
+                width: { xs: "100%", sm: "100%", md: "45%" },
+                margin: { xs: "0 auto 1rem", md: "0 1rem 0 0" },
+                padding: "1rem",
                 border: "1px solid rgb(221, 221, 221)",
                 borderRadius: "12px",
                 boxShadow: ' rgba(0, 0, 0, 0.12) 0px 6px 16px'
@@ -181,8 +205,9 @@ const PhotoDetailPage = () => {
                     fontSize: { xs: "1.2rem", md: "1.4rem", lg: "1.6rem" },
                     fontWeight: 500,
                     position: "relative",
-                    marginBottom: "1rem",
+                    marginBottom: "0.5rem",
                     textTransform: 'capitalize',
+                    color: "secondary.colorText",
                     "::before": {
                       position: "absolute",
                       content: '""',
@@ -194,7 +219,7 @@ const PhotoDetailPage = () => {
                     },
                   }}
                 >
-                  Gói Dịch Vụ
+                  Các Gói Dịch Vụ
                 </Typography>
 
                 {/**Servies */}
@@ -203,60 +228,44 @@ const PhotoDetailPage = () => {
                   photo={photo}
                   services={photo.servicePackages}
                 />
-              </Box>
-              <Box>
-                <Typography
-                  sx={{
-                    ...uiConfigs.style.typoLines(1, "left"),
-                    fontSize: { xs: "1.2rem", md: "1.4rem", lg: "1.6rem" },
-                    fontWeight: 500,
-                    textTransform: 'capitalize',
-                    position: "relative",
-                    "::before": {
-                      position: "absolute",
-                      content: '""',
-                      width: "2rem",
-                      height: "2px",
-                      borderRadius: "10px",
-                      bgcolor: "#C48F56",
-                      bottom: 0,
-                    },
-                  }}
-                >
-                  Album Nổi bật
-                </Typography>
 
-                <Grid container spacing={2}>
-                  {photo.attachments.map((album, index) => (
-                    <Grid item xs={6} sm={4} md={3} key={index}>
-                      <Box
-                        sx={{
-                          marginTop: "1rem",
-                          position: "relative",
-                          paddingTop: "100%",
-                          width: "100%",
-                          height: "100%",
-                          backgroundImage: `url(${album.images[0]})`,
-                          backgroundPosition: "top",
-                          backgroundSize: "cover",
-                          border: '1px solid #fff'
-                        }}
-                        onClick={() => handleAlbumClick(album)}
-                      />
-                    </Grid>
-                  ))}
-                </Grid>
+                <Typography sx={{ ...uiConfigs.style.typoLines(1, 'center'), color: 'green' }}>Chọn các gói dịch vụ phù hợp với bạn nhé !</Typography>
               </Box>
+
             </Box>
             {/*options */}
           </Stack>
+
+          <Box>
+            <Typography
+              sx={{
+                ...uiConfigs.style.typoLines(80, "center"),
+                padding: { xs: "1rem 0", md: "1.6rem 0" },
+                position: "relative",
+                color: 'secondary.colorText',
+                "::before": {
+                  content: '""',
+                  position: "absolute",
+                  width: "100%",
+                  height: "0.6px",
+                  borderRadius: "10px",
+                  bgcolor: "rgba(255,255,255,0.6)",
+                  bottom: 0,
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                },
+              }}
+            >
+              {photo.descriptions}
+            </Typography>
+          </Box>
 
           {/*Content photo detail */}
 
           <Box
             sx={{
               width: { xs: "100%", sm: "100%", md: "76%" },
-              margin: { xs: "0 auto 2rem", md: "0 2rem 0 0" },
+              margin: { xs: "0 auto 1rem", md: "0 1rem 0 0" },
             }}
           >
             <PhotoReview photo={photo} />

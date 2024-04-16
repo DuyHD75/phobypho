@@ -22,12 +22,15 @@ import { useParams } from "react-router-dom";
 import ServicePackageItem from "./ServicePackageItem";
 
 const ServicePackage = ({ photo, services }) => {
+
+  console.log(photo)
   const [openModal, setOpenModal] = useState(false);
-  const [bookingData, setBookingData] = useState({ photo_id: photo.id });
+  const [bookingData, setBookingData] = useState({ photo: photo });
 
   const handleCardAction = useCallback((service_id) => {
     setOpenModal(true);
     const service = services.find((e) => e._id === service_id);
+   
     setBookingData({ ...bookingData, service_package: service });
   }, []);
 
@@ -40,9 +43,10 @@ const ServicePackage = ({ photo, services }) => {
         bookingData={bookingData}
       />
 
-      <Stack spacing={3} direction={"column"} padding={"1rem 0.5rem"}>
+      <Stack spacing={3} direction={"column"} padding={"1rem 0"}>
         {services.map((item, index) => (
           <ServicePackageItem
+            key={index}
             service={item}
             index={index}
             handleCardAction={handleCardAction}

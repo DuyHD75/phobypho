@@ -47,7 +47,7 @@ const Topbar = () => {
   };
 
   return (
-    <Box>
+    <div>
       <SideBar open={openSideBar} toggleSideBar={toggleSidebar} />
 
       <ScrollAppBar>
@@ -60,7 +60,6 @@ const Topbar = () => {
               marginX: "auto",
               width: "100%",
               paddingY: "1.6rem",
-              position: "relative",
             }}
           >
             <Stack
@@ -137,7 +136,7 @@ const Topbar = () => {
                           sx={{
                             mr: 2,
                             fontFamily: '"Nunito", sans-serif',
-                            fontSize: "1.04rem",
+                            fontSize: "0.9rem",
                             fontWeight: "600",
                             color: appState.includes(item.state)
                               ? "#C48F56"
@@ -172,10 +171,11 @@ const Topbar = () => {
               )}
             </Stack>
             {user && <UserMenu />}
+
           </Toolbar>
         </AppBar>
       </ScrollAppBar>
-    </Box>
+    </div>
   );
 };
 

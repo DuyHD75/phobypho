@@ -197,7 +197,7 @@ const PhotoReview = ({ photo }) => {
                                              color: "secondary.colorText",
                                         }}
 
-                                   >Bạn đánh giá cho photo này bao nhiêu sao nhỉ  </Typography>
+                                   >Bạn đánh giá cho photographer này bao nhiêu sao nhỉ  </Typography>
 
 
                               </Stack>
@@ -227,12 +227,12 @@ const PhotoReview = ({ photo }) => {
                                         width: "max-content",
                                         border: '1px solid #C48F56',
                                         color: "secondary.colorText",
-                                        marginTop: '2rem',
+                                        marginTop: '1rem',
                                         padding: '0.6rem 1rem',
                                         ...uiConfigs.style.typoLines(1, 'left'),
                                         display: 'flex',
                                         alignItems: "center",
-                                        fontSize: '1rem'
+                                        fontSize: '0.8rem'
 
                                    }}
                                    endIcon={<SendOutlinedIcon />}

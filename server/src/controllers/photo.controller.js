@@ -3,6 +3,8 @@ import photoModel from "../models/photo.model.js";
 import reviewModel from "../models/review.model.js";
 import photographerModel from "../models/photographer.model.js";
 
+
+
 const getAllPhotoInfo = async (req, res) => {
   try {
     const { location } = req.query;
@@ -313,5 +315,6 @@ export {
   addServicePackageToPhoto,
   deleteServicePackageFromPhoto,
   getPhotosByAuthor,
-  updatePostByAuth
+  updatePostByAuth,
+
 };
