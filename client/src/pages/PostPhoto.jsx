@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import { LoadingButton } from "@mui/lab";
 import photoApi from "../api/modules/photo.api";
 import { useSelector } from 'react-redux'
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -33,22 +34,36 @@ const PostPhoto = () => {
   const [errorMessage, setErrorMessage] = useState();
   const [addedServices, setAddedServices] = useState([]);
   const [isDataRetrieved, setIsDataRetrieved] = useState(false)
+  const [postId, setPostId] = useState({});
+  const [photo, setPhoto] = useState({});
+
   const { user } = useSelector((state) => state.user);
 
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getPostPhoto = async () => {
       const { response, err } = await photoApi.getPostByAuth(user.id);
 
-      if (response) {
+      if (response && response.length > 0) {
 
-        const { title, descriptions, poster, attachments, servicePackages } = response[0];
-        setIsDataRetrieved(true)
+        const { id, title, descriptions, poster, attachments, servicePackages } = response[0];
+        setPhoto(response[0]);
+        setPostId(id);
+        setIsDataRetrieved(true);
         setTitle(title);
         setDescriptions(descriptions);
         setPoster(poster);
         setAddedPhotos(attachments);
         setAddedServices(servicePackages);
+
+        postPhotoForm.setValues({
+          title: title,
+          descriptions: descriptions,
+        })
+      }
+      if (err) {
+        toast.error(err);
       }
     }
 
@@ -57,8 +72,8 @@ const PostPhoto = () => {
 
   const postPhotoForm = useFormik({
     initialValues: {
-      title: '',
-      descriptions: '',
+      title: photo.title,
+      descriptions: photo.descriptions,
       poster: '',
       attachments: [],
       servicePackages: [],
@@ -104,6 +119,7 @@ const PostPhoto = () => {
           postPhotoForm.resetForm();
           setAddedPhotos([]);
           setAddedServices([]);
+          navigate(`/photos/${postId}`);
           toast.success("Post created successfully !");
         } else {
           toast.error("Failed to create/update post.");
@@ -141,7 +157,7 @@ const PostPhoto = () => {
         <Typography
           sx={{
             ...uiConfigs.style.typoLines(1, "left"),
-            color: "#C48F56",
+            color: "primary.main",
             textTransform: "capitalize",
           }}
           variant="h5"
@@ -149,7 +165,7 @@ const PostPhoto = () => {
           {header}
         </Typography>
         <Typography
-          sx={{ ...uiConfigs.style.typoLines(1, "left"), color: "#fff" }}
+          sx={{ ...uiConfigs.style.typoLines(1, "left"), color: "secondary.subText" }}
           variant="p"
         >
           {description}
@@ -167,7 +183,7 @@ const PostPhoto = () => {
         }}
       >
         <Box sx={{ padding: "10%", display: "flex" }}>
-          <Container header={"Tạo bài viết"} size={"3rem"}>
+          <Container header={photo ? "Cập nhật bài viết" : "Tạo bài viết"} size={"3rem"}>
             <Box
               component={"form"}
               onSubmit={postPhotoForm.handleSubmit}
@@ -223,7 +239,7 @@ const PostPhoto = () => {
                 }
               />
 
-              {headerAndSubHeaderOfInput("Bộ sưu tập ", "Tải ảnh của bạn lên")}
+              {headerAndSubHeaderOfInput("Bộ sưu tập ", "Tải ảnh của bạn lên đây nhé ")}
               <PhotoUploader
                 addedPhotos={addedPhotos}
                 onChange={setAddedPhotos}
@@ -244,15 +260,15 @@ const PostPhoto = () => {
                 loadingPosition="start"
                 type="submit"
                 fullWidth
-                size="medium"
+                size="small"
                 sx={{
                   marginTop: 4,
                   fontFamily: '"Nunito", sans-serif',
-                  fontSize: "1.2rem",
+                  fontSize: "1rem",
                 }}
                 loading={isPostRequest}
               >
-                Đăng bài viết
+                {photo ? "Cập nhật" : "Đăng bài viết"}
               </LoadingButton>
 
               {errorMessage && (

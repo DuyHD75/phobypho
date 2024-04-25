@@ -44,9 +44,8 @@ const ServicePackageItem = ({
             display: "flex",
             width: "100%",
             padding: 0,
-            zIndex: 99,
             transition: "all .3s ease",
-            border: "2px solid #C48F56",
+            border: "2px solid #2D89E5",
             position: "relative",
             "&:hover": {
               cursor: "pointer",
@@ -63,14 +62,15 @@ const ServicePackageItem = ({
               position: 'absolute',
               width: '100%',
               height: '100%',
-              bgcolor: 'rgba(0, 0, 0, 0.6)',
+              bgcolor: 'rgba(0, 0, 0, 0.4)',
               display: hasAddedService ? "flex" : 'none',
               alignItems: 'center',
               justifyContent: 'center',
               transform: 'rotate(-45deg)',
-              color: "secondary.colorText",
+              color: "secondary.contrastText",
               fontSize: '1.2rem',
               fontWeight: '600',
+              textShadow: '1px 1px 2px #000',
             }}
           >
             Đã chọn
@@ -91,37 +91,43 @@ const ServicePackageItem = ({
               justifyContent: "center",
               padding: "3px",
               marginLeft: "8px",
+              
             }}
           >
-            <Typography
-              variant="body1"
-              sx={{
-                ...uiConfigs.style.typoLines(1, "left"),
-                fontSize: "1.3rem",
-              }}
-            >
-              {service.name.split(" ")[0]}
-
-              <span
-                style={{
-                  fontFamily: '"Nunito", sans-serif',
-                  fontSize: "1.6rem",
-                  color: "secondary.colorText",
-                  paddingLeft: "12px",
+            <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+              <Typography
+                sx={{
+                  ...uiConfigs.style.typoLines(1, "left"),
+                  fontSize: "1rem",
+                  color: 'secondary.colorText'
                 }}
-              >
-                {service.name.split(" ").slice(1).join(" ")}
-              </span>
-            </Typography>
-            <Typography
-              variant="subtitle1"
-              color="secondary.colorText"
-              sx={{
+
+              >{service.name.split(" ")[0]}</Typography>
+
+              <Typography
+                sx={{
+                  ...uiConfigs.style.typoLines(1, "left"),
+                  fontSize: "1.2rem",
+                  color: 'secondary.main',
+                  paddingLeft: "4px"
+                }}
+
+              >{service.name.split(" ").slice(1).join(" ")}</Typography>
+
+            </Box>
+
+            {service.description.split(".").map((item, index) => (
+              <Typography key={index} sx={{
+                display: 'flex',
+                alignItems: 'center',
+                color: 'secondary.colorText',
                 ...uiConfigs.style.typoLines(4, "left"),
-              }}
-            >
-              {service.description}
-            </Typography>
+
+              }}>
+                <GrainIcon fontSize="1rem" style={{ marginRight: '4px', color: "secondary.main" }} />
+                {item}
+              </Typography>
+            ))}
           </Box>
         </Card>
       ) : (
@@ -133,7 +139,7 @@ const ServicePackageItem = ({
             padding: 0,
             zIndex: 99,
             transition: "all .3s ease",
-            border: "1px solid #C48F56",
+            border: "2px solid #2D89E5",
             position: "relative",
             "&:hover": {
               cursor: "pointer",
@@ -188,7 +194,7 @@ const ServicePackageItem = ({
                   ...uiConfigs.style.typoLines(1, "left"),
                   fontSize: "1.3rem",
                   color: 'secondary.main',
-                  paddingLeft: "12px"
+                  paddingLeft: "4px"
                 }}
 
               >{service.name.split(" ").slice(1).join(" ")}</Typography>

@@ -1,6 +1,5 @@
 import express from 'express';
 import multer from 'multer';
-import tokenMiddleware from '../middlewares/token.middleware.js';
 import uploadImageController from '../controllers/uploadImage.controller.js';
 
 const router = express.Router({ mergeParams: true });

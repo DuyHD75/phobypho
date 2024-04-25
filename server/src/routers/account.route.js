@@ -4,6 +4,7 @@ import accountController from '../controllers/account.controller.js';
 import accountModel from '../models/account.model.js';
 import tokenMiddleware from '../middlewares/token.middleware.js';
 import requestHandler from '../handlers/request.handler.js';
+import favoriteController from '../controllers/favorite.controller.js';
 
 const router = express.Router({ mergeParams: true });
 
@@ -87,11 +88,31 @@ router.get("/info",
      tokenMiddleware.authenticate,
      accountController.getInfo
 );
-router.post("/update-info",
+
+router.put("/update-info",
      tokenMiddleware.authenticate,
      accountController.updateInfo
 );
 
+
+router.get(
+     "/favorites",
+     tokenMiddleware.authenticate,
+     favoriteController.getFavoritesOfUser
+);
+
+router.post(
+     "/favorites",
+     tokenMiddleware.authenticate,
+     requestHandler.validate,
+     favoriteController.addFavorite
+);
+
+router.delete(
+     "/favorites/:favoriteId",
+     tokenMiddleware.authenticate,
+     favoriteController.removeFavorite
+);
 
 
 export default router;

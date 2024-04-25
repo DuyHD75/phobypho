@@ -9,6 +9,9 @@ export default mongoose.model(
                ref: "Account",
                require: true
           },
+          avatar: {
+               type: String,
+          },
           content: {
                type: String,
                require: true

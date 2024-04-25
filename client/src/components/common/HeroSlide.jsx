@@ -32,9 +32,7 @@ const HeroSlide = () => {
 
   useEffect(() => {
     const getPhotos = async () => {
-      const { response, err } = await photoApi.getListPhotos({
-        location: "all",
-      });
+      const { response, err } = await photoApi.getListPhotos();
       if (response) setPhotos(response);
       if (err) toast.error(err.message);
     };
@@ -127,7 +125,7 @@ const HeroSlide = () => {
                       content: "''",
                       width: "35px",
                       height: "1.2px",
-                      backgroundColor: "#C48F56",
+                      backgroundColor: "primary.main",
                       borderRadius: "10px",
                     },
                   }}
@@ -157,7 +155,7 @@ const HeroSlide = () => {
                   size="medium"
                   component={Link}
                   to={routesGen.photoDetail("0901923")}
-                  sx={{ width: "max-content", color: "#C48F56" }}
+                  sx={{ width: "max-content", color: "primary.main" }}
                   endIcon={<NavigateNextIcon />}
                 >
                   View More
@@ -212,7 +210,7 @@ const HeroSlide = () => {
                       content: "''",
                       width: "35px",
                       height: "1.2px",
-                      backgroundColor: "#C48F56",
+                      backgroundColor: "primary.main",
                       borderRadius: "10px",
                     },
                   }}
@@ -242,7 +240,7 @@ const HeroSlide = () => {
                   size="medium"
                   component={Link}
                   to={routesGen.photoDetail("0901923")}
-                  sx={{ width: "max-content", color: "#C48F56" }}
+                  sx={{ width: "max-content", color: "primary.main" }}
                   endIcon={<NavigateNextIcon />}
                 >
                   View More

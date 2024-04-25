@@ -71,7 +71,7 @@ const ModalImageSlider = ({ album, isOpen, onClose }) => {
                                     zIndex: 100000,
                                     fontSize: '4rem',
                                     color: '#000',
-                                    bgcolor: '#C48F56'
+                                    bgcolor: 'primary.main'
                                 }}
                                 onClick={() => onClose(false)}
                             >

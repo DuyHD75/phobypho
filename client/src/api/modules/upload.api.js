@@ -22,6 +22,22 @@ const uploadImageApi = {
       return { err };
     }
   },
+
+  uploadAvatar: async (avatar) => {
+    try {
+      const response = await privateClient.post(
+        uploadImageEndpoint.uploadAvatar,
+        avatar,
+        {
+          multipart: true,
+        }
+      );
+      return response;
+    } catch (err) {
+      console.error("Error uploading image:", err.message);
+      return { err };
+    }
+  },
 };
 
 export default uploadImageApi;

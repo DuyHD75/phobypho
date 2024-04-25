@@ -1,9 +1,6 @@
 import express from 'express';
 import tokenMiddleware from '../middlewares/token.middleware.js';
 import customerController from '../controllers/customer.controller.js';
-import moment from 'moment'
-import QueryString from 'qs';
-import crypto from 'crypto';
 
 const router = express.Router({ mergeParams: true });
 
@@ -12,86 +9,18 @@ router.post("/checkout",
      customerController.createNewBooking
 );
 
-// View booking history
-router.get("/booking",
-     tokenMiddleware.authenticate,
-     customerController.viewAllBooking
-)
 
+router.post('/bookings', tokenMiddleware.authenticate, customerController.createNewBooking);
 
-router.post('/create_payment_url', function (req, res, next) {
+router.get('/:customerId/bookings', tokenMiddleware.authenticate, customerController.getCustomerBooking);
 
-     process.env.TZ = 'Asia/Ho_Chi_Minh';
+router.get('/', tokenMiddleware.authenticate, customerController.getCustomerByAccountId);
 
-     let date = new Date();
-     let createDate = moment(date).format('YYYYMMDDHHmmss');
+router.get('/vouchers', tokenMiddleware.authenticate, customerController.getCustomerVouchers);
 
-     let ipAddr = req.headers['x-forwarded-for'] ||
-          req.connection.remoteAddress ||
-          req.socket.remoteAddress ||
-          req.connection.socket.remoteAddress;
+router.put('/:customerId/points', customerController.updatePoints);
 
-
-     let tmnCode = process.env.vnp_TmnCode;
-     let secretKey = process.env.vnp_HashSecret;
-     let vnpUrl = process.env.vnp_Url;
-     let returnUrl = process.env.vnp_ReturnUrl;
-     let orderId = moment(date).format('DDHHmmss');
-     let amount = req.body.amount;
-     let bankCode = req.body.bankCode;
-
-     let locale = req.body.language;
-     if (locale === null || locale === '') {
-          locale = 'vn';
-     }
-     let currCode = 'VND';
-     let vnp_Params = {};
-     vnp_Params['vnp_Version'] = '2.1.0';
-     vnp_Params['vnp_Command'] = 'pay';
-     vnp_Params['vnp_TmnCode'] = tmnCode;
-     vnp_Params['vnp_Locale'] = locale;
-     vnp_Params['vnp_CurrCode'] = currCode;
-     vnp_Params['vnp_TxnRef'] = orderId;
-     vnp_Params['vnp_OrderInfo'] = 'Thanh toan cho ma GD:' + orderId;
-     vnp_Params['vnp_OrderType'] = 'other';
-     vnp_Params['vnp_Amount'] = amount * 100;
-     vnp_Params['vnp_ReturnUrl'] = returnUrl;
-     vnp_Params['vnp_IpAddr'] = ipAddr;
-     vnp_Params['vnp_CreateDate'] = createDate;
-     if (bankCode !== null && bankCode !== '') {
-          vnp_Params['vnp_BankCode'] = bankCode;
-     }
-
-     vnp_Params = sortObject(vnp_Params);
-
-     let signData = QueryString.stringify(vnp_Params, { encode: false });
-
-     let hmac = crypto.createHmac("sha512", secretKey);
-     let signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex");
-     vnp_Params['vnp_SecureHash'] = signed;
-     vnpUrl += '?' + QueryString.stringify(vnp_Params, { encode: false });
-
-     res.redirect(vnpUrl);
-});
-
-
-function sortObject(obj) {
-     let sorted = {};
-     let str = [];
-     let key;
-     for (key in obj) {
-          if (obj.hasOwnProperty(key)) {
-               str.push(encodeURIComponent(key));
-          }
-     }
-     str.sort();
-     for (key = 0; key < str.length; key++) {
-          sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, "+");
-     }
-     return sorted;
-}
-
-
+router.get('/:photoId/booking', tokenMiddleware.authenticate, customerController.getCustomerBookingByPhotoId);
 
 
 export default router;

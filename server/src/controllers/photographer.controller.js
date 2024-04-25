@@ -32,8 +32,9 @@ const getPhotographerByLocation = async (req, res) => {
 
 const updateStatus = async (req, res) => {
      try {
-          const photographer = await photographerModel.finOne({ account: req.account.id });
-          if (!photographer) return responseHandler.notfound(res, "Photographer not found !");
+          console.log(req.account.id);
+          const photographer = await photographerModel.findOne({ account: req.account.id });
+          if (!photographer) return responseHandler.notfound(res, "Photographer not found!");
           photographer.status = req.body.status;
 
           await photographer.save();
@@ -43,6 +44,7 @@ const updateStatus = async (req, res) => {
           console.error("Error updating booking count:", error);
      }
 };
+
 
 export default { updateBookingCount, updateStatus, getPhotographerByLocation };
 

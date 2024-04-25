@@ -12,9 +12,8 @@ export const authModalSlice = createSlice({
     },
     setReceiveVoucherModalOpen: (state, action) => {
       state.receiveVoucherModalOpen = action.payload;
-      state.userPoint = action.payload.userPoint;
-      state.point = action.payload.point;
-      state.code = action.payload.code;
+      state.customerPoints = action.payload.customerPoints;
+      state.voucher = action.payload.voucher;
     },
   },
 });

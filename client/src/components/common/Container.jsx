@@ -7,7 +7,6 @@ const Container = ({ header, size, children }) => {
           <Box sx={{
                marginX: "auto",
                color: "secondary.colorText",
-               margin: "2rem 0",
           }}>
                <Stack spacing={4}>
                     {header && (
@@ -32,7 +31,7 @@ const Container = ({ header, size, children }) => {
                                         width: '2rem',
                                         height: '2px',
                                         borderRadius: '10px',
-                                        bgcolor: "#C48F56",
+                                        bgcolor: "primary.main",
                                         bottom: 0,
                                    }
                               }}>

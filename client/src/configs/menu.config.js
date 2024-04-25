@@ -1,7 +1,6 @@
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import SlideshowOutlinedIcon from "@mui/icons-material/SlideshowOutlined";
 import LiveTvOutlinedIcon from "@mui/icons-material/LiveTvOutlined";
-import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import RateReviewOutlinedIcon from "@mui/icons-material/RateReviewOutlined";
 import LockResetOutlinedIcon from "@mui/icons-material/LockResetOutlined";
@@ -9,6 +8,12 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import PostAddIcon from '@mui/icons-material/PostAdd';
+
+import { FiSettings } from "react-icons/fi";
+import { FaListAlt } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
+import { RiLockPasswordFill } from "react-icons/ri";
+import { TbBrandBooking } from "react-icons/tb";
 
 const main = [
      {
@@ -22,9 +27,10 @@ const main = [
           state: "aboutus"
      },
      {
-          display: "Thợ Ảnh",
+          display: "Thợ Chụp Ảnh",
           path: "/photos",
           state: "photos",
+          role: ["CUSTOMER", "USER"]
      },
      {
           display: "hồ sơ bài viết",
@@ -35,29 +41,35 @@ const main = [
           display: "Vouchers",
           path: "/vouchers",
           state: "vouchers",
-          role: "CUSTOMER"
      },
 ];
 
 
 const user = [
      {
-          display: "favorites",
+          display: "Cập nhật thông tin",
+          path: "/profile",
+          icon: <FiSettings style={{ fontSize: '1.3rem' }} />,
+          state: "profile"
+     },
+     {
+          display: "Danh Sách Yêu Thích",
           path: "/favorites",
-          icon: <FavoriteBorderOutlinedIcon />,
-          state: "favorite"
+          icon: <FaHeart style={{ fontSize: '1.3rem' }} />,
+          state: "favorites",
+          role: 'CUSTOMER'
      },
      {
-          display: "reviews",
-          path: "/reviews",
-          icon: <RateReviewOutlinedIcon />,
-          state: "reviews"
-     },
-     {
-          display: "password update",
+          display: "Đổi mật khẩu",
           path: "/password-update",
-          icon: <LockResetOutlinedIcon />,
+          icon: <LockResetOutlinedIcon style={{ fontSize: '1.3rem' }} />,
           state: "password.update"
+     },
+     {
+          display: "Lịch sử đặt lịch",
+          path: "/booking_history",
+          icon: <TbBrandBooking style={{ fontSize: '1.3rem' }} />,
+          state: "booking.history"
      }
 ];
 
@@ -77,7 +89,7 @@ const photographer = [
      {
           display: "password update",
           path: "/password-update",
-          icon: <LockResetOutlinedIcon />,
+          icon: <RiLockPasswordFill />,
           state: "password.update"
      }
 ];
@@ -102,12 +114,6 @@ const social = [
 ];
 
 
-const options = [
-     {
-          display: 'All',
-
-     }
-]
 
 
 const menuConfigs = { main, user, social };

@@ -25,7 +25,7 @@ const style = {
      width: '100%',
      boxShadow: 24,
      maxWidth: '500px',
-     bgcolor: 'background.secondaryPaper',
+     bgcolor: '#fff',
      borderRadius: '5px',
      overflow: 'hidden'
 };
@@ -40,7 +40,6 @@ const ConfirmModal = ({ setOpenModal, openModal, bookingData }) => {
      const [onRequest, setOnRequest] = useState(false);
 
      const [bookingTime, setBookingTime] = useState(dayjs());
-
 
      const validateBookingTime = (bookingTime) => {
           const currentTime = moment();
@@ -64,6 +63,15 @@ const ConfirmModal = ({ setOpenModal, openModal, bookingData }) => {
                if (!user) {
                     toast.error('Vui lòng đăng nhập để tiếp tục !');
                     dispatch(setAuthModalOpen(true));
+                    return;
+               }
+               if (user.role === 'PHOTOGRAPHER') {
+                    toast.error('Tài khoản của bạn không thể đặt lịch !');
+                    return;
+               }
+
+               if(bookingData.photo.status === "INACTIVE") {
+                    toast.error('Thợ chụp ảnh không hoạt động. Vui lòng chọn người khác!');
                     return;
                }
 
@@ -99,7 +107,7 @@ const ConfirmModal = ({ setOpenModal, openModal, bookingData }) => {
                     <Typography
                          sx={{
                               ...uiConfigs.style.typoLines(1, 'center'),
-                              bgcolor: '#C48F56',
+                              bgcolor: 'primary.main',
                               width: '100%',
                               padding: '10px',
                               fontWeight: 600
@@ -161,20 +169,20 @@ const ConfirmModal = ({ setOpenModal, openModal, bookingData }) => {
                                    }}
                               >
                                    <LoadingButton
-                                        variant="text"
-                                        size="medium"
+                                        variant="outlined"
+                                        size="small"
                                         type='submit'
                                         sx={{
                                              width: "max-content",
-                                             border: '1px solid #C48F56',
-                                             color: '#fff',
+                                             border: '2px solid primary.main',
+                                             color: 'secondary.colorText',
                                              marginTop: '2rem',
                                              padding: '2px 1rem',
                                              ...uiConfigs.style.typoLines(1, 'left'),
                                              display: 'flex',
                                              justifyContent: "center",
                                              alignItems: "center",
-                                             fontSize: '0.8rem',
+                                             fontSize: '0.9rem',
                                              textTransform: 'capitalize'
 
                                         }}

@@ -6,12 +6,8 @@ import userApi from '../../api/modules/user.api';
 import { setAuthModalOpen } from '../../redux/features/authModalSlice';
 import { setUser } from '../../redux/features/userSlice';
 import { toast } from 'react-toastify';
-import { Box, Stack, TextField, Button, Alert, Select, MenuItem } from '@mui/material';
+import { Box, Stack, TextField, Button, Alert, Select, MenuItem, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-
-
-
-
 
 
 const SignUpModal = ({ switchAuthState }) => {

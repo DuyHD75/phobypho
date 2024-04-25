@@ -8,6 +8,14 @@ const bookingSchema = new Schema({
           ref: "Photo",
           required: true
      },
+     poster: {
+          type: String,
+          required: true
+     },
+     photographerName: {
+          type: String,
+          required: true
+     },
      customer: {
           type: mongoose.Types.ObjectId,
           ref: "Customer",
@@ -17,13 +25,18 @@ const bookingSchema = new Schema({
           type: String,
           required: true
      },
-     servicePackage: {
+     servicePackageId: {
+          type: mongoose.Types.ObjectId,
+          ref: "ServicePackage",
+          required: true
+     },
+     servicePackageName: {
           type: String,
           required: true
      },
      booking_date: {
           type: Date,
-          default: Date.now,
+          required: true
      },
      status: {
           type: String,
@@ -40,7 +53,7 @@ bookingSchema.pre('save', async function (next) {
           const completedBookings = await this.model('Booking').findOne({ customer: this.customer, status: ORDER_STATUS.pending });
 
           if (completedBookings) {
-               throw new Error("You have completed bookings. You can't create a new booking.");
+               throw new Error("Bạn đang có một hóa đơn đang chờ xử lý !");
           }
           next();
      } catch (error) {

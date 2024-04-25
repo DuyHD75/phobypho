@@ -23,9 +23,7 @@ const HeroGrid = () => {
 
         setPhotoLoading(true);
 
-        const { response, err } = await photoApi.getListPhotos({
-          location: "All",
-        });
+        const { response, err } = await photoApi.getListPhotos();
         setPhotoLoading(false);
         dispatch(setGlobalLoading(false));
 
@@ -83,7 +81,7 @@ const HeroGrid = () => {
             bottom: 0,
             width: "10rem",
             height: "2px",
-            background: '#C48F56'
+            background: 'primary.main'
           }
         }}
         textAlign={"center"}
@@ -160,7 +158,7 @@ const HeroGrid = () => {
                           position: 'absolute',
                           width: '4rem',
                           height: '2px',
-                          bgcolor: "#C48F56",
+                          bgcolor: "primary.main",
                           bottom: '10%',
                         }
                       }}

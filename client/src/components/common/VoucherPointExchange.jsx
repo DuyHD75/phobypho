@@ -1,49 +1,38 @@
 import React, { Fragment } from "react";
-import { Box, Typography, Button } from "@mui/material";
-import VoucherFeaturesItems from "./VoucherFeaturesItems";
-import VoucherRewardsItems from "./VoucherRewardsItems";
+import { Box,  Button } from "@mui/material";
 import VoucherPointItems from "./VoucherPointItems";
+import Container from './Container';
+import uiConfigs from "../../configs/ui.config";
 
 function VoucherPointExchange() {
   return (
     <Fragment>
-      <Box
-        maxWidth={"1280px"}
-        margin={"auto"}
-        sx={{
-          textAlign: "center",
-          marginY: "20px",
-          paddingY: "70px",
-        }}
-      >
-        <Typography
-          variant="h4"
-          fontSize={{
-            xs: "1.6rem",
-            md: "2.5rem",
-            lg: "2.5rem",
-            textTransform: "uppercase",
-          }}
-          fontWeight="800"
-          marginBottom="100px"
+      <Box paddingTop={'3rem'} sx={{ ...uiConfigs.style.mainContent }}>
+
+        <Container
+          header={"Đổi điểm thưởng"}
         >
-          receive Voucher immediately!
-        </Typography>
-        <VoucherPointItems />
-        <Button
-          size="large"
-          variant="contained"
-          sx={{
-            fontFamily: "Saira Condensed",
-            fontSize: "1rem",
-            fontWeight: "500",
-            marginTop: "40px",
-            padding: "10px 50px",
-            borderRadius: "9999px",
-          }}
-        >
-          View all vouchers
-        </Button>
+          <VoucherPointItems />
+
+          <Button
+            size="small"
+            variant="contained"
+            sx={{
+              ...uiConfigs.style.typoLines(1, "center"),
+              fontSize: "0.9rem",
+              marginTop: "40px",
+              width: "fit-content",
+              padding: "10px 30px",
+              borderRadius: "9999px",
+              position: "relative",
+              left: "50%",
+              transform: "translateX(-50%)",
+            }}
+          >
+            Xem thêm
+          </Button>
+        </Container>
+
       </Box>
     </Fragment>
   );

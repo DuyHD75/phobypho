@@ -16,22 +16,22 @@ function VoucherRewardsItems() {
     rewards: [
       {
         id: 1,
-        title: "Reward on Sign-up",
-        description: "Receive 5,000 points",
+        title: "Đăng ký tài khoản",
+        description: "Nhận 1,000 điểm ",
         image:
           "https://cdn.shopify.com/oxygen-v2/24008/7993/16198/412996/build/_assets/signup-HA56PKUV.svg",
       },
       {
         id: 2,
-        title: "Earn Points on Order",
-        description: "Receive 2-4% spending",
+        title: "Thanh Toán Hóa Đơn",
+        description: "Nhận 1,000 điểm ",
         image:
           "https://cdn.shopify.com/oxygen-v2/24008/7993/16198/412996/build/_assets/placeOrder-WS7XJ6TD.svg",
       },
       {
         id: 3,
-        title: "Reward on Completing Order",
-        description: "Reward 2,000 - 3,000 points",
+        title: "Hoàn Thành Đơn Hàng",
+        description: "Nhận 2,000 - 3,000 điểm",
         image:
           "https://cdn.shopify.com/oxygen-v2/24008/7993/16198/412996/build/_assets/firstOrder-NDYT74BD.svg",
       },
@@ -43,6 +43,7 @@ function VoucherRewardsItems() {
       <Stack
         flexDirection={{ sx: "column", md: "row" }}
         justifyContent={"center"}
+        paddingTop={'2rem'}
         alignItems={"center"}
         gap={8}
       >
@@ -51,11 +52,22 @@ function VoucherRewardsItems() {
             <Box
               key={reward.id}
               flexDirection={"row"}
+              justifyContent={{sx: 'space-between', md: 'space-around'}}
               display={"flex"}
-              width={{ xs: "50%", md: "26%" }}
+              width={{ xs: "100%", md: "26%" }}
               padding={"1rem"}
-              backgroundColor={"#89643c"}
-              borderRadius={"20px"}
+              sx={{
+                transition: "all 0.3s ease-in-out",
+                borderRadius: "10px",
+                border: "2px solid #2D89E5",
+                overflow: "hidden",
+                bgcolor: "#f5f5f5",
+                "&:hover": {
+                  cursor: "pointer",
+                  transform: 'translateY(-10px)',
+                }
+              }}
+
             >
               <img
                 src={reward.image}
@@ -65,7 +77,7 @@ function VoucherRewardsItems() {
               <Stack justifyContent={"center"}>
                 <Typography
                   variant="h4"
-                  fontSize={"1.4rem"}
+                  fontSize={"1rem"}
                   fontWeight="600"
                   textAlign={"left"}
                   sx={{
@@ -88,7 +100,7 @@ function VoucherRewardsItems() {
           );
         })}
       </Stack>
-    </Fragment>
+    </Fragment >
   );
 }
 

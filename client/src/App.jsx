@@ -12,8 +12,10 @@ import './style.css';
 import themeConfigs from "./configs/them.config";
 
 function App() {
+
+  
   return (
-    <ThemeProvider theme={themeConfigs.custom({ mode: "dark" })} >
+    <ThemeProvider theme={themeConfigs.custom({ mode: "light" })} >
       <ToastContainer
         position="bottom-right"
         autoClose={3000}
@@ -36,7 +38,7 @@ function App() {
                 <Route
                   index
                   key={index}
-                  element={route.state ? (
+                  element={route.state ? ( 
                     <PageWrapper state={route.state}>{route.element}</PageWrapper>
                   ) : route.element}
                 />

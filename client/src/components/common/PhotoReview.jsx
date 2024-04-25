@@ -13,54 +13,52 @@ import moment from 'moment'
 
 
 const PhotoReviewItem = ({ review, onRemoved }) => {
-     const { user } = useSelector((state) => state.user);
 
+     const { user } = useSelector((state) => state.user);
+     console.log(user)
      const [onRequest, setOnRequest] = useState(false);
 
      const onRemove = async () => {
           if (onRequest) return;
 
           setOnRequest(true);
-
           const { response, err } = await reviewApi.remove({ reviewId: review.id });
-
+          setOnRequest(false);
           if (err) toast.error(err.message);
-
           if (response) onRemoved(review.id);
      }
 
      return (
-          <Box sx={{
-               padding: 2,
-               borderRadius: "5px",
-               position: "relative",
-               opacity: onRequest ? 0.6 : 1,
-               "&:hover": { backgroundColor: "background.paper" }
-          }}>
-               <Stack direction="row" spacing={2}>
-                    {/* avatar */}
+          <Fragment>
+               <Box sx={{
+                    padding: 2,
+                    borderRadius: "5px",
+                    position: "relative",
+                    opacity: onRequest ? 0.6 : 1,
+                    "&:hover": { backgroundColor: "background.paper" }
+               }}>
+                    <Stack direction="row" spacing={2}>
+                         {/* avatar */}
 
-                    <Avatar
-                         variant="rounded"
-                         sx={{ width: 60, height: 60 }}
-                         src='https://plus.unsplash.com/premium_photo-1673264933048-3bd3f5b86f9d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8d2FsbHBhcGVyJTIwNGt8ZW58MHx8MHx8fDA%3D'
-                    />
+                         <Avatar
+                              variant="rounded"
+                              sx={{ width: 50, height: 50, borderRadius: "50%" }}
+                              src={`${review.account.avatar}`}
+                         />
+                         {/* avatar */}
+                         <Stack spacing={2} flexGrow={1} >
+                              <Stack spacing={1}>
+                                   <Stack direction="row" justifyContent="space-between" alignItems="center"
+                                   >
+                                        <Typography variant="h6" fontWeight="700" sx={{
+                                             ...uiConfigs.style.typoLines(1, 'left'),
+                                             borderBottom: '0.6px solid #444',
+                                             width: 'max-content',
+                                             textTransform: 'capitalize'
+                                        }}>
+                                             {review.account.username}
 
-                    {/* avatar */}
-                    <Stack spacing={2} flexGrow={1} >
-                         <Stack spacing={1}>
-                              <Stack
-                                   sx={{
-                                        borderBottom: '0.6px solid #444'
-                                   }}
-                              >
-                                   <Typography variant="h6" fontWeight="700" sx={{
-                                        ...uiConfigs.style.typoLines(1, 'left'),
-                                   }}>
-                                        {review.account.username}
-
-                                   </Typography>
-                                   {user && user.id === review.account.id && (
+                                        </Typography>
                                         <LoadingButton
                                              variant="text"
                                              startIcon={<DeleteIcon />}
@@ -71,35 +69,37 @@ const PhotoReviewItem = ({ review, onRemoved }) => {
                                                   position: { xs: "relative", md: "absolute" },
                                                   right: { xs: 0, md: "10px" },
                                                   marginTop: { xs: 2, md: 0 },
-                                                  width: "max-content"
+                                                  width: "max-content",
+                                                  color: 'red'
                                              }}
                                         >
                                              remove
                                         </LoadingButton>
-                                   )}
+                                   </Stack>
+
+
+                                   <Typography variant="caption" sx={{
+                                        fontFamily: '"Nunito", sans-serif',
+                                        color: "secondary.colorText",
+                                        fontSize: '1rem'
+                                   }}>
+                                        {moment(review.createdAt).format('dddd, MMMM YYYY  HH:mm')}
+                                   </Typography>
                               </Stack>
 
-
-                              <Typography variant="caption" sx={{
-                                   fontFamily: '"Nunito", sans-serif',
-                                   color: "secondary.colorText",
-                                   fontSize: '1rem'
-                              }}>
-                                   {moment(review.createdAt).format('dddd, MMMM YYYY  HH:mm')}
+                              <Typography variant="body1" textAlign="justify" sx={{ ...uiConfigs.style.typoLines(3, 'left') }}>
+                                   {review.content}
                               </Typography>
                          </Stack>
-
-                         <Typography variant="body1" textAlign="justify" sx={{ ...uiConfigs.style.typoLines(3, 'left') }}>
-                              {review.content}
-                         </Typography>
                     </Stack>
-               </Stack>
-          </Box>
+               </Box>
+
+          </Fragment>
      );
 
 }
 
-const PhotoReview = ({ photo }) => {
+const PhotoReview = ({ photo, bookedInfo }) => {
 
      const { user } = useSelector((state) => state.user);
      const [reviewList, setReviewList] = useState([]);
@@ -108,15 +108,28 @@ const PhotoReview = ({ photo }) => {
      const [content, setContent] = useState("");
      const [page, setPage] = useState(1);
      const [onRequest, setOnRequest] = useState(false);
-     const [rating, setRating] = useState(0)
-     const skip = 4;
+     const [rating, setRating] = useState(0);
+     const [isBooked, setIsBooked] = useState();
 
+     const skip = 4;
 
      useEffect(() => {
           setReviewList([...photo.reviews]);
           setFilteredReview([...photo.reviews].splice(0, 4));
           setReviewCount(photo.reviews.length);
-     }, [photo])
+     }, [photo]);
+
+     useEffect(() => {
+          if (bookedInfo.length > 0) {
+               checkIsBooked();
+          }
+     }, [bookedInfo]);
+
+
+     const checkIsBooked = () => {
+          const isPhotoBooked = bookedInfo.filter(booking => booking.photo.toString() === photo.id.toString()).length > 0;
+          setIsBooked(isPhotoBooked);
+     }
 
 
      const addComment = async () => {
@@ -187,20 +200,28 @@ const PhotoReview = ({ photo }) => {
                     <Container header={'Gửi lại những đánh giá'} size={'1rem'}>
                          <Box sx={{ padding: '0 1rem', color: "secondary.colorText", }}>
 
-                              <Stack direction={'row'} alignItems={'center'} padding={'0.5rem 0'} >
-                                   <Typography component="legend"
-                                        sx={{
-                                             ...uiConfigs.style.typoLines(1, 'left'),
-                                             fontSize: { xs: '1rem', md: '1.1rem' },
-                                             fontWeight: '500',
-                                             marginRight: '10px',
-                                             color: "secondary.colorText",
-                                        }}
+                              {user.role === "CUSTOMER" && isBooked && (
+                                   <Stack direction={'row'} alignItems={'center'} padding={'0.5rem 0'} >
+                                        <Typography component="legend"
+                                             sx={{
+                                                  ...uiConfigs.style.typoLines(1, 'left'),
+                                                  fontSize: { xs: '1rem', md: '1.1rem' },
+                                                  fontWeight: '500',
+                                                  marginRight: '10px',
+                                                  color: "secondary.colorText",
+                                             }}
 
-                                   >Bạn đánh giá cho photographer này bao nhiêu sao nhỉ  </Typography>
+                                        >Bạn đánh giá cho photographer này bao nhiêu sao nhỉ  </Typography>
 
-
-                              </Stack>
+                                        <Rating
+                                             style={{ fontSize: '1.5rem' }}
+                                             name="simple-controlled"
+                                             value={rating}
+                                             onChange={(event, newValue) => {
+                                                  setRating(newValue);
+                                             }}
+                                        />
+                                   </Stack>)}
 
                               <TextField
                                    value={content}
@@ -213,7 +234,7 @@ const PhotoReview = ({ photo }) => {
                                         outline: 'none',
                                         ...uiConfigs.style.typoLines(1, 'left'),
                                         '&:focus': {
-                                             borderColor: '#C48F56',
+                                             borderColor: 'primary.main',
                                         }
                                    }}
                                    placeholder="Nhập bình luận của bạn tại đây nhé..."
@@ -221,11 +242,12 @@ const PhotoReview = ({ photo }) => {
 
 
                               <LoadingButton
-                                   variant="text"
+                                   variant="outlined"
                                    size="medium"
+
                                    sx={{
                                         width: "max-content",
-                                        border: '1px solid #C48F56',
+                                        border: '1px solid primary.main',
                                         color: "secondary.colorText",
                                         marginTop: '1rem',
                                         padding: '0.6rem 1rem',

@@ -53,10 +53,11 @@ accountSchema.methods.setPassword = function (password) {
 };
 
 accountSchema.methods.validatePassword = function (password) {
-     return this.password === this.hashPassword(password);
+     return this.password === this.hashPassword(password, this.salt);
 };
 
 accountSchema.methods.hashPassword = function (password) {
+
      return crypto.pbkdf2Sync(password, this.salt, 1000, 64, "sha512").toString('hex');
 };
 
@@ -65,7 +66,7 @@ accountSchema.post('save', async (doc, next) => {
           try {
                const customer = new customerModel({ account: doc._id });
                await customer.save();
-               next();  
+               next();
           } catch (error) {
                next(error);
           }

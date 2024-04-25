@@ -6,13 +6,14 @@ const userEndpoints = {
      signup: "accounts/signup",
      getInfo: "accounts/info",
      passwordUpdate: "accounts/update-password",
+     updateInfo: "accounts/update-info",
 };
 
 const userApi = {
      login: async ({ username, password }) => {
           try {
                const response = await publicClient.post(userEndpoints.login, { username, password })
-     
+
                return { response };
           } catch (err) { return { err } }
      },
@@ -24,7 +25,24 @@ const userApi = {
                return { response };
           } catch (err) { return { err } }
      },
-
+     passwordUpdate: async ({ password, newPassword, confirmNewPassword }) => {
+          try {
+               const response = await privateClient.put(userEndpoints.passwordUpdate, { password, newPassword, confirmNewPassword });
+               return { response };
+          } catch (err) { return { err } }
+     },
+     getInfo: async () => {
+          try {
+               const response = await privateClient.get(userEndpoints.getInfo);
+               return { response };
+          } catch (err) { return { err } }
+     },
+     updateInfo: async ({ displayName, phoneNumber, email, location, avatar }) => {
+          try {
+               const response = await privateClient.put(userEndpoints.updateInfo, { displayName, phoneNumber, email, location, avatar });
+               return { response };
+          } catch (err) { return { err } }
+     }
 }
 
 

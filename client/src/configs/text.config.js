@@ -8,7 +8,7 @@ const textConfigs = {
           subText: {
                fontFamily: '"Nunito", sans-serif',
                fontSize: "0.8rem",
-               color: "#C48F56"
+               color: "primary.main"
           },
           normalText: {
                fontFamily: '"Nunito", sans-serif',

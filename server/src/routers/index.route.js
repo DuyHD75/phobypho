@@ -6,6 +6,7 @@ import reviewRouter from './review.route.js';
 import photographerRouter from './photographer.route.js';
 import uploadRouter from './upload.route.js';
 import serviceRouter from './service.route.js';
+import voucherRouter from './voucher.route.js';
 
 const router = express.Router();
 
@@ -21,7 +22,14 @@ router.use("/photographers", photographerRouter);
 
 router.use("/upload-image", uploadRouter);
 
-router.use("/services", serviceRouter)
+router.use("/services", serviceRouter);
+
+router.use("/vouchers", voucherRouter); 
+
+
+
+
+
 
 // router.use("/checkout", )
 

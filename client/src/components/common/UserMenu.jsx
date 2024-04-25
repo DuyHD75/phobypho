@@ -1,4 +1,4 @@
-import { Box, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Typography } from '@mui/material';
+import { Box, Button, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import menuConfigs from '../../configs/menu.config';
@@ -8,6 +8,8 @@ import uiConfigs from '../../configs/ui.config';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutOutlineIcon from '@mui/icons-material/LogoutOutlined';
 import { setUser } from '../../redux/features/userSlice';
+import { FaUser } from "react-icons/fa";
+import { setAppState } from '../../redux/features/appStateSlice';
 
 const UserMenu = () => {
 
@@ -15,75 +17,48 @@ const UserMenu = () => {
      const dispatch = useDispatch();
      const [anchorEl, setAnchorEl] = useState(false);
      const toggleMenu = (e) => setAnchorEl(true)
+
      return (
           <div>
                {user && (
-                    <Box>
-                         <Typography
-                              variant='h6'
+                    <Box sx={{ position: 'relative' }}>
+                    
+
+
+                         <Button
+                              component={Link}
+                              to={'/profile'}
                               sx={{
-                                   cursor: "pointer",
-                                   useSelector: "none",
+                                   mr: 2,
+                                   fontFamily: '"Nunito", sans-serif',
+                                   fontSize: "0.9rem",
+                                   fontWeight: "600",
                                    display: "flex",
                                    alignItems: "center",
                               }}
-                              onClick={toggleMenu}
                          >
-                              <AccountCircleIcon />
-                              {user.displayName}
-                         </Typography>
-
-                         <Menu
-                              open={Boolean(anchorEl)}
-                              anchorEl={anchorEl}
-                              onClick={() => setAnchorEl(null)}
-                              PaperProps={{ sx: { padding: 0, top: 0, left: 0 } }}
-                         >
-                              {menuConfigs.user.map((item, index) => (
-                                   <ListItemButton
-                                        key={index}
-                                        component={Link}
-                                        to={item.path}
-                                        onClick={() => setAnchorEl(null)}
-                                   >
-
-                                        <ListItemIcon color='red'>{item.icon}</ListItemIcon>
-
-                                        <ListItemText disableTypography primary={
-                                             <Typography
-                                                  textTransform="uppercase"
-                                                  sx={{ fontSize: "0.9rem", color: 'secondary.colorText', ...uiConfigs.style.typoLines(1, 'left') }}
-                                             >
-                                                  {item.display}
-                                             </Typography>
-                                        } />
-
-                                   </ListItemButton>
-                              ))}
-
-                              <ListItemButton
-                                   sx={{ borderRadius: '10px' }}
-                                   onClick={() => dispatch(setUser(null))}
-                              >
-                                   <ListItemIcon>
-                                        <LogoutOutlineIcon color='secondary.main' />
-                                   </ListItemIcon>
-
-                                   <ListItemText
-                                        disableTypography
-                                        primary={
-                                             <Typography textTransform="uppercase"
-                                                  sx={{ fontSize: "0.9rem", color: 'secondary.colorText', ...uiConfigs.style.typoLines(1, 'left') }}
-
-                                             >Logout</Typography>
-                                        }
+                              {user.avatar ? (
+                                   <img
+                                        src={user.avatar}
+                                        alt={user.displayName}
+                                        style={{
+                                             width: '1.8rem',
+                                             height: '1.8rem',
+                                             borderRadius: '10px',
+                                             objectFit: 'cover',
+                                        }}
                                    />
-                              </ListItemButton>
-                         </Menu>
+
+                              ) : <FaUser style={{ fontSize: '1.2rem' }} />}
+                              <Typography sx={{
+                                   ml: { sx: '0', md: 1 }, ...uiConfigs.style.typoLines(1, 'center'),
+                                   textTransform: 'capitalize', color: 'primary.main'
+                              }}>{user.displayName}</Typography>
+                         </Button>
                     </Box>
                )}
           </div>
      )
 }
 
-export default UserMenu
+export default UserMenu;

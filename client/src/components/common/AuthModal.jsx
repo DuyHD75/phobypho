@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setAuthModalOpen } from '../../redux/features/authModalSlice';
-import { Modal, Box, Typography } from '@mui/material';
+import { Modal, Box } from '@mui/material';
 import Logo from './Logo';
 import LoginModal from './LoginModal';
 import SignUpModal from './SignUpModal';
@@ -19,7 +19,11 @@ const style = {
      left: '50%',
      transform: 'translate(-50%, -50%)',
      width: '100%',
-     bgcolor: 'background.secondaryPaper',
+     backgroundColor: '#f5f7fa',
+     backgroundImage: `url(https://us-wn-g.gr-cdn.com/_next/static/media/bg3.d94446d2.svg), url(https://us-wn-g.gr-cdn.com/_next/static/media/bg1.0d1d3b37.svg), url(https://us-wn-g.gr-cdn.com/_next/static/media/bg2.ad4bd4bc.svg)`,
+     backgroundPosition: 'calc(50% - 418px) -30px, calc(50% - 357px) -370px, calc(50% + 570px) -170px', 
+     backgroundSize: '1742px 1742px,1210px 1210px,1665px 1665px',
+     color: 'secondary.colorText',
      boxShadow: 24,
      p: 4,
      maxWidth: '500px'
@@ -53,11 +57,12 @@ const AuthModal = () => {
                <Box sx={style}>
                     <Box sx={{
                          padding: 4,
-                         backgroundColor: "background.secondaryPaper"
+                  
                     }}>
                          <Box sx={{
                               textAlign: 'center', marginBottom: "2rem",
-                              display: 'flex', alignItems: "center", justifyContent: 'center'
+                              display: 'flex', alignItems: "center",
+                              justifyContent: 'center'
 
                          }}>
                               <Logo />

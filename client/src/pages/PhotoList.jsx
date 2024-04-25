@@ -1,25 +1,28 @@
-import React, { Fragment, useState, useMemo, useEffect } from "react";
+import React, { Fragment, useState, useMemo, useEffect, useCallback } from "react";
 import {
   Box,
   Button,
   ListItemButton,
   ListItemText,
   Stack,
+  TextField,
   Typography,
 } from "@mui/material";
 import uiConfigs from "../configs/ui.config";
 import { useDispatch, useSelector } from "react-redux";
-import setAppState from "../redux/features/appStateSlice";
 import PostGrid from "../components/common/PostGrid";
 import { LoadingButton } from "@mui/lab";
 import photoApi from "../api/modules/photo.api";
 import { setGlobalLoading } from "../redux/features/globalLoading";
 import { toast } from "react-toastify";
 import usePrevious from "../hooks/usePrevious";
+import { categories } from "../asset/data";
+import { GiMagnifyingGlass } from "react-icons/gi";
+import InputAdornment from '@mui/material/InputAdornment';
 
 const PhotoListPage = () => {
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.user);
+
   const [photos, setPhotos] = useState([]);
   const [filteredList, setFilteredList] = useState([]);
 
@@ -28,18 +31,19 @@ const PhotoListPage = () => {
   const [findIndex, setFindIndex] = useState(0);
   const preCategory = usePrevious(currCategory);
   const [currPage, setCurrPage] = useState(0);
-  const categoriesMemo = useMemo(
-    () => ["All", "Hue", "Da Nang", "Quang Nam"],
-    []
-  );
 
-  const category = ["All", "Hue", "Da Nang", "Quang Nam"];
+  const categoriesMemo = useMemo(() => ["All", "Huế", "Đà Nẵng", "Quảng Nam"], []);
+
+
+
 
   const onLoadMore = () => setCurrPage(currPage + 1);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [dispatch]);
+
+
 
   useEffect(() => {
     const getListPhotos = async () => {
@@ -50,11 +54,8 @@ const PhotoListPage = () => {
 
         setPhotoLoading(true);
 
-        const { response, err } = await photoApi.getListPhotos({
-          location: categoriesMemo[currCategory],
-        });
+        const { response, err } = await photoApi.getListPhotos();
 
-        console.log(response)
 
         setPhotoLoading(false);
         dispatch(setGlobalLoading(false));
@@ -63,6 +64,7 @@ const PhotoListPage = () => {
           toast.error(err.message);
         } else if (response) {
           setPhotos([...response]);
+          setFilteredList([...response].slice(0, 8));
         }
       } catch (error) {
         console.error("Error in getListPhotos:", error);
@@ -71,14 +73,48 @@ const PhotoListPage = () => {
     };
 
     getListPhotos();
-  }, [currCategory, preCategory, currPage, dispatch]);
+  }, []);
+
+  const filterPhotos = useCallback((categoryIndex = 0, userInputText = '') => {
+    const selectedCategory = categoriesMemo[categoryIndex];
+    const filteredByCategory = selectedCategory === "All" ? photos : photos.filter(photo =>
+      photo.photographer.location.toLowerCase().includes(selectedCategory.toLowerCase())
+    );
+
+    if (!userInputText) {
+      return filteredByCategory;
+    } else {
+      return filteredByCategory.filter(photo =>
+        photo.photographer.location.toLowerCase().includes(userInputText.toLowerCase())
+      );
+    }
+  }, [photos, categoriesMemo]);
 
   const onCategoryChange = (categoryIndex) => {
     if (currCategory === categoryIndex) return;
     setCurrCategory(categoryIndex);
-    setPhotos([]);
+    const filtered = filterPhotos(categoryIndex);
+    setFilteredList(filtered.slice(0, 8));
     setCurrPage(1);
   };
+
+  const debounce = (handler, delay) => {
+    let timeout = null;
+    return (...args) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        handler(...args);
+      }, delay);
+    }
+  }
+
+  const handelFilterChange = (event) => {
+    const userInputText = event.target.value.toLowerCase();
+    const filtered = filterPhotos(currCategory, userInputText);
+    setFilteredList(filtered.slice(0, 8));
+    setCurrPage(1);
+  };
+
 
   return (
     <Fragment>
@@ -90,39 +126,64 @@ const PhotoListPage = () => {
       >
         <Stack
           spacing={3}
-          direction={"row"}
+          direction={{ sx: 'column', md: 'row' }}
           alignItems="center"
           sx={{
-            marginTop: "8rem",
+            marginTop: "6rem",
+            alignSelf: "center",
+            justifyContent: "center",
           }}
         >
-          <Stack direction="row" spacing={2}>
-            {category.map((cate, index) => (
+          <Stack direction={'row'} spacing={2}>
+            {categories.map((cate, index) => (
               <Button
+                variant="outlined"
                 key={index}
                 size="small"
                 sx={{
-                  color: currCategory === index ? "#C48F56" : "secondary.colorText",
-                  border: currCategory === index ? "1px solid #C48F56" : "none",
+                  color: currCategory === index ? "primary.main" : "secondary.colorText",
+                  border: currCategory === index ? "1px solid primary.main" : "none",
                   borderRight: "none",
                   fontSize: "1rem",
                   ...uiConfigs.style.typoLines(1, "center"),
+                  display: "flex",
+                  alignItems: "flex-start",
+                  textTransform: 'capitalize',
                 }}
                 onClick={() => onCategoryChange(index)}
               >
-                {cate}
+                {cate.icon}
+                {cate.name}
               </Button>
             ))}
           </Stack>
-          <Stack direction="row" spacing={2}>
+          <TextField
+            onChange={debounce(handelFilterChange, 1000)}
+            fullWidth
+            sx={{
+              width: { xs: '100%', md: '30%' },
+              color: 'secondary.colorText',
+              border: '1px solid secondary.main',
+              borderRadius: '0.5rem',
+              ...uiConfigs.style.typoLines(1, 'center'),
+            }}
+            type='text' placeholder='Nhập nơi bạn muốn tìm ...' name='locationText'
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <GiMagnifyingGlass style={{ fontSize: '1.6rem', color: '#2D89E5' }} />
+                </InputAdornment>
+              ),
+            }}
 
+          />
 
-          </Stack>
         </Stack>
 
-        <PostGrid photos={photos} />
+        <PostGrid photos={filteredList} />
 
-        <LoadingButton
+        {photos.length > 10 && (<LoadingButton
+          variant="contained"
           sx={{
             marginTop: 8,
             width: "10rem",
@@ -130,19 +191,18 @@ const PhotoListPage = () => {
             position: "relative",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            border: "1px solid #C48F56",
+            border: "1px solid primary.main",
             ...uiConfigs.style.typoLines(1, "center"),
-            "&:hover": { bgcolor: "#C48F56" },
+            "&:hover": { bgcolor: "primary.main" },
           }}
           loading={photoLoading}
           onClick={onLoadMore}
         >
           load more
-        </LoadingButton>
+        </LoadingButton>)}
       </Box>
     </Fragment>
   );
 };
 
 export default PhotoListPage;
-// Next to me

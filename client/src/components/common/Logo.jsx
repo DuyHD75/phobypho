@@ -44,6 +44,7 @@ const Logo = ({ isHeader }) => {
                     <span style={{
                          color: 'secondary.colorText',
                          fontSize: '1.2rem',
+                         fontWeight: 800,
                          ...uiConfigs.style.typoLines(1, 'center'),
                     }}>
                          PHOBYPHO

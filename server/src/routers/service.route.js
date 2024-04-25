@@ -1,6 +1,5 @@
 import express from 'express';
 import serviceController from '../controllers/service.controller.js';
-import tokenMiddleware from '../middlewares/token.middleware.js';
 
 
 

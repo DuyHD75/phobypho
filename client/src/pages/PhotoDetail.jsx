@@ -1,45 +1,51 @@
 import React, { Fragment, useState, useEffect } from "react";
 import {
   Box,
-  Button,
   Stack,
   Typography,
-  IconButton,
   Grid,
 } from "@mui/material";
 import uiConfigs from "../configs/ui.config";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import photoApi from "../api/modules/photo.api";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import textConfigs from "../configs/text.config";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import PhotoReview from "../components/common/PhotoReview";
 import ServicePackage from "../components/common/ServicePackage";
-import { setGlobalLoading } from "../redux/features/globalLoading";
 import { toast } from "react-toastify";
 import moment from "moment";
 import ModalImageSlider from "../components/common/ModalImageSlider";
-
+import WavingHandIcon from '@mui/icons-material/WavingHand';
+import EventBusyIcon from '@mui/icons-material/EventBusy';
+import customerApi from "../api/modules/customer.api";
 const PhotoDetailPage = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
   const [onRequest, setOnRequest] = useState(false);
   const { photo_id } = useParams();
   const [photo, setPhoto] = useState();
-  const [isLiked, setIsLiked] = useState(false);
   const [albumSelected, setAlbumSelected] = useState([]);
-  const [isOpenModalSlider, setIsOpenModalSlider] = useState(false)
+  const [isOpenModalSlider, setIsOpenModalSlider] = useState(false);
+  const [bookedInfo, setBookedInfo] = useState([]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+
+
+    const getBookingByPhotoId = async () => {
+      const { response, err } = await customerApi.getBookingByPhotoId(photo_id);
+      if (response) setBookedInfo(response);
+      if (err) toast.error(err.message);
+    };
+
+
+
     const getPhotoDetail = async () => {
       const { response, err } = await photoApi.getPhotoDetail({ photo_id });
       if (response) {
         setPhoto(response);
       }
       if (err) toast.error(err.message);
+      getBookingByPhotoId();
     };
 
     getPhotoDetail();
@@ -65,6 +71,7 @@ const PhotoDetailPage = () => {
     setAlbumSelected(album);
     setIsOpenModalSlider(true);
   }
+
 
   return (
     <Fragment>
@@ -99,7 +106,7 @@ const PhotoDetailPage = () => {
                   width: "2rem",
                   height: "2px",
                   borderRadius: "10px",
-                  bgcolor: "#C48F56",
+                  bgcolor: "primary.main",
                   bottom: 0,
                 },
               }}
@@ -107,16 +114,58 @@ const PhotoDetailPage = () => {
               {photo.title}
             </Typography>
 
-            <Typography
-              sx={{
-                ...uiConfigs.style.typoLines(1, "left"),
-                margin: "1rem 0",
-                color: 'secondary.main',
-                textShadow: '1px 1px 0.8px #333',
-              }}
+            <Stack
+              flexDirection={{ sx: 'column', md: 'row' }}
+              alignItems={"center"}
+              justifyContent={"space-between"}
+              width={"50%"}
             >
-              {moment(photo.createdAt).format("dddd, MMMM YYYY")}
-            </Typography>
+              <Typography
+                sx={{
+                  ...uiConfigs.style.typoLines(1, "left"),
+                  margin: "1rem 0",
+                  color: 'secondary.main',
+                  textShadow: '1px 1px 0.8px #333',
+                }}
+              >
+                {moment(photo.createdAt).format("dddd, MMMM YYYY")}
+              </Typography>
+              <Typography sx={{
+                ...uiConfigs.style.typoLines(1, 'left'),
+                fontWeight: '600',
+                display: 'flex',
+                textTransform: 'capitalize',
+
+              }}>
+                {photo.status === 'AVAILABLE' ? (
+                  <Stack direction={'row'} alignItems={'center'} justifyContent={'space-around'}>
+                    <WavingHandIcon sx={{ fontSize: '1.2rem', color: "green", mr: '5px' }} />
+                    <Typography variant='body2' color="green" sx={{
+                      textTransform: 'uppercase', ...uiConfigs.style.typoLines(1, 'center'),
+                      fontWeight: '700', fontSize: '1rem',
+                    }}>Available</Typography>
+                  </Stack>
+                ) : photo.status === "BUSY" ? (
+                  <Stack direction={'row'} alignItems={'center'} justifyContent={'space-around'}>
+                    <EventBusyIcon sx={{ fontSize: '1.2rem', color: "orange", mr: '5px' }} />
+                    <Typography variant='body2' color="orange" sx={{
+                      textTransform: 'uppercase', ...uiConfigs.style.typoLines(1, 'center'),
+                      fontWeight: '700', fontSize: '1rem',
+                    }}>Busy</Typography>
+                  </Stack>
+                ) : (
+                  <Stack direction={'row'} alignItems={'center'} justifyContent={'space-around'}>
+                    <EventBusyIcon sx={{ fontSize: '1.2rem', color: "red", mr: '5px' }} />
+                    <Typography variant='body2' color="red" sx={{
+                      textTransform: 'uppercase', ...uiConfigs.style.typoLines(1, 'center'),
+                      fontWeight: '700', fontSize: '1rem',
+                    }}>Inactive</Typography>
+                  </Stack>
+                )}
+              </Typography>
+
+            </Stack>
+
           </Box>
           {/*End header photo detail */}
 
@@ -152,7 +201,7 @@ const PhotoDetailPage = () => {
                       width: "2rem",
                       height: "2px",
                       borderRadius: "10px",
-                      bgcolor: "#C48F56",
+                      bgcolor: "primary.main",
                       bottom: 0,
                     },
                   }}
@@ -214,7 +263,7 @@ const PhotoDetailPage = () => {
                       width: "2rem",
                       height: "2px",
                       borderRadius: "10px",
-                      bgcolor: "#C48F56",
+                      bgcolor: "primary.main",
                       bottom: 0,
                     },
                   }}
@@ -268,7 +317,7 @@ const PhotoDetailPage = () => {
               margin: { xs: "0 auto 1rem", md: "0 1rem 0 0" },
             }}
           >
-            <PhotoReview photo={photo} />
+            <PhotoReview photo={photo} bookedInfo={bookedInfo} />
           </Box>
         </Box >
       )}
@@ -297,7 +346,7 @@ export default PhotoDetailPage;
 //   direction={{ sx: "column", md: 'row' }}
 //   alignItems={"center"}
 //   sx={{
-//     bgcolor: "#C48F56",
+//     bgcolor: "primary.main",
 //     paddingRight: " 1rem",
 //   }}
 // >
@@ -340,7 +389,7 @@ export default PhotoDetailPage;
 //     sx={{
 //       width: "1px",
 //       height: "2rem",
-//       bgcolor: "#C48F56",
+//       bgcolor: "primary.main",
 //       borderRadius: "10px",
 //       margin: "0 10px",
 //     }}

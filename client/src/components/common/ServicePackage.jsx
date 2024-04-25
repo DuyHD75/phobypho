@@ -23,7 +23,6 @@ import ServicePackageItem from "./ServicePackageItem";
 
 const ServicePackage = ({ photo, services }) => {
 
-  console.log(photo)
   const [openModal, setOpenModal] = useState(false);
   const [bookingData, setBookingData] = useState({ photo: photo });
 

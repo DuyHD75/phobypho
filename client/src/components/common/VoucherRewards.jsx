@@ -2,33 +2,28 @@ import React, { Fragment } from "react";
 import { Box, Typography } from "@mui/material";
 import VoucherFeaturesItems from "./VoucherFeaturesItems";
 import VoucherRewardsItems from "./VoucherRewardsItems";
-
+import uiConfigs from "../../configs/ui.config";
+import Container from "./Container";
 function VoucherRewards() {
   return (
-    <Box sx={{ background: "#131313"   }}>
-      <Box
-        maxWidth={"1280px"}
-        margin={"auto"}
-        sx={{
-          textAlign: "center",
-          marginY: "20px",
-          paddingY: "100px",
-        }}
-      >
+
+    <Box>
+      <Box sx={{ ...uiConfigs.style.mainContent, padding: '4rem 3rem' }}>
         <Typography
-          variant="h4"
-          fontSize={{
-            xs: "1.6rem",
-            md: "2.5rem",
-            lg: "2.5rem",
-            textTransform: "uppercase",
-          }}
-          fontWeight="800"
-          marginBottom="100px"
-        >
-          Completed receiving rewards
-        </Typography>
-        <VoucherRewardsItems />
+          sx={{
+            color: '#ffdc48',
+            fontSize:{sx: '2rem', md: '1.6rem'},
+            fontWeight: '800',
+            textTransform: 'capitalize',
+            ...uiConfigs.style.typoLines(2, 'left'),
+            textShadow: '1px 1px 1px #000',
+          }}>Các bước sử dụng voucher</Typography>
+
+        <Container>
+
+          <VoucherRewardsItems />
+
+        </Container>
       </Box>
     </Box>
   );

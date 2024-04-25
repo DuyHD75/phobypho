@@ -48,7 +48,15 @@ const login = async (req, res) => {
           const { username, password } = req.body;
 
           const account = await accountModel.findOne({ username })
-               .select("id username displayName password salt phoneNumber email role");
+               .select("id username displayName password salt phoneNumber email role avatar");
+
+          let location = null;
+          let status = null;
+          if (account.role === ROLES_LIST.photographer) {
+               const photographer = await photographerModel.findOne({ account: account.id }).select("location status");
+               location = photographer.location;
+               status = photographer.status;
+          }
 
           if (account == null) return responseHandler.notfound(res, "Account not found !");
 
@@ -66,6 +74,8 @@ const login = async (req, res) => {
           responseHandler.created(res, {
                token,
                ...account._doc,
+               location,
+               status,
                id: account.id
           });
      } catch {
@@ -100,7 +110,7 @@ const getInfo = async (req, res) => {
                userInfo = await customerModel.findOne({ account: req.account.id }).populate("account");
           } else {
                userInfo = await photographerModel.findOne({ account: req.account.id }).populate("account");
-               console.log(userInfo)
+
           }
           return responseHandler.ok(res, userInfo);
      } catch {

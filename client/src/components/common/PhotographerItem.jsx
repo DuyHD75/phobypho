@@ -70,7 +70,7 @@ const PhotographerItem = ({ photo }) => {
                                    </Typography>
                                    <Button
                                         sx={{
-                                             bgcolor: '#C48F56',
+                                             bgcolor: 'primary.main',
                                              width: "max-content",
                                              height: 'max-content',
                                              fontSize: '0.8rem',

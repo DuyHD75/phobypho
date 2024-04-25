@@ -15,6 +15,8 @@ import {
 import uiConfigs from "../../configs/ui.config";
 import LinearProgress from "@mui/material/LinearProgress";
 import VoucherGetCode from "./VoucherGetCode";
+import { toast } from "react-toastify";
+import voucherApi from "../../api/modules/voucher.api";
 
 const style = {
   position: "absolute",
@@ -23,7 +25,9 @@ const style = {
   transform: "translate(-50%, -50%)",
   width: "100%",
   bgcolor: "background.paper",
-  border: "2px solid #000",
+  borderRadius: '10px',
+  border: "2px solid #444",
+  color: "secondary.colorText",
   boxShadow: 24,
   p: 4,
   maxWidth: "500px",
@@ -31,186 +35,200 @@ const style = {
 
 const ReceiveVouchersModal = () => {
   const dispatch = useDispatch();
-  const { receiveVoucherModalOpen, userPoint, point, code } = useSelector(
-    (state) => state.authModal
-  );
-  const progressValue = (userPoint / point) * 100;
+  const { receiveVoucherModalOpen, customerPoints, voucher } = useSelector((state) => state.authModal);
 
   const handleCloseModal = () => {
     dispatch(setReceiveVoucherModalOpen(false));
   };
 
-  const [voucherMessage, setVoucherMessage] = useState(null);
+  const [exchangeStatus, setExchangeStatus] = useState(undefined);
   const [showVoucher, setShowVoucher] = useState(false);
-  const [codeSuccess, setCodeSuccess] = useState(false);
+  const [messageResponse, setMessageResponse] = useState('');
 
-  const handleButtonClick = () => {
-    if (userPoint >= point) {
-      setVoucherMessage("success");
-      setCodeSuccess(true);
-    } else {
-      setVoucherMessage("fail");
+  const handleExchangeVoucherBtn = async () => {
+    try {
+      if (voucher && customerPoints >= voucher.pointsRequired) {
+
+        const { response, err } = await voucherApi.exchangeVoucher(voucher.id, voucher.pointsRequired);
+
+        if (response) {
+          setExchangeStatus(true);
+          setMessageResponse(response.message);
+          return;
+        }
+        else {
+          const messageError = err.message;
+          throw new Error(messageError.message);
+        }
+      } else {
+        setExchangeStatus(false);
+        setMessageResponse("Bạn không đủ điểm để đổi voucher!");
+      }
+    } catch (err) {
+      setExchangeStatus(false);
+      setMessageResponse(err.message);
+    } finally {
+      setShowVoucher(true);
     }
-    setShowVoucher(true);
   };
 
   const resetShowVoucher = () => {
     setShowVoucher(false);
-    setCodeSuccess(false);
-    setVoucherMessage(null)
+    setMessageResponse('');
+    setExchangeStatus(undefined)
   };
 
-  // set up message
-  const messageComponent = null;
-  if (voucherMessage === "success") {
-    messageComponent = (
-      <Typography
-        fontWeight="400"
-        fontSize={"1rem"}
-        fontStyle={"italic"}
-        color={"#65ff26"}
-        sx={{
-          ...uiConfigs.style.typoLines(2, "left"),
-        }}
-      >
-        Copy mã trên áp dụng vào hoá đơn
-      </Typography>
-    );
-  } else if (voucherMessage === "fail") {
-    messageComponent = (
-      <Typography
-        fontWeight="400"
-        fontSize={"1rem"}
-        fontStyle={"italic"}
-        color={"#ff0000"}
-        sx={{
-          ...uiConfigs.style.typoLines(2, "left"),
-        }}
-      >
-        Bạn không đủ điểm để nhận voucher
-      </Typography>
-    );
-  }
-
   return (
-    <Modal
-      open={receiveVoucherModalOpen}
-      onClose={() => {
-        handleCloseModal();
-        resetShowVoucher(); // Reset state showVoucher when modal closes
-      }}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
-      <Box position={"relative"} sx={style}>
-        <Box
-          sx={{
-            padding: 4,
-            backgroundColor: "background.paper",
+    <Fragment>
+      {voucher && (
+        <Modal
+          open={receiveVoucherModalOpen}
+          onClose={() => {
+            handleCloseModal();
+            resetShowVoucher();
           }}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
         >
-          <Box marginBottom={2}>
-            <Typography
-              color={"#c48f56"}
-              fontSize="2rem"
-              fontWeight={600}
-              textTransform={"uppercase"}
+          <Box position={"relative"} sx={style}>
+            <Box
               sx={{
-                ...uiConfigs.style.typoLines(2, "center"),
+                padding: 4,
+                backgroundColor: "background.paper",
               }}
             >
-              receive vouchers
-            </Typography>
-          </Box>
-          <Stack rowGap={3}>
-            <Typography
-              fontWeight="800"
-              fontSize="2rem"
-              textAlign={"center"}
-              sx={{
-                ...uiConfigs.style.typoLines(2, "center"),
-              }}
-            >
-              {point} points
-            </Typography>
-            <Stack rowGap={2}>
-              <Typography
-                fontWeight="800"
-                fontSize="1.1rem"
-                textAlign={"left"}
-                sx={{
-                  ...uiConfigs.style.typoLines(2, "left"),
-                }}
-              >
-                You have {userPoint}/ {point} points
-              </Typography>
-              <LinearProgress variant="determinate" value={progressValue} />
-            </Stack>
-            <Stack>
-              <Typography
-                fontWeight="800"
-                fontSize="1.1rem"
-                textAlign={"left"}
-                sx={{
-                  ...uiConfigs.style.typoLines(2, "left"),
-                }}
-              >
-                Note:
-              </Typography>
-
-              <Typography
-                fontWeight="300"
-                fontSize={"0.9rem"}
-                fontStyle={"italic"}
-                sx={{
-                  ...uiConfigs.style.typoLines(5, "left"),
-                }}
-              >
-                <span>&#8226;</span> This voucher is valid for in-store
-                purchases only.
-                <br /> <span>&#8226;</span> Ensure to present the voucher before
-                completing the transaction.
-                <br /> <span>&#8226;</span> Voucher redemption is subject to
-                availability and terms and conditions.
-              </Typography>
-            </Stack>
-            <Stack>
-              {codeSuccess && (
+              <Box marginBottom={2}>
                 <Typography
-                  fontWeight="400"
-                  fontSize={"1.6rem"}
+                  color={"#c48f56"}
+                  fontSize="1.4rem"
+                  fontWeight={600}
+                  textTransform={"uppercase"}
                   sx={{
-                    ...uiConfigs.style.typoLines(2, "left"),
+                    ...uiConfigs.style.typoLines(1, "center"),
                   }}
                 >
-                  Voucher code: {code}
+                  Đổi điểm lấy voucher
                 </Typography>
-              )}
-            </Stack>
-            <Stack>
-              <Button
-                onClick={handleButtonClick}
-                size="large"
-                variant="contained"
-                sx={{
-                  fontFamily: "Saira Condensed",
-                  fontWeight: "500",
-                  marginTop: "15px",
-                  padding: "10px 50px",
-                  borderRadius: "9999px",
-                  fontSize: "1.2rem",
-                }}
-              >
-                Receive voucher
-              </Button>
-            </Stack>
-            <Stack>{messageComponent}</Stack>
-          </Stack>
-        </Box>
+              </Box>
+              <Stack rowGap={3}>
+                <Typography
+                  fontWeight="800"
+                  fontSize="1rem"
+                  textAlign={"center"}
+                  sx={{
+                    ...uiConfigs.style.typoLines(2, "center"),
+                  }}
+                >
+                  Bạn có {customerPoints ? ` ${customerPoints.toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}` : 0} điểm
+                </Typography>
+                <Stack rowGap={2}>
+                  <Typography
+                    fontWeight="800"
+                    fontSize="1.1rem"
+                    textAlign={"left"}
+                    sx={{
+                      ...uiConfigs.style.typoLines(2, "left"),
+                    }}
+                  >
+                    Tiến trình tích điểm {`${customerPoints.toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}/ 
+                    {` ${voucher.pointsRequired.toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`} điểm
+                  </Typography>
+                  <LinearProgress variant="determinate" value={(customerPoints / voucher.pointsRequired) * 100} />
+                </Stack>
+                <Stack>
+                  <Typography
+                    fontWeight="800"
+                    fontSize="1.1rem"
+                    textAlign={"left"}
+                    sx={{
+                      ...uiConfigs.style.typoLines(2, "left"),
+                    }}
+                  >
+                    Chú ý:
+                  </Typography>
 
-        {showVoucher && <VoucherGetCode type={voucherMessage} />}
-      </Box>
-    </Modal>
+                  <Typography
+                    fontWeight="300"
+                    fontSize={"1rem"}
+                    fontStyle={"italic"}
+                    sx={{
+                      ...uiConfigs.style.typoLines(5, "left"),
+                      color: 'secondary.subText', 
+                    }}
+                  >
+                    <span>&#8226;</span> Phiếu voucher này chỉ có giá trị cho các giao dịch trên hệ thống.
+                    <br /> <span>&#8226;</span> Đảm bảo voucher còn trong thời hạn sử dụng.
+                    <br /> <span>&#8226;</span> Không chia sẻ voucher cho người khác.
+                  </Typography>
+                </Stack>
+                <Stack>
+                  {exchangeStatus && (
+                    <Box>
+                      <Typography
+                        fontSize={"1rem"}
+                        sx={{
+                          ...uiConfigs.style.typoLines(1, "center"),
+                          color: 'red',
+                          marginBottom: '5px',
+                          borderRadius: '10px',
+                          border: '1px solid red',
+                          padding: '5px',
+                        }}
+                      >
+                        {voucher.code}
+
+                      </Typography>
+                      <Typography sx={{
+                        ...uiConfigs.style.typoLines(1, "center"),
+                        color: 'green',
+                        fontSize: '1rem',
+                      }}>{'Copy mã này vào hóa đơn để được giảm giá !'}</Typography>
+                    </Box>
+                  )}
+
+                  {!exchangeStatus && (
+                    <Typography
+                      fontSize={"0.9rem"}
+                      color={"#780116"}
+                      sx={{
+                        ...uiConfigs.style.typoLines(1, "center"),
+                        textTransform: "capitalize",
+                      }}
+                    >
+                      {messageResponse}
+                    </Typography>
+                  )}
+                </Stack>
+
+                <Stack>
+                  <Button
+                    onClick={handleExchangeVoucherBtn}
+                    size="small"
+                    variant="contained"
+                    disabled={exchangeStatus !== undefined}
+                    sx={{
+                      ...uiConfigs.style.typoLines(1, "center"),
+                      width: 'fit-content',
+                      position: "relative",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      padding: "0.4rem 2rem",
+                      borderRadius: "10px",
+                      fontSize: "0.9rem",
+                    }}
+                  >
+                    Nhận voucher
+                  </Button>
+                </Stack>
+              </Stack>
+            </Box>
+
+            {showVoucher && <VoucherGetCode type={exchangeStatus} messageResponse={messageResponse} />}
+          </Box>
+        </Modal >
+      )}
+
+    </Fragment>
   );
 };
 

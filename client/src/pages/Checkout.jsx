@@ -6,56 +6,96 @@ import { LoadingButton } from '@mui/lab';
 import uiConfigs from '../configs/ui.config';
 
 import customerApi from '../api/modules/customer.api';
+import { toast } from 'react-toastify';
 
 const Checkout = () => {
 
      const locationHook = useLocation();
-
-
      const [bookingData, setBookingData] = useState(locationHook.state);
      const [errorMessage, setErrorMessage] = useState(null);
-     const [discount, setDiscount] = useState(null);
+     const [vouchers, setVouchers] = useState([]);
+     const [transactionCode, setTransactionCode] = useState("");
+     const [isProcessing, setIsProcessing] = useState(false);
+     const [voucherCode, setVoucherCode] = useState('');
 
-     const currentPrice = bookingData.service_package.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
-     const [totalPrice, setTotalPrice] = useState(currentPrice); // Initial price
+     const currentPrice = bookingData.service_package.price;
 
-     const checkVoucherCode = (event) => {
-          const voucherCode = event.target.value.toUpperCase(); // Convert to uppercase for case-insensitive comparison
+     const generateTransactionCode = () => {
+          const length = 7;
+          const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+          let code = '';
 
-          if (voucherCode === "PHPDIS20") {
-               setDiscount(20);
-               const discountedPrice = bookingData.service_package.price * (1 - 0.2);
-               setTotalPrice(discountedPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
-               setErrorMessage(null);
-          } else {
-               setDiscount(null);
-               setTotalPrice(currentPrice);
-               setErrorMessage('Mã giảm giá không hợp lệ !');
+          for (let i = 0; i < length; i++) {
+               const randomIndex = Math.floor(Math.random() * characters.length);
+               code += characters.charAt(randomIndex);
           }
+          setTransactionCode(code);
+     };
+
+     useEffect(() => {
+          generateTransactionCode();
+          const getCustomerVouchers = async () => {
+               const { response, err } = await customerApi.getCustomerVouchers();
+
+               if (response) {
+                    setVouchers(response.vouchers);
+               }
+               if (err) {
+                    return toast.error('Lỗi khi lấy thông tin voucher !');
+               }
+          }
+          getCustomerVouchers();
+     }, [])
+
+     const [totalPrice, setTotalPrice] = useState(currentPrice);
+
+
+     let timeout = null;
+     const checkVoucherCode = (event) => {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => {
+               const userEntryCode = event.target.value.toUpperCase();
+
+               const voucher = vouchers.find(voucher => voucher.code === userEntryCode);
+
+               if (voucher) {
+                  
+                    setVoucherCode(voucher.code);
+                    setTotalPrice(currentPrice * (1 - voucher.value / 100));
+                    setErrorMessage(undefined);
+               } else {
+                    setErrorMessage('Mã giảm giá không hợp lệ !');
+                    setTotalPrice(currentPrice);
+               }
+
+          }, 1000);
      };
 
      const handleCheckoutProcess = async () => {
-          const updatedBookingData = { ...bookingData, total_price: totalPrice };
+          const updatedBookingData = { ...bookingData, voucher_code: voucherCode, total_price: totalPrice, };
+
           setBookingData(updatedBookingData);
 
-          const { response, err } = await customerApi.checkout(updatedBookingData);
+          setIsProcessing(true);
+          const { response, err } = await customerApi.createBooking(updatedBookingData);
+          setIsProcessing(false);
           if (response) {
-               console.log(response);
-          } else {
-               console.log(err);
+               return toast.success('Thanh toán thành công !');
+          }
+          if (err) {
+               return toast.error(err.message);
           }
      };
+
      return (
           <Fragment>
                <Box
                     sx={{
-                         color: 'primary.contrastText',
                          ...uiConfigs.style.mainContent,
                          padding: { xs: '16px', md: '0 4rem' },
                          marginBottom: '4rem',
                     }}
                >
-
 
                     <Box sx={{ marginTop: { xs: "5rem", md: "8rem", lg: "8rem" } }}>
                          <Typography
@@ -64,19 +104,20 @@ const Checkout = () => {
                                    fontSize: { xs: '1rem', md: '2rem', lg: '3rem' },
                                    fontWeight: 800,
                                    position: 'relative',
-                                   color: "secondary.colorText",
+                                   color: "primary.headerColor",
+                                   textShadow: '1px 1px 1px #000',
                                    "::before": {
                                         position: 'absolute',
                                         content: '""',
                                         width: '2rem',
                                         height: '2px',
-                                        bgcolor: '#C48F56',
+                                        bgcolor: 'primary.main',
                                         bottom: 0,
                                         left: 0
                                    }
                               }}
                          >
-                              Check out
+                              Thanh Toán
                          </Typography>
 
 
@@ -132,15 +173,17 @@ const Checkout = () => {
                                              sx={{
                                                   marginTop: '2rem',
                                                   fontSize: '1.4rem',
-                                                  width: '70%',
+                                                  width: 'fit-content',
+                                                  padding: '0.4rem 4rem',
                                                   fontWeight: 700,
                                                   ...uiConfigs.style.typoLines(1, 'center'),
-                                                  border: '1px groove #C48F56',
+                                                  border: '1px groove #2D89E5',
                                                   letterSpacing: '2px',
                                                   color: 'secondary.colorText',
+
                                              }}
 
-                                        >HKDKJSIE</Typography>
+                                        >{transactionCode}</Typography>
                                    </Stack>
 
 
@@ -151,17 +194,16 @@ const Checkout = () => {
                                    sx={{
                                         width: { xs: '100%', md: '45%' },
                                         padding: '0 1rem',
-                                        zIndex: 99
                                    }}
                                    direction={'column'}
                               >
                                    <Typography
                                         sx={{
-                                             fontSize: { xs: '1.6rem', md: '2rem' },
+                                             fontSize: { xs: '1.2rem', md: '1.4rem' },
                                              fontWeight: '700',
                                              ...uiConfigs.style.typoLines(1, 'center'),
                                              padding: '1rem',
-                                             bgcolor: '#333',
+                                             bgcolor: '#fff',
                                              borderBottom: '2px solid #fff',
                                              textTransform: 'uppercase'
                                         }}
@@ -172,14 +214,14 @@ const Checkout = () => {
                                         alignItems={'center'}
                                         justifyContent={'space-between'}
                                         sx={{
-                                             bgcolor: '#333',
+                                             bgcolor: '#ffff',
                                              borderBottom: '1px solid #000',
                                              padding: '1rem'
                                         }}
                                    >
                                         <Typography sx={{
                                              ...uiConfigs.style.typoLines(1, 'left'),
-                                             fontSize: '1.1rem',
+                                             fontSize: '1rem',
 
                                         }}>Thợ chụp ảnh: </Typography>
                                         <Box>
@@ -187,8 +229,8 @@ const Checkout = () => {
                                                   to={routesGen.photoDetail(bookingData.photo.id)}
                                                   style={{
                                                        textDecoration: 'none',
-                                                       fontSize: '1.1rem',
-                                                       color: '#C48F56',
+                                                       fontSize: '1rem',
+                                                       color: 'primary.main',
                                                        ...uiConfigs.style.typoLines(1, 'left'),
                                                        textTransform: 'capitalize'
                                                   }}
@@ -205,21 +247,21 @@ const Checkout = () => {
 
                                    <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'}
                                         sx={{
-                                             bgcolor: '#333',
+                                             bgcolor: '#fff',
                                              borderBottom: '1px solid #000',
                                              padding: '1rem'
                                         }}
                                    >
                                         <Typography sx={{
                                              ...uiConfigs.style.typoLines(1, 'left'),
-                                             fontSize: '1.1rem',
+                                             fontSize: '1rem',
 
                                         }}>Địa điểm: </Typography>
                                         <Typography
                                              style={{
                                                   textDecoration: 'none',
-                                                  fontSize: '1.1rem',
-                                                  color: '#C48F56',
+                                                  fontSize: '1rem',
+                                                  color: 'primary.main',
                                                   width: '60%',
                                                   ...uiConfigs.style.typoLines(3, 'right')
                                              }}
@@ -233,21 +275,21 @@ const Checkout = () => {
 
                                    <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'}
                                         sx={{
-                                             bgcolor: '#333',
+                                             bgcolor: '#fff',
                                              borderBottom: '1px solid #000',
                                              padding: '1rem'
                                         }}
                                    >
                                         <Typography sx={{
                                              ...uiConfigs.style.typoLines(1, 'left'),
-                                             fontSize: '1.1rem',
+                                             fontSize: '1rem',
 
                                         }}>Ngày đặt lịch: </Typography>
                                         <Typography
                                              style={{
                                                   textDecoration: 'none',
-                                                  fontSize: '1.1rem',
-                                                  color: '#C48F56',
+                                                  fontSize: '1rem',
+                                                  color: 'primary.main',
                                                   width: '60%',
                                                   ...uiConfigs.style.typoLines(3, 'right')
                                              }}
@@ -260,14 +302,14 @@ const Checkout = () => {
 
                                    <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'}
                                         sx={{
-                                             bgcolor: '#333',
+                                             bgcolor: '#fff',
                                              borderBottom: '1px solid #000',
                                              padding: '1rem'
                                         }}
                                    >
                                         <Typography sx={{
                                              ...uiConfigs.style.typoLines(1, 'left'),
-                                             fontSize: '1.1rem',
+                                             fontSize: '1rem',
 
                                         }}>Gói dịch vụ: </Typography>
                                         <Box>
@@ -275,8 +317,8 @@ const Checkout = () => {
                                                   to={routesGen.photoDetail("1")}
                                                   style={{
                                                        textDecoration: 'none',
-                                                       fontSize: '1.1rem',
-                                                       color: '#C48F56',
+                                                       fontSize: '1rem',
+                                                       color: 'primary.main',
                                                        ...uiConfigs.style.typoLines(2, 'right')
                                                   }}
                                              >
@@ -290,14 +332,14 @@ const Checkout = () => {
 
                                    <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'}
                                         sx={{
-                                             bgcolor: '#333',
+                                             bgcolor: '#fff',
                                              borderBottom: '1px solid #000',
                                              padding: '1rem'
                                         }}
                                    >
                                         <Typography sx={{
                                              ...uiConfigs.style.typoLines(1, 'left'),
-                                             fontSize: '1.1rem',
+                                             fontSize: '1rem',
 
                                         }}>Giá: </Typography>
                                         <Box>
@@ -305,8 +347,8 @@ const Checkout = () => {
                                                   to={routesGen.photoDetail("1")}
                                                   style={{
                                                        textDecoration: 'none',
-                                                       fontSize: '1.1rem',
-                                                       color: '#C48F56',
+                                                       fontSize: '1rem',
+                                                       color: 'primary.main',
                                                        ...uiConfigs.style.typoLines(2, 'right')
                                                   }}
                                              >
@@ -321,14 +363,14 @@ const Checkout = () => {
 
                                    <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'}
                                         sx={{
-                                             bgcolor: '#333',
+                                             bgcolor: '#fff',
                                              borderBottom: '1px solid #000',
                                              padding: '1rem'
                                         }}
                                    >
                                         <Typography sx={{
                                              ...uiConfigs.style.typoLines(1, 'left'),
-                                             fontSize: '1.1rem',
+                                             fontSize: '1rem',
                                         }}>Mã giảm giá: </Typography>
                                         <Box>
                                              <TextField
@@ -342,18 +384,17 @@ const Checkout = () => {
 
                                         </Box>
 
-
                                    </Stack>
                                    <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'}
                                         sx={{
-                                             bgcolor: '#333',
+                                             bgcolor: '#fff',
                                              borderBottom: '1px solid #000',
                                              padding: '1rem'
                                         }}
                                    >
                                         <Typography sx={{
                                              ...uiConfigs.style.typoLines(1, 'left'),
-                                             fontSize: '1.1rem',
+                                             fontSize: '1rem',
 
                                         }}>Tổng hóa đơn: </Typography>
                                         <Box>
@@ -361,13 +402,13 @@ const Checkout = () => {
                                                   to={routesGen.photoDetail("1")}
                                                   style={{
                                                        textDecoration: 'none',
-                                                       fontSize: '1.1rem',
-                                                       color: '#C48F56',
+                                                       fontSize: '1rem',
+                                                       color: 'primary.main',
                                                        ...uiConfigs.style.typoLines(1, 'left')
                                                   }}
                                              >
                                                   {
-                                                       totalPrice
+                                                       totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
 
                                                   }
 
@@ -389,13 +430,14 @@ const Checkout = () => {
                                              transform: 'translate(-50%, -50%)'
                                         }}
                                         onClick={handleCheckoutProcess}
+                                        loading={isProcessing}
                                    >
-                                        Hoàn tất thanh toán
+                                        {isProcessing ? 'Đang xử lý...' : 'Hoàn tất thanh toán'}
                                    </LoadingButton>
 
                                    <Typography
                                         sx={{
-                                             color: '#C48F56',
+                                             color: 'primary.main',
                                              ...uiConfigs.style.typoLines(2, 'center')
                                         }}
 

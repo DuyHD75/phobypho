@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Box, Grid, Typography, Stack, Paper, Button } from "@mui/material";
 
@@ -8,85 +8,67 @@ import {
   setReceiveVoucherModalOpen,
 } from "../../redux/features/authModalSlice";
 
-const voucherList = {
-  items: [
-    {
-      id: 1,
-      name: "Voucher 13K",
-      price: 13000,
-      point: 9000,
-      code: "VOUCHER13K",
-    },
-    {
-      id: 2,
-      name: "Voucher 26K",
-      price: 26000,
-      point: 18000,
-      code: "VOUCHER26K",
-    },
-    {
-      id: 3,
-      name: "Voucher 40K",
-      price: 40000,
-      point: 28000,
-      code: "VOUCHER40k",
-    },
-    {
-      id: 4,
-      name: "Voucher 50K",
-      price: 50000,
-      point: 37000,
-      code: "VOUCHER50K",
-    },
-    {
-      id: 5,
-      name: "CGV 2D movie tickets",
-      price: 120000,
-      point: 75000,
-      code: "VOUCHER_CGV_2D",
-    },
-    {
-      id: 6,
-      name: "Evoucher Tiniworld 200K",
-      price: 150000,
-      point: 150000,
-      code: "VOUCHER_TINIWORLD",
-    },
-  ],
-};
+import voucherApi from "../../api/modules/voucher.api";
+import { toast } from "react-toastify";
+import dayjs from "dayjs";
+import customerApi from "../../api/modules/customer.api";
 
-function VoucherPointItems() {
-  const { user } = useSelector((state) => state.user);
+
+const VoucherPointItems = () => {
+
   const dispatch = useDispatch();
-  const userPoint = 9000;
+  const { user } = useSelector((state) => state.user);
+
+  const [vouchers, setVouchers] = useState([]);
+  const [customerInfo, setCustomerInfo] = useState(undefined);
+
+
+  useEffect(() => {
+
+    const getCustomerPoint = async () => {
+      const { response, err } = await customerApi.getCustomerByAccountId();
+      if (err) return toast.error(err);
+
+      setCustomerInfo(response);
+    }
+
+    const getVoucherList = async () => {
+      getCustomerPoint();
+      const { response, err } = await voucherApi.getVouchers();
+      if (err) {
+        return toast.error('Truy cập dữ liệu thất bại');
+      }
+      setVouchers(response);
+    };
+    getVoucherList();
+  }, []);
+
+
   return (
     <Fragment>
       <Grid
         container
-        rowSpacing={5}
-        columnSpacing={3}
-        justifyContent="center"
-        paddingX="50px"
+        spacing={{ sx: '0', md: '3' }}
       >
-        {voucherList.items.map((item) => {
+        {vouchers.map((item) => {
           return (
             <Grid item xs={12} sm={6} md={4} key={item.id}>
               <Stack
                 sx={{
                   border: "1px solid transparent",
-                  padding: "26px",
+                  padding: "2rem",
                   textAlign: "center",
-                  borderRadius: "20px",
+                  borderRadius: "1rem",
                   "&:hover": {
-                    border: "1px solid #c48f56",
+                    border: "2px solid #2D89E5",
                   },
                 }}
               >
                 <Box>
                   <Box
                     sx={{
-                      backgroundColor: "#c48f56",
-                      padding: "18px 18px",
+                      backgroundColor: "#2D89E5",
+                      padding: "1rem",
                       borderRadius: "20px",
                     }}
                   >
@@ -98,26 +80,27 @@ function VoucherPointItems() {
                         boxShadow: "none",
                         marginBottom: "12px",
                       }}
-                    ></Paper>
+                    />
                     <Typography
                       fontWeight="800"
                       fontSize="2rem"
                       textAlign={"left"}
                       sx={{
-                        ...uiConfigs.style.typoLines(2, "left"),
+                        ...uiConfigs.style.typoLines(1, "left"),
+                        color: 'secondary.contrastText',
                       }}
                     >
-                      Voucher
+                      {item.name}
                     </Typography>
                     <Typography
                       fontWeight="600"
                       fontSize="1.5rem"
                       textAlign={"left"}
                       sx={{
-                        ...uiConfigs.style.typoLines(2, "left"),
+                        ...uiConfigs.style.typoLines(1, "left"),
                       }}
                     >
-                      {item.price} VND
+                      {item.price}
                     </Typography>
                     <Paper
                       sx={{
@@ -139,9 +122,11 @@ function VoucherPointItems() {
                       textAlign={"left"}
                       sx={{
                         ...uiConfigs.style.typoLines(2, "left"),
+                        color: 'primary.headerColor',
+                        textShadow: '1px 1px 1px #000',
                       }}
                     >
-                      Unlimited
+                      Ngày hết hạn: {dayjs(item.expirationDate).format("DD/MM/YYYY")}
                     </Typography>
                     <Typography
                       textAlign={"left"}
@@ -167,7 +152,8 @@ function VoucherPointItems() {
                         ...uiConfigs.style.typoLines(2, "left"),
                       }}
                     >
-                      {item.point} points
+
+                      {`${item.pointsRequired.toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`} points
                     </Typography>
 
                     <Typography
@@ -176,9 +162,7 @@ function VoucherPointItems() {
                         ...uiConfigs.style.typoLines(2, "left"),
                       }}
                     >
-                      *Voucher is only valid when purchasing on website
-                      Phobypho.com.vn and only applies during the validity
-                      period of the voucher
+                      {item.description}
                     </Typography>
                   </Stack>
                   {!user ? (
@@ -186,37 +170,41 @@ function VoucherPointItems() {
                       size="large"
                       sx={{
                         width: "100%",
-                        fontFamily: "Saira Condensed",
-                        border: "1px solid #c48f56",
-                        fontSize: "1rem",
-                        fontWeight: "500",
-                        marginY: "15px",
-                        padding: "10px 50px",
-                        borderRadius: "9999px",
+                        ...uiConfigs.style.typoLines(1, 'center'),
+                        border: "1px solid #2D89E5",
+                        fontSize: "0.9rem",
+                        width: 'fit-content',
+                        position: 'relative',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        padding: "10px 30px",
+                        borderRadius: "20px",
                         "&:hover": {
-                          backgroundColor: " #c48f56",
+                          backgroundColor: " #2D89E5",
                           color: "#fff",
                           transition: "background-color 0.3s ease",
                         },
                       }}
                       onClick={() => dispatch(setAuthModalOpen(true))}
                     >
-                      Login Now
+                      Đăng nhập
                     </Button>
                   ) : (
                     <Button
                       size="large"
                       sx={{
                         width: "100%",
-                        fontFamily: "Saira Condensed",
-                        border: "1px solid #c48f56",
-                        fontSize: "1rem",
-                        fontWeight: "500",
-                        marginY: "15px",
-                        padding: "10px 50px",
-                        borderRadius: "9999px",
+                        ...uiConfigs.style.typoLines(1, 'center'),
+                        border: "1px solid #2D89E5",
+                        fontSize: "0.9rem",
+                        width: 'fit-content',
+                        position: 'relative',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        padding: "10px 30px",
+                        borderRadius: "20px",
                         "&:hover": {
-                          backgroundColor: " #c48f56",
+                          backgroundColor: " #2D89E5",
                           color: "#fff",
                           transition: "background-color 0.3s ease",
                         },
@@ -225,14 +213,13 @@ function VoucherPointItems() {
                         dispatch(
                           setReceiveVoucherModalOpen({
                             isOpen: true,
-                            userPoint,
-                            point: item.point,
-                            code: item.code
+                            customerPoints: customerInfo.accumulated_points,
+                            voucher: item
                           })
                         )
                       }
                     >
-                      get voucher
+                      Đổi ngay
                     </Button>
                   )}
                 </Box>

@@ -1,4 +1,4 @@
-import React, { useState, cloneElement, Fragment } from "react";
+import React, { useState, cloneElement } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
@@ -8,6 +8,7 @@ import {
   IconButton,
   Stack,
   Toolbar,
+  Typography,
   useScrollTrigger,
 } from "@mui/material";
 import menuConfigs from "../../configs/menu.config";
@@ -16,7 +17,10 @@ import { Link } from "react-router-dom";
 import SideBar from "./SideBar";
 import { setAuthModalOpen } from "../../redux/features/authModalSlice";
 import UserMenu from "./UserMenu";
-
+import uiConfigs from "../../configs/ui.config";
+import Switch from '@mui/material/Switch';
+import photographerApi from "../../api/modules/photographer.api";
+import { toast } from 'react-toastify';
 
 
 const ScrollAppBar = ({ children, window }) => {
@@ -28,11 +32,13 @@ const ScrollAppBar = ({ children, window }) => {
 
   return cloneElement(children, {
     sx: {
-      color: trigger ? "secondary.contrastText" : "secondary.colorText",
-      backgroundColor: trigger ? "#222" : "transparent",
+      color: trigger ? "secondary.colorText" : "secondary.colorText",
+      background: trigger ? "#f5f7fa" : "transparent",
     },
   });
 };
+
+
 
 const Topbar = () => {
   const { user } = useSelector((state) => state.user);
@@ -40,11 +46,24 @@ const Topbar = () => {
 
   const [openSideBar, setOpenSideBar] = useState(false);
 
+  const [isActive, setIsActive] = useState(true);
+
   const dispatch = useDispatch();
 
   const toggleSidebar = () => {
     setOpenSideBar(!openSideBar);
   };
+
+  const handleChangeAccountStatus = async (event) => {
+    setIsActive(event.target.checked);
+    const { response, err } = await photographerApi.updateStatus({ status: event.target.checked ? "AVAILABLE" : "INACTIVE" });
+    if (response) {
+      toast.success("Trang thái tài khoản đã được cập nhật!");
+    }
+    if (err) {
+      toast.error("Có lỗi xảy ra, vui lòng thử lại sau!");
+    }
+  }
 
   return (
     <div>
@@ -60,6 +79,7 @@ const Topbar = () => {
               marginX: "auto",
               width: "100%",
               paddingY: "1.6rem",
+
             }}
           >
             <Stack
@@ -75,6 +95,7 @@ const Topbar = () => {
               >
                 <MenuIcon></MenuIcon>
               </IconButton>
+
               <Box
                 sx={{
                   display: { xs: "inline-block", md: "none" },
@@ -101,7 +122,7 @@ const Topbar = () => {
             >
               <Box>
                 {menuConfigs.main.map((item, index) => {
-                  if (!item.role) {
+                  if (!item.role || (user && item.role.includes("CUSTOMER") && user.role === "CUSTOMER")) {
                     return (
                       <Button
                         component={Link}
@@ -116,44 +137,86 @@ const Topbar = () => {
                           fontSize: "0.9rem",
                           fontWeight: "600",
                           color: appState.includes(item.state)
-                            ? "#C48F56"
+                            ? "primary.main"
                             : "inherit",
+                          textShadow: "1px 1px 1px rgba(255,255,255,0.5)"
                         }}
                       >
                         {item.display}
                       </Button>
                     );
-                  } else {
-                    if (user && item.role === user.role) {
-                      return (
-                        <Button
-                          component={Link}
-                          to={item.path}
-                          key={index}
-                          variant={
-                            appState.includes(item.state) ? "outline" : "text"
-                          }
-                          sx={{
-                            mr: 2,
-                            fontFamily: '"Nunito", sans-serif',
-                            fontSize: "0.9rem",
-                            fontWeight: "600",
-                            color: appState.includes(item.state)
-                              ? "#C48F56"
-                              : "inherit",
-                          }}
-                        >
-                          {item.display}
-                        </Button>
-                      );
-                    }
-                    return null;
+                  } else if (user && item.role === "PHOTOGRAPHER" && user.role === "PHOTOGRAPHER") {
+                    return (<Button
+                      component={Link}
+                      to={item.path}
+                      key={index}
+                      variant={
+                        appState.includes(item.state) ? "outline" : "text"
+                      }
+                      sx={{
+                        mr: 2,
+                        fontFamily: '"Nunito", sans-serif',
+                        fontSize: "0.9rem",
+                        fontWeight: "600",
+                        color: appState.includes(item.state)
+                          ? "primary.main"
+                          : "inherit",
+                        textShadow: "1px 1px 1px rgba(255,255,255,0.5)"
+
+                      }}
+                    >
+                      {item.display}
+                    </Button>);
+                  } else if (!user && item.role && !item.role.includes("PHOTOGRAPHER")) {
+                    // Show items that don't require authentication and are not for photographers
+                    return (
+                      <Button
+                        component={Link}
+                        to={item.path}
+                        key={index}
+                        variant={
+                          appState.includes(item.state) ? "outline" : "text"
+                        }
+                        sx={{
+                          mr: 2,
+                          fontFamily: '"Nunito", sans-serif',
+                          fontSize: "0.9rem",
+                          fontWeight: "600",
+                          color: appState.includes(item.state)
+                            ? "primary.main"
+                            : "inherit",
+                          textShadow: "1px 1px 1px rgba(255,255,255,0.5)"
+
+                        }}
+                      >
+                        {item.display}
+                      </Button>
+                    );
                   }
+                  return null;
                 })}
               </Box>
             </Box>
 
             {/*main menu */}
+
+            {user && user.role === "PHOTOGRAPHER" &&
+              (
+                <Stack direction="row" alignItems="center" >
+                  <Typography sx={{
+                    ...uiConfigs.style.typoLines(1, 'left'),
+                    color: isActive ? 'primary.main' : 'primary.headerColor',
+                    textTransform: 'normal',
+                    textShadow: '1px 1px 1px #222',
+                  }}>{isActive ? "AVAILABLE" : "INACTIVE"}</Typography>
+                  <Switch
+                    checked={isActive}
+                    onChange={handleChangeAccountStatus}
+                    inputProps={{ 'aria-label': 'controlled' }}
+                  />
+                </Stack>
+              )
+            }
 
             <Stack spacing={3} direction="row" alignItems="center">
               {!user && (
@@ -170,12 +233,12 @@ const Topbar = () => {
                 </Button>
               )}
             </Stack>
+            
             {user && <UserMenu />}
-
           </Toolbar>
         </AppBar>
       </ScrollAppBar>
-    </div>
+    </div >
   );
 };
 

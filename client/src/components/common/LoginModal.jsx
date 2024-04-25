@@ -8,7 +8,7 @@ import { setAuthModalOpen } from '../../redux/features/authModalSlice';
 import { toast } from 'react-toastify';
 import { Alert, Box, Button, Stack, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-
+import { FaArrowRightFromBracket } from "react-icons/fa6";
 
 const LoginModal = ({ switchAuthState }) => {
 
@@ -47,7 +47,7 @@ const LoginModal = ({ switchAuthState }) => {
 
 
      return (
-          <Box component='form' onSubmit={loginForm.handleSubmit}>
+          <Box component='form' onSubmit={loginForm.handleSubmit} >
                <Stack spacing={2}>
                     <TextField
                          type='text' placeholder='Enter you username ...' name='username'
@@ -69,20 +69,21 @@ const LoginModal = ({ switchAuthState }) => {
                     loadingPosition='start'
                     type='submit'
                     fullWidth
-                    size='medium'
+                    size='small'
                     sx={{
                          marginTop: 4,
                          fontFamily: '"Nunito", sans-serif',
-                         fontSize: '1rem'
+                         fontSize: '0.9rem'
                     }}
                     loading={isLoginRequest}
+                    startIcon={<FaArrowRightFromBracket />}
                >
                     Login
                </LoadingButton>
 
                <Button
                     fullWidth
-                    sx={{ marginTop: 1, fontFamily: '"Nunito", sans-serif', fontSize: '1rem' }}
+                    sx={{ marginTop: 1, fontFamily: '"Nunito", sans-serif', fontSize: '0.9rem' }}
                     onClick={() => switchAuthState()}
                >
                     Sign up

@@ -2,7 +2,7 @@ import privateClient from "../client/private.client";
 import publicClient from "../client/public.client";
 
 const photoEndpoints = {
-  list: ({ location }) => `/photos?location=${location}`,
+  list:  `/photos`,
   add: "/photos",
   updatePostByAuth: "/photos/post",
   detail: ({ photo_id }) => `/photos/${photo_id}`,
@@ -13,10 +13,10 @@ const photoEndpoints = {
 };
 
 const photoApi = {
-  getListPhotos: async ({ location }) => {
+  getListPhotos: async () => {
     try {
       const response = await publicClient.get(
-        photoEndpoints.list({ location })
+        photoEndpoints.list
       );
       return { response };
     } catch (err) {

@@ -1,23 +1,24 @@
 import HomePage from '../pages/HomePage';
 import PhotoListPage from '../pages/PhotoList';
 import PhotoDetailPage from '../pages/PhotoDetail'
-import BookingHistoryPage from '../pages/BookingHistory';
-import FavoriteListPage from '../pages/FavoriteList';
-import PasswordUpdatePage from '../pages/PasswordUpdate';
+import FavoriteList from '../pages/FavoriteList';
 import ProtectedPage from '../components/common/ProtectedPage';
 import Checkout from '../pages/Checkout';
 import PostPhoto from '../pages/PostPhoto';
 import Voucher from '../pages/Voucher';
 import AboutUs from './../pages/AboutUs';
+import Profile from '../pages/Profile';
+import ChangePassword from '../components/common/ChangePassword';
+import BookingHistory from '../pages/BookingHistory';
 
 export const routesGen = {
-  home: "/",
-  photoList: "/photos",
-  photoDetail: (photoId) => `/photos/${photoId}`,
-  favoriteList: "/favorites",
-  bookingHistory: "/booking_history",
-  passwordUpdate: "/password_update",
-  checkOut: "/checkout",
+     home: "/",
+     photoList: "/photos",
+     photoDetail: (photoId) => `/photos/${photoId}`,
+     favoriteList: "/favorites",
+     bookingHistory: "/booking_history",
+     passwordUpdate: "/password_update",
+     checkOut: "/checkout",
 };
 
 const routes = [
@@ -32,10 +33,10 @@ const routes = [
           state: "photos.detail"
      },
      {
-          path: "/password_update",
+          path: "/password-update",
           element: (
                <ProtectedPage>
-                    <PasswordUpdatePage />
+                    <ChangePassword />
                </ProtectedPage>
           ),
           state: "password.update"
@@ -44,7 +45,7 @@ const routes = [
           path: "/favorites",
           element: (
                <ProtectedPage>
-                    <FavoriteListPage />
+                    <FavoriteList />
                </ProtectedPage>
           ),
           state: "favorites"
@@ -56,14 +57,16 @@ const routes = [
      },
      {
           path: "/checkout",
-          element: <Checkout />,
+          element: <ProtectedPage>
+               <Checkout />
+          </ProtectedPage>,
           state: "checkout"
      },
      {
           path: "/booking_history",
           element: (
                <ProtectedPage>
-                    <BookingHistoryPage />
+                    <BookingHistory />
                </ProtectedPage>
           ),
           state: "booking.history"
@@ -87,6 +90,16 @@ const routes = [
           element: <AboutUs />,
           state: "aboutus"
      },
+     {
+          path: "/profile",
+          element: (
+               <ProtectedPage>
+                    <Profile />
+               </ProtectedPage>
+          ),
+          state: "profile"
+     },
+
 ];
 
 export default routes;

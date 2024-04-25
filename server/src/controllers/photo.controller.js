@@ -7,29 +7,13 @@ import photographerModel from "../models/photographer.model.js";
 
 const getAllPhotoInfo = async (req, res) => {
   try {
-    const { location } = req.query;
-    let photos, photographers;
 
-    if (location.toLowerCase() === "all") {
-      photos = await photoModel.find({}).populate("servicePackages").exec();
-      photographers = await photographerModel
-        .find({})
-        .populate("account")
-        .exec();
-    } else {
-      photographers = await photographerModel
-        .find({ location: { $regex: new RegExp(location, "i") } })
-        .populate("account")
-        .exec();
-      const photographerIds = photographers.map(
-        (photographer) => photographer.account
-      );
-      photos = await photoModel
-        .find({ author: { $in: photographerIds } })
-        .populate("servicePackages")
-        .exec();
-    }
-
+    let photos = await photoModel.find({}).populate("servicePackages").exec();
+    let photographers = await photographerModel
+      .find({})
+      .populate("account")
+      .exec();
+    
     photos = photos.map((photo) => {
       const photographer = photographers.find((photographer) =>
         photographer.account.equals(photo.author)
@@ -82,9 +66,9 @@ const getPhotoDetail = async (req, res) => {
 };
 
 
-const getPhotosByAuthor = async (req, res, next) => {
+const getPhotosByAuthor = async (req, res) => {
   try {
-    console.log("getPhotosByAuthor")
+    
     const { authorId } = req.params;
     const photos = await photoModel.find({ author: authorId }).populate('author').exec();
     return responseHandler.ok(res, photos);
@@ -112,7 +96,7 @@ const searchPhotoByMultiFactor = async (req, res) => {
 const createNewPost = async (req, res) => {
   try {
     const photographerId = req.account.id;
-    console.log(photographerId);
+  
 
     const photo = new photoModel({
       author: photographerId,

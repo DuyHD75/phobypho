@@ -1,15 +1,12 @@
 import React, { Fragment, useState } from "react";
 import {
   Box,
-  Typography,
   Stack,
   TextField,
   Grid,
-  Button,
   IconButton,
 } from "@mui/material";
 import {
-  Add as AddIcon,
   Delete as DeleteIcon,
   CheckCircle as CheckCircleIcon,
 } from "@mui/icons-material";
@@ -55,7 +52,7 @@ const PhotoUploader = ({ addedPhotos, onChange }) => {
 
     onChange((prev) => {
       const updatedAlbums = [...prev];
-      // slice create new array but does not remove the source array
+
       updatedAlbums[albumIndex].images.splice(imgIdx, 1);
       console.log(updatedAlbums)
 
@@ -67,7 +64,6 @@ const PhotoUploader = ({ addedPhotos, onChange }) => {
     ev.preventDefault();
     onChange((prev) => {
       const updatedAlbums = [...prev];
-      // return arr with deleted items
       const selectedImage = updatedAlbums[albumIndex].images.splice(imgIdx, 1);
       updatedAlbums[albumIndex].images.unshift(selectedImage);
       return updatedAlbums;
@@ -123,7 +119,7 @@ const PhotoUploader = ({ addedPhotos, onChange }) => {
                     <PhotoAlbumIcon sx={{
                       fontSize: '2rem',
                       marginBottom: '0.4rem',
-                      color: album.albumName === "" ? 'red' : '#fff'
+                      color: album.albumName === "" ? 'red' : 'secondary.main'
                     }} />
                   </InputAdornment>
                 ),
@@ -225,8 +221,7 @@ const PhotoUploader = ({ addedPhotos, onChange }) => {
                   alignItems: "center",
                   height: "100%",
                   justifyContent: "center",
-                  border: "1px solid #333",
-                  borderRadius: "10px",
+                  border: '2px dashed #000',
                   flexDirection: "column",
                 }}
               >
@@ -238,6 +233,7 @@ const PhotoUploader = ({ addedPhotos, onChange }) => {
                   style={{ display: "none" }}
                   onChange={(ev) => uploadPhoto(ev, albumIndex)}
                   disabled={isUploading}
+                  
                 />
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -287,8 +283,7 @@ const PhotoUploader = ({ addedPhotos, onChange }) => {
             alignItems: "center",
             height: "100%",
             justifyContent: "center",
-            border: "1px solid #333",
-            borderRadius: "10px",
+            border: '2px dashed #000',
             flexDirection: "column",
           }}
         >

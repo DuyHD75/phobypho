@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Box, Stack, IconButton, Typography } from "@mui/material";
 import DoneIcon from "@mui/icons-material/Done";
 import CloseIcon from "@mui/icons-material/Close";
+import uiconfigs from "../../configs/ui.config";  
 
-const NotificationBox = ({ type }) => {
+const NotificationBox = ({ type, messageResponse }) => {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
@@ -45,14 +46,11 @@ const NotificationBox = ({ type }) => {
                 top: "50%",
                 transform: "translate(-50%, -50%)",
                 borderRadius: "50%",
-                border:
-                  type === "success"
-                    ? "2px solid #65ff26"
-                    : "2px solid #ff0000",
+                border: type ? "2px solid #65ff26" : "2px solid #ff0000",
               },
             }}
           >
-            {type === "success" ? (
+            {type ? (
               <DoneIcon
                 sx={{
                   padding: "10px",
@@ -79,10 +77,13 @@ const NotificationBox = ({ type }) => {
             fontWeight="800"
             marginY={{ xs: "20px", md: "36px" }}
             height={"36px"}
-            color={type === "success" ? "#65ff26" : "#ff0000"}
+            color={type ? "#65ff26" : "#ff0000"}
             textTransform="uppercase"
+            sx={{
+              ...uiconfigs.style.typoLines(1, "center"),
+            }}
           >
-            {type === "success" ? "đổi quà thành công" : "bạn không đủ điểm"}
+            {messageResponse}
           </Typography>
         </Stack>
       </Stack>

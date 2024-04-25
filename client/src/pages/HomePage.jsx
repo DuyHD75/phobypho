@@ -15,15 +15,19 @@ const HomePage = () => {
                <HeroSlide></HeroSlide>
 
 
-               <Box paddingTop={'3rem'} sx={{ ...uiConfigs.style.mainContent }}>
-                    <Container>
-                         <HeroGrid></HeroGrid>
-                    </Container>
+               <Box>
+                    <Box sx={{ ...uiConfigs.style.mainContent, padding: '4rem' }}>
+                         <Container>
+                              <HeroGrid></HeroGrid>
+                         </Container>
+                    </Box>
                </Box>
 
-               <Box>
+
+               <Box >
                     <PhotographerSlide />
                </Box>
+
 
 
 

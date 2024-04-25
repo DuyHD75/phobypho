@@ -1,26 +1,24 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
   Button,
-  ListItemButton,
-  ListItemText,
-  Stack,
   Typography,
-  useTheme,
 } from "@mui/material";
 import uiConfigs from "../configs/ui.config";
 import { setAuthModalOpen } from "../redux/features/authModalSlice";
 import VoucherFeatures from "../components/common/VoucherFeatures";
 import VoucherRewards from "../components/common/VoucherRewards";
 import VoucherPointExchange from "../components/common/VoucherPointExchange";
-import VoucherGiftExchange from "../components/common/VoucherGiftExchange";
 import VoucherUserPanner from "../components/common/VoucherUserPanner";
+import customerApi from "../api/modules/customer.api";
+import { toast } from "react-toastify";
 
 const Voucher = () => {
 
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
+
   return (
     <Fragment>
       <Box
@@ -66,58 +64,58 @@ const Voucher = () => {
                 textAlign: "center",
               }}
             >
+              <Typography sx={{
+                ...uiConfigs.style.typoLines(1, 'center'),
+                stroke: "#313131",
+                strokeWidth: "1px",
+                fontSize: { xs: "2rem", md: "3rem" },
+                textShadow: "2px 2px 4px #000",
+                color: 'primary.headerColor',
+                textTransform: 'uppercase',
+                fontWeight: "900",
+
+              }}>PHOBYPHO</Typography>
               <Typography
                 variant="h4"
-                fontSize={{ xs: "2rem", md: "2rem", lg: "3rem" }}
-                fontWeight="600"
+
                 sx={{
                   ...uiConfigs.style.typoLines(2, "center"),
-                }}
-              >
-                Phobypho
-              </Typography>
-              <Typography
-                variant="h4"
-                fontSize={{
-                  xs: "3rem",
-                  md: "3rem",
-                  lg: "5rem",
-                  textTransform: "uppercase",
-                }}
-                fontWeight="800"
-                sx={{
-                  ...uiConfigs.style.typoLines(2, "center"),
+                  fontWeight: "800",
                   marginY: 1,
+                  textTransform: "uppercase",
+                  fontSize: {
+                    xs: "0.9rem", md: "1.5rem", lg: "2.6rem",
+                  }
                 }}
               >
-                Capturing Cherished Memories Through the Lens of Time
+                Nhiều mã ưu đãi hấp dẫn áp dụng cho khách hàng thân thiết 
               </Typography>
               <Button
-                size="large"
+                size="small"
                 variant="contained"
                 sx={{
-                 
                   fontWeight: "500",
                   marginY: "15px",
-                  padding: "10px 50px",
-                  borderRadius: "50%",
-                  fontSize: "1.2rem",
+                  padding: "10px 30px",
+                  borderRadius: "10px",
+                  fontSize: "0.9rem",
+                  marginX: "auto",
+                  ...uiConfigs.style.typoLines(1, "center"),
                 }}
                 onClick={() => dispatch(setAuthModalOpen(true))}
               >
-                Login Now
+                Đăng nhập
               </Button>
             </Box>
           ) : (
             <VoucherUserPanner />
           )}
         </Box>
-        <VoucherFeatures />
         <VoucherRewards />
+        <VoucherFeatures />
         <VoucherPointExchange />
-        <VoucherGiftExchange />
       </Box>
-    </Fragment>
+    </Fragment >
   );
 };
 

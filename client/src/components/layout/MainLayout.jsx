@@ -6,8 +6,37 @@ import Footer from '../common/Footer';
 import Topbar from '../common/Topbar';
 import AuthModal from '../common/AuthModal';
 import ReceiveVouchersModal from '../common/ReceiveVouchersModal';
+import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { setListFavorites } from '../../redux/features/userSlice';
+import favoriteApi from '../../api/modules/favorite.api';
+import { toast } from 'react-toastify';
+import { setUser } from '../../redux/features/userSlice';
+import userApi from '../../api/modules/user.api';
 
 const MainLayout = () => {
+
+     const dispatch = useDispatch();
+     const { user } = useSelector((state) => state.user);
+
+
+
+     useEffect(() => {
+          const authUser = async () => {
+               const { response, err } = await userApi.getInfo();
+
+               if (response) dispatch(setUser(response));
+               if (err) dispatch(setUser(null));
+          };
+
+          user && authUser();
+
+     }, [dispatch]);
+
+
+
+
      return (
           <div>
                {/* global loading */}
@@ -19,10 +48,20 @@ const MainLayout = () => {
                {/*  <AuthModal />*/}
                <AuthModal />
 
-               <ReceiveVouchersModal/>
+               <ReceiveVouchersModal />
                {/* login modal */}
 
-               <Box display="flex" minHeight="100vh">
+               <Box
+                    display="flex"
+                    minHeight="100vh"
+                    sx={{
+                         backgroundColor: '#f5f7fa',
+                         backgroundImage: `url(https://us-wn-g.gr-cdn.com/_next/static/media/bg3.d94446d2.svg), url(https://us-wn-g.gr-cdn.com/_next/static/media/bg1.0d1d3b37.svg), url(https://us-wn-g.gr-cdn.com/_next/static/media/bg2.ad4bd4bc.svg)`,
+                         backgroundPosition: 'calc(50% - 418px) -30px, calc(50% - 357px) -370px, calc(50% + 570px) -170px', 
+                         backgroundSize: '1742px 1742px,1210px 1210px,1665px 1665px'
+
+                    }}
+               >
                     {/* header */}
                     <Topbar />
                     {/* header */}
@@ -37,12 +76,12 @@ const MainLayout = () => {
                          <Outlet />
                     </Box>
                     {/* main */}
-                    
+
                </Box>
                {/* footer */}
-               <Footer />          
+               <Footer />
                {/* footer */}
-          </div>
+          </div >
      )
 }
 
