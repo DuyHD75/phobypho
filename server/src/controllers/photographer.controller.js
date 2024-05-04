@@ -1,19 +1,53 @@
 import responseHandler from '../handlers/response.handler.js';
 import photographerModel from '../models/photographer.model.js';
 
-const updateBookingCount = async (req, res) => {
+
+
+const updatePhotographer = async (req, res) => {
      try {
-          const photographer = await photographerModel.finOne({ account: req.account.id });
-          if (!photographer) return responseHandler.notfound(res, "Photographer not found !");
-          photographer.bookingCount += 1;
+          const photographerId = req.params.id;
+          const updateData = req.body;
 
-          await photographer.save();
+          const updatedPhotographer = await photographerModel.findByIdAndUpdate(
+               photographerId,
+               updateData,
+               { new: true }
+          );
 
-          return responseHandler.ok(res, photographer);
+          if (!updatedPhotographer) {
+               return responseHandler.notfound(res, "Không tìm thấy tài khoản này!");
+          }
+          responseHandler.ok(res, updatedPhotographer);
      } catch (error) {
-          console.error("Error updating booking count:", error);
+          console.log("Error updating photographer: ", error.message);
+          responseHandler.error(res, error.message);
      }
 };
+
+
+// Update the booking count for a photographer
+const updateBookingCount = async (req, res) => {
+     try {
+          const photographerId = req.params.id;
+          const incrementValue = req.body.incrementValue;
+
+          const updatedPhotographer = await photographerModel.findByIdAndUpdate(
+               photographerId,
+               { $inc: { bookingCount: incrementValue } },
+               { new: true }
+          );
+
+          if (!updatedPhotographer) {
+               return responseHandler.notfound(res, "Không tìm thấy tài khoản này!");
+          }
+
+          responseHandler.ok(res, updatedPhotographer);
+     } catch (error) {
+          console.log("Error updating booking count:", error.message);
+          responseHandler.error(res, error.message);
+     }
+};
+
 
 
 const getPhotographerByLocation = async (req, res) => {
@@ -27,8 +61,6 @@ const getPhotographerByLocation = async (req, res) => {
           console.error("Error updating booking count:", error);
      }
 };
-
-
 
 const updateStatus = async (req, res) => {
      try {
@@ -46,5 +78,20 @@ const updateStatus = async (req, res) => {
 };
 
 
-export default { updateBookingCount, updateStatus, getPhotographerByLocation };
+
+const getBookingByPhotoId = async (req, res) => {
+     try {
+          const { photoId } = req.params;
+
+          const bookingList = await bookingModel.find({ customer: req.account.id, photo: photoId });
+
+          return responseHandler.ok(res, bookingList);
+     } catch (err) {
+          return responseHandler.error(res, "Fetching booking by photoId: " + err);
+     }
+}
+
+
+
+export default { updateBookingCount, updateStatus, getPhotographerByLocation, updatePhotographer, getBookingByPhotoId };
 

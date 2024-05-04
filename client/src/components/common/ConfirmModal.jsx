@@ -43,11 +43,11 @@ const ConfirmModal = ({ setOpenModal, openModal, bookingData }) => {
 
      const validateBookingTime = (bookingTime) => {
           const currentTime = moment();
+          const futureTime = moment().add(3, 'hours');
           const userChosenTime = moment(bookingTime.format('YYYY-MM-DD HH:mm'));
-          const tomorrow = moment().add(1, 'days').startOf('day');
 
-          return userChosenTime.isAfter(currentTime) || userChosenTime.isAfter(tomorrow);
-     }
+          return userChosenTime.isSameOrAfter(futureTime);
+     };
 
 
      const confirmInfo = useFormik({
@@ -70,7 +70,7 @@ const ConfirmModal = ({ setOpenModal, openModal, bookingData }) => {
                     return;
                }
 
-               if(bookingData.photo.status === "INACTIVE") {
+               if (bookingData.photo.status === "INACTIVE") {
                     toast.error('Thợ chụp ảnh không hoạt động. Vui lòng chọn người khác!');
                     return;
                }

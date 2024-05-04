@@ -22,5 +22,6 @@ router.put('/:customerId/points', customerController.updatePoints);
 
 router.get('/:photoId/booking', tokenMiddleware.authenticate, customerController.getCustomerBookingByPhotoId);
 
+router.put('/bookings/:bookingId/status', tokenMiddleware.authenticate, customerController.updateBookingStatus);
 
 export default router;

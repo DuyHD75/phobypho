@@ -14,35 +14,11 @@ import dayjs from "dayjs";
 import customerApi from "../../api/modules/customer.api";
 
 
-const VoucherPointItems = () => {
+const VoucherPointItems = ({vouchers,  customerInfo}) => {
 
-  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
-
-  const [vouchers, setVouchers] = useState([]);
-  const [customerInfo, setCustomerInfo] = useState(undefined);
-
-
-  useEffect(() => {
-
-    const getCustomerPoint = async () => {
-      const { response, err } = await customerApi.getCustomerByAccountId();
-      if (err) return toast.error(err);
-
-      setCustomerInfo(response);
-    }
-
-    const getVoucherList = async () => {
-      getCustomerPoint();
-      const { response, err } = await voucherApi.getVouchers();
-      if (err) {
-        return toast.error('Truy cập dữ liệu thất bại');
-      }
-      setVouchers(response);
-    };
-    getVoucherList();
-  }, []);
-
+  const dispatch = useDispatch();
+ 
 
   return (
     <Fragment>

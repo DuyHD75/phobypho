@@ -38,9 +38,10 @@ const main = [
           state: "post.history",
           role: "PHOTOGRAPHER"
      }, {
-          display: "Vouchers",
+          display: "Khuyến Mãi",
           path: "/vouchers",
           state: "vouchers",
+          role: "CUSTOMER"
      },
 ];
 
@@ -53,11 +54,10 @@ const user = [
           state: "profile"
      },
      {
-          display: "Danh Sách Yêu Thích",
-          path: "/favorites",
-          icon: <FaHeart style={{ fontSize: '1.3rem' }} />,
-          state: "favorites",
-          role: 'CUSTOMER'
+          display: "Lịch sử đặt lịch",
+          path: "/booking_history",
+          icon: <TbBrandBooking style={{ fontSize: '1.3rem' }} />,
+          state: "booking.history"
      },
      {
           display: "Đổi mật khẩu",
@@ -66,10 +66,11 @@ const user = [
           state: "password.update"
      },
      {
-          display: "Lịch sử đặt lịch",
-          path: "/booking_history",
-          icon: <TbBrandBooking style={{ fontSize: '1.3rem' }} />,
-          state: "booking.history"
+          display: "Danh Sách Yêu Thích",
+          path: "/favorites",
+          icon: <FaHeart style={{ fontSize: '1.3rem' }} />,
+          state: "favorites",
+          role: 'CUSTOMER'
      }
 ];
 

@@ -13,6 +13,22 @@ const PhotographerSchema = new Schema({
           type: String,
           default: ""
      },
+     gender: {
+          type: String,
+          default: ""
+     },
+     age: {
+          type: Number,
+          default: 0
+     },
+     experienceYears: {
+          type: String,
+          default: ""
+     },
+     description: {
+          type: String,
+          default: ""
+     },
      status: {
           type: String,
           type: String,

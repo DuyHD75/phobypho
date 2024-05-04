@@ -2,6 +2,7 @@ import privateClient from "../client/private.client";
 
 const photographerEndpoints = {
    updateStatus: `photographers/updateStatus`,
+   getBookingByPhotoId: (photoId) => `photographers/${photoId}/booking`,
 };
 
 const photographerApi = {
@@ -13,6 +14,14 @@ const photographerApi = {
          return { err };
       }
    },
+   getBookingByPhotoId: async (photoId) => {
+      try {
+         const response = await privateClient.get(photographerEndpoints.getBookingByPhotoId(photoId));
+         return { response };
+      } catch (err) {
+         return { err };
+      }
+   }
 };
 
 export default photographerApi;

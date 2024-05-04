@@ -60,7 +60,7 @@ const VouchersModal = ({ isOpenVoucherModal, handleCloseModal, vouchers }) => {
           <Typography sx={{
             ...uiConfigs.style.typoLines(1, "center"),
             textTransform: 'capitalize',
-            marginTop: '1rem', 
+            marginTop: '1rem',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'
@@ -83,8 +83,6 @@ function VoucherUserPanner() {
   const [customerInfo, setCustomerInfo] = useState({});
   const [vouchers, setVouchers] = useState([]);
   const [isOpenVouchersModal, setIsOpenVouchersModal] = useState(false);
-
-
 
 
   useEffect(() => {
@@ -147,30 +145,54 @@ function VoucherUserPanner() {
             {user.displayName}
           </Typography>
         </Stack>
-        <Stack paddingTop="16px" width={"100%"}>
+
+
+        {customerInfo.accumulated_points > 0 ? (
+          <Stack paddingTop="16px" width={"100%"}>
+            <Typography
+              variant="h4"
+              fontSize={{ xs: "1rem", md: "1.4rem", lg: "1.6rem" }}
+              fontWeight="600"
+              sx={{
+                ...uiConfigs.style.typoLines(2, "center"),
+              }}
+            >
+              Tổng điểm tích lũy
+            </Typography>
+
+            <Typography
+              variant="h4"
+              fontSize={{ xs: "2.4rem", md: "2.6rem", lg: "3rem" }}
+              fontWeight="800"
+              sx={{
+                ...uiConfigs.style.typoLines(2, "center"),
+                textTransform: "capitalize",
+                color: 'primary.main'
+              }}
+            >
+              {customerInfo.accumulated_points.toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} điểm
+            </Typography>
+          </Stack>
+
+
+        ) : (
+
           <Typography
             variant="h4"
             fontSize={{ xs: "1rem", md: "1.4rem", lg: "1.6rem" }}
             fontWeight="600"
             sx={{
               ...uiConfigs.style.typoLines(2, "center"),
-            }}
-          >
-            Tổng điểm tích lũy
-          </Typography>
-          <Typography
-            variant="h4"
-            fontSize={{ xs: "2.4rem", md: "2.6rem", lg: "3rem" }}
-            fontWeight="800"
-            sx={{
-              ...uiConfigs.style.typoLines(2, "center"),
               textTransform: "capitalize",
-              color: 'primary.main'
             }}
           >
-            {customerInfo.accumulated_points > 0 ? `${customerInfo.accumulated_points.toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} points` : `0 point`}
+            Bạn Chưa có điểm nào
           </Typography>
-        </Stack>
+
+
+
+        )}
+
         <Button
           size="small"
           variant="contained"
@@ -191,7 +213,6 @@ function VoucherUserPanner() {
           />}
           onClick={() => setIsOpenVouchersModal(true)}
         >
-
           Voucher của bạn
         </Button>
       </Stack>)}

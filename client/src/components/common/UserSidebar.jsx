@@ -24,24 +24,54 @@ const UserSidebar = ({ children }) => {
 
    return (
       <Box sx={{ ...uiConfigs.style.mainContent, paddingTop: '5rem', marginTop: '5rem' }}>
-         <Container>
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-               <Box sx={{
-                  width: '25%',
-                  minWidth: '200px',
-                  padding: '2rem 0',
-                  borderRadius: '1rem',
-                  height: 'fit-content',
-                  boxShadow: '0 0 10px rgba(0,0,0,0.4)',
-                  position: 'sticky',
-                  display: { sx: 'none', md: 'block' },
-                  padding: '10px'
+         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Box sx={{
+               width: '20%',
+               minWidth: '200px',
+               borderRadius: '1rem',
+               height: 'fit-content',
+               boxShadow: '0 0 10px rgba(0,0,0,0.4)',
+               position: 'sticky',
+               display: { sx: 'none', md: 'block' },
+               padding: '2rem 1rem',
+            }} >
+               <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                     {menuConfigs.user.map((item, index) => {
+                        if (!item.role) {
+                           return (
+                              <Button
+                                 component={Link}
+                                 to={item.path}
+                                 key={index}
+                                 sx={{
+                                    mr: 2,
+                                    fontFamily: '"Nunito", sans-serif',
+                                    fontSize: "0.9rem",
+                                    fontWeight: "600",
+                                    color: 'secondary.contrastText',
+                                    textTransform: 'capitalize',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    flexDirection: 'row',
+                                    justifyContent: 'flex-start',
+                                    color: 'secondary.colorText',
+                                    padding: '0.6rem 10px',
+                                    width: '100%',
+                                    bgcolor: appState.includes(item.state) ? 'primary.main' : 'transparent',
+                                    '&:hover': {
+                                       color: 'secondary.colorText',
+                                       bgColor: 'rgba(0,0,0,0.5)',
+                                    }
+                                 }}
+                              >
+                                 <Box sx={{ marginRight: '1rem', }}>  {item.icon}</Box>
+                                 <Typography variant="p">{item.display}</Typography>
+                              </Button>
+                           )
+                        } else {
+                           if (user && item.role === user.role) {
 
-               }} >
-                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                        {menuConfigs.user.map((item, index) => {
-                           if (!item.role) {
                               return (
                                  <Button
                                     component={Link}
@@ -72,76 +102,54 @@ const UserSidebar = ({ children }) => {
                                     <Typography variant="p">{item.display}</Typography>
                                  </Button>
                               )
-                           } else {
-                              if (user && item.role === user.role) {
-
-                                 return (
-                                    <Button
-                                       component={Link}
-                                       to={item.path}
-                                       key={index}
-                                       sx={{
-                                          mr: 2,
-                                          fontFamily: '"Nunito", sans-serif',
-                                          fontSize: "0.9rem",
-                                          fontWeight: "600",
-                                          color: 'secondary.contrastText',
-                                          textTransform: 'capitalize',
-                                          display: 'flex',
-                                          alignItems: 'center',
-                                          flexDirection: 'row',
-                                          justifyContent: 'flex-start',
-                                          color: 'secondary.colorText',
-                                          padding: '0.6rem 10px',
-                                          width: '100%',
-                                          bgcolor: appState.includes(item.state) ? 'primary.main' : 'transparent',
-                                          '&:hover': {
-                                             color: 'secondary.colorText',
-                                             bgColor: 'rgba(0,0,0,0.5)',
-                                          }
-                                       }}
-                                    >
-                                       <Box sx={{ marginRight: '1rem', }}>  {item.icon}</Box>
-                                       <Typography variant="p">{item.display}</Typography>
-                                    </Button>
-                                 )
-                              }
                            }
-                        })}
+                        }
+                     })}
 
-                        <Button
-                           onClick={logout}
-                           sx={{
-                              mr: 2,
-                              fontFamily: '"Nunito", sans-serif',
-                              fontSize: "0.9rem",
-                              fontWeight: "600",
-                              color: 'secondary.contrastText',
-                              textTransform: 'capitalize',
-                              display: 'flex',
-                              alignItems: 'center',
-                              flexDirection: 'row',
-                              justifyContent: 'flex-start',
+                     <Button
+                        onClick={logout}
+                        sx={{
+                           mr: 2,
+                           fontFamily: '"Nunito", sans-serif',
+                           fontSize: "0.9rem",
+                           fontWeight: "600",
+                           color: 'secondary.contrastText',
+                           textTransform: 'capitalize',
+                           display: 'flex',
+                           alignItems: 'center',
+                           flexDirection: 'row',
+                           justifyContent: 'flex-start',
+                           color: 'secondary.colorText',
+                           padding: '0.6rem 10px',
+                           width: '100%',
+                           '&:hover': {
                               color: 'secondary.colorText',
-                              padding: '0.6rem 10px',
-                              width: '100%',
-                              '&:hover': {
-                                 color: 'secondary.colorText',
-                                 bgColor: 'rgba(0,0,0,0.5)',
-                              }
-                           }}
-                        >
-                           <Box sx={{ marginRight: '1rem', }}><RiLogoutCircleLine style={{ fontSize: '1.3rem' }} /></Box>
-                           <Typography variant="p">{"Logout"}</Typography>
-                        </Button>
-                     </Box>
+                              bgColor: 'rgba(0,0,0,0.5)',
+                           }
+                        }}
+                     >
+                        <Box sx={{ marginRight: '1rem', }}><RiLogoutCircleLine style={{ fontSize: '1.3rem' }} /></Box>
+                        <Typography variant="p">{"Logout"}</Typography>
+                     </Button>
                   </Box>
                </Box>
-               <Box sx={{ width: { sx: '100%', md: '75%' }, minWidth: '200px', margin: { sx: '0', md: '0 2rem' } }}>
-                  {children}
-               </Box>
+               <Box
+                  sx={{
+                     width: '100%',
+                     height: '200px',
+                     backgroundImage: 'url(https://firebasestorage.googleapis.com/v0/b/phobypho-2dbae.appspot.com/o/icons%2Fundraw_content_re_33px.svg?alt=media&token=9db87cf2-4402-4e12-ba35-ca5c8c2c0b90)',
+                     objectFit: 'center',
+                     backgroundSize: '75%',
+                     backgroundPosition: 'center',
+                     backgroundRepeat: 'no-repeat',
+                  }}
+
+               ></Box>
             </Box>
-         </Container>
+            <Box sx={{ width: { sx: '100%', md: '80%' }, minWidth: '200px', margin: { sx: '0', md: '0 2rem' } }}>
+               {children}
+            </Box>
+         </Box>
       </Box>
    )
 }

@@ -18,7 +18,11 @@ const servicePackageSchema = new Schema({
      numberOfPeople: {
           type: Number,
           required: true
-     }
+     }, 
+     icon: {
+          type: String,
+          required: true
+     },
 }, { timestamps: true });
 
 

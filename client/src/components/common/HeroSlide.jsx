@@ -65,7 +65,6 @@ const HeroSlide = () => {
           bottom: 0,
           zIndex: 2,
           pointerEvents: "none",
-        
         },
       }}
     >
@@ -75,10 +74,10 @@ const HeroSlide = () => {
         modules={[Autoplay, Navigation]}
         loop={true}
         style={{ width: "100%", height: "max-content" }}
-        autoplay={{
-          delay: 3000,
-          disableOnInteraction: true,
-        }}
+        // autoplay={{
+        //   delay: 3000,
+        //   disableOnInteraction: true,
+        // }}
       >
         <SwiperSlide>
           <Box

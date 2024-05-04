@@ -12,7 +12,16 @@ const bookingSchema = new Schema({
           type: String,
           required: true
      },
+     photographer: {
+          type: mongoose.Types.ObjectId,
+          ref: "Photographer",
+          required: true
+     },
      photographerName: {
+          type: String,
+          required: true
+     },
+     photographerEmail:{
           type: String,
           required: true
      },
@@ -50,10 +59,12 @@ const bookingSchema = new Schema({
 
 bookingSchema.pre('save', async function (next) {
      try {
-          const completedBookings = await this.model('Booking').findOne({ customer: this.customer, status: ORDER_STATUS.pending });
+          if (this.isNew) {
+               const pendingBooking = await this.model('Booking').findOne({ customer: this.customer, status: ORDER_STATUS.pending });
 
-          if (completedBookings) {
-               throw new Error("Bạn đang có một hóa đơn đang chờ xử lý !");
+               if (pendingBooking) {
+                    throw new Error("Bạn đang có một hóa đơn đang chờ xử lý !");
+               }
           }
           next();
      } catch (error) {

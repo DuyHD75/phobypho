@@ -18,16 +18,6 @@ import { eventImages } from "../asset/data";
 import { setGlobalLoading } from "../redux/features/globalLoading";
 import { useDispatch } from "react-redux";
 
-const rotate360 = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-`;
-
-
 
 function AboutUs() {
 
@@ -302,10 +292,11 @@ function AboutUs() {
                   <Grid item xs={12} sm={4} md={3} key={person.name}>
 
                     <Paper sx={{
-                      padding: 2, display: 'flex',
-                      flexDirection: 'column',
-                      bgcolor: '#101519',
-                      boxShadow: '0 0 10px rgba(255,255,255,0.2)'
+                      padding: 2,
+                      bgcolor: '#fff',
+                      boxShadow: '0 0 10px rgba(255,255,255,0.6)', 
+                      display: 'flex',
+                      flexDirection: 'row',
                     }}>
                       <Box sx={{
                         backgroundImage: `url(${person.image})`,
@@ -316,22 +307,26 @@ function AboutUs() {
                         backgroundRepeat: 'no-repeat',
                         borderRadius: '10px',
                         overflow: 'hidden',
-                        border: '1px solid #fff',
+                        border: '1px solid #333',
                         marginRight: '1rem',
-                        boxShadow: '0 0 10px rgba(255,255,255,0.2)'
+                        boxShadow: '0 0 10px rgba(0,0,0,0.4)'
                       }}></Box>
-                      <Typography variant="h6" sx={{
-                        mt: 2, ...uiConfigs.style.typoLines(1, 'left'),
-                        color: '#fff', fontSize: '1.2rem', fontWeight: '700'
-                      }}>
-                        {person.name}
-                      </Typography>
-                      <Typography variant="body2" sx={{
-                        ...uiConfigs.style.typoLines(1, 'left'),
-                        color: '#a2aebe',
-                      }}>
-                        {person.title}
-                      </Typography>
+                      <Box>
+                        <Typography variant="h6" sx={{
+                          mt: 2, ...uiConfigs.style.typoLines(1, 'left'),
+                          color: 'secondary.colorText', fontSize: '1.2rem', fontWeight: '700'
+                        }}>
+                          {person.name}
+                        </Typography>
+                        <Typography variant="body2" sx={{
+                          ...uiConfigs.style.typoLines(2, 'left'),
+                          color: '#a2aebe',
+                          textShadow: '1px 1px 0.7px #000',
+                        }}>
+                          {person.title}
+                        </Typography>
+
+                      </Box>
                     </Paper>
                   </Grid>
                 ))}

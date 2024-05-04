@@ -37,9 +37,10 @@ const userApi = {
                return { response };
           } catch (err) { return { err } }
      },
-     updateInfo: async ({ displayName, phoneNumber, email, location, avatar }) => {
+     updateInfo: async (userData) => {
           try {
-               const response = await privateClient.put(userEndpoints.updateInfo, { displayName, phoneNumber, email, location, avatar });
+               console.log(userData);
+               const response = await privateClient.put(userEndpoints.updateInfo, userData);
                return { response };
           } catch (err) { return { err } }
      }

@@ -37,7 +37,7 @@ const Footer = () => {
                                    <Button
                                         key={index}
                                         sx={{
-                                             color: 'secondary.colorText',
+                                             color: 'secondary.contrastText',
                                              fontFamily: '"Nunito", sans-serif',
                                              fontSize: '0.9rem',
                                         }}
@@ -54,7 +54,7 @@ const Footer = () => {
 
                     <Typography
                          sx={{
-                              color: 'inherit',
+                              color: 'secondary.contrastText',
                               fontFamily: '"Nunito", sans-serif',
                               fontSize: '0.9rem',
                               position: 'relative',

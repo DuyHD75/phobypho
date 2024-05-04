@@ -11,7 +11,7 @@ function VoucherFeatures() {
           variant="p"
           sx={{
             color: '#99ccff',
-            fontSize: {sx: '1.4rem', md: '1.6rem'}, 
+            fontSize: { sx: '1.4rem', md: '1.6rem' },
             fontWeight: '800',
             textTransform: 'capitalize',
             ...uiConfigs.style.typoLines(1, 'left')

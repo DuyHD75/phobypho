@@ -25,7 +25,7 @@ const uiConfigs = {
                fontFamily: '"Nunito", sans-serif', 
           }),
           mainContent: {
-               maxWidth: "1366px",
+               maxWidth: "1400px",
                margin: "auto",
                padding: 4
           },

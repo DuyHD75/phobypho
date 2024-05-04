@@ -7,6 +7,8 @@ import uiConfigs from '../configs/ui.config';
 
 import customerApi from '../api/modules/customer.api';
 import { toast } from 'react-toastify';
+import moment from 'moment';
+
 
 const Checkout = () => {
 
@@ -272,7 +274,6 @@ const Checkout = () => {
 
                                    </Stack>
 
-
                                    <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'}
                                         sx={{
                                              bgcolor: '#fff',
@@ -294,7 +295,35 @@ const Checkout = () => {
                                                   ...uiConfigs.style.typoLines(3, 'right')
                                              }}
                                         >
-                                             {bookingData.photo_session}
+                                             {moment(new Date().getTime()).format('dddd, MMMM YYYY  HH:mm')}
+                                        </Typography>
+
+
+                                   </Stack>
+
+
+                                   <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'}
+                                        sx={{
+                                             bgcolor: '#fff',
+                                             borderBottom: '1px solid #000',
+                                             padding: '1rem'
+                                        }}
+                                   >
+                                        <Typography sx={{
+                                             ...uiConfigs.style.typoLines(1, 'left'),
+                                             fontSize: '1rem',
+
+                                        }}>Ngày hẹn: </Typography>
+                                        <Typography
+                                             style={{
+                                                  textDecoration: 'none',
+                                                  fontSize: '1rem',
+                                                  color: 'primary.main',
+                                                  width: '60%',
+                                                  ...uiConfigs.style.typoLines(3, 'right')
+                                             }}
+                                        >
+                                             {moment(bookingData.photo_session).format('dddd, MMMM YYYY  HH:mm')}
                                         </Typography>
 
 

@@ -85,9 +85,9 @@ const exchangeVoucher = async (req, res) => {
          return responseHandler.badRequest(res, { message: 'Không đủ điểm để đổi voucher' }, 'Không đủ điểm để đổi voucher');
       }
 
-      if (customer.vouchers.includes(voucherId)) {
-         return responseHandler.badRequest(res, { message: 'Voucher đã được đổi' }, 'Voucher đã được đổi');
-      }
+      // if (customer.vouchers.includes(voucherId)) {
+      //    return responseHandler.badRequest(res, { message: 'Voucher đã được đổi' }, 'Voucher đã được đổi');
+      // }
 
       customer.accumulated_points -= pointsRequired;
       customer.vouchers.push(voucherId);

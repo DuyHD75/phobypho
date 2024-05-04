@@ -91,10 +91,10 @@ const ServicePackageItem = ({
               justifyContent: "center",
               padding: "3px",
               marginLeft: "8px",
-              
+
             }}
           >
-            <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+            <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
               <Typography
                 sx={{
                   ...uiConfigs.style.typoLines(1, "left"),
@@ -155,10 +155,11 @@ const ServicePackageItem = ({
             style={{
               width: '30%',
               borderRadius: "5px",
-              backgroundImage: `url(https://mui.com/static/images/cards/live-from-space.jpg)`,
-              objectFit: 'cover',
-              backgroundSize: 'cover',
+              backgroundImage: `url(${service.icon})`,
+              objectFit: 'center',
+              backgroundSize: '50%',
               backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
             }}
           />
 

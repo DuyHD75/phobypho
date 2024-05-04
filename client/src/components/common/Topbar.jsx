@@ -58,6 +58,7 @@ const Topbar = () => {
     setIsActive(event.target.checked);
     const { response, err } = await photographerApi.updateStatus({ status: event.target.checked ? "AVAILABLE" : "INACTIVE" });
     if (response) {
+      console.log(response);
       toast.success("Trang thái tài khoản đã được cập nhật!");
     }
     if (err) {
@@ -208,7 +209,7 @@ const Topbar = () => {
                     color: isActive ? 'primary.main' : 'primary.headerColor',
                     textTransform: 'normal',
                     textShadow: '1px 1px 1px #222',
-                  }}>{isActive ? "AVAILABLE" : "INACTIVE"}</Typography>
+                  }}>{isActive ? "Đang Hoạt Động" : "Không Hoạt Động"}</Typography>
                   <Switch
                     checked={isActive}
                     onChange={handleChangeAccountStatus}

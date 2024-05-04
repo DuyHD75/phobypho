@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
@@ -11,8 +11,6 @@ import VoucherFeatures from "../components/common/VoucherFeatures";
 import VoucherRewards from "../components/common/VoucherRewards";
 import VoucherPointExchange from "../components/common/VoucherPointExchange";
 import VoucherUserPanner from "../components/common/VoucherUserPanner";
-import customerApi from "../api/modules/customer.api";
-import { toast } from "react-toastify";
 
 const Voucher = () => {
 

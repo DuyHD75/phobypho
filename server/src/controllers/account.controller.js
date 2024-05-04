@@ -46,16 +46,23 @@ const signup = async (req, res) => {
 const login = async (req, res) => {
      try {
           const { username, password } = req.body;
+          const userData = {};
 
           const account = await accountModel.findOne({ username })
                .select("id username displayName password salt phoneNumber email role avatar");
 
-          let location = null;
-          let status = null;
+
           if (account.role === ROLES_LIST.photographer) {
-               const photographer = await photographerModel.findOne({ account: account.id }).select("location status");
-               location = photographer.location;
-               status = photographer.status;
+               const photographer = await photographerModel.findOne({ account: account.id })
+                    .select("location status gender age description experienceYears bookingCount");
+               userData.location = photographer.location;
+               userData.status = photographer.status;
+               userData.gender = photographer.gender;
+               userData.age = photographer.age;
+               userData.description = photographer.description;
+               userData.experienceYears = photographer.experienceYears;
+               userData.bookingCount = photographer.bookingCount;
+
           }
 
           if (account == null) return responseHandler.notfound(res, "Account not found !");
@@ -70,12 +77,12 @@ const login = async (req, res) => {
 
           account.password = undefined;
           account.salt = undefined;
+          userData.token = token;
 
           responseHandler.created(res, {
                token,
                ...account._doc,
-               location,
-               status,
+               userData,
                id: account.id
           });
      } catch {
@@ -120,7 +127,7 @@ const getInfo = async (req, res) => {
 
 const updateInfo = async (req, res) => {
      try {
-          let updatedUser = {};
+          let userData = {};
           const updatedAccount = await accountModel.findOneAndUpdate(
                { _id: req.account.id },
                { $set: req.body },
@@ -130,15 +137,23 @@ const updateInfo = async (req, res) => {
           if (!updatedAccount) return responseHandler.error(res, "Update information account error !");
 
           if (req.account.role === ROLES_LIST.photographer && req.body.location != null) {
-               updatedUser = await photographerModel.findOneAndUpdate(
+               userData = await photographerModel.findOneAndUpdate(
                     { account: req.account.id },
-                    { $set: { location: req.body.location } },
+                    {
+                         $set: {
+                              location: req.body.location,
+                              gender: req.body.gender ,
+                              age: req.body.age,
+                              description: req.body.description,
+                              experienceYears: req.body.experienceYears
+                         }
+                    },
                     { new: true }
                );
-               if (!updatedUser) return responseHandler.error(res, "Update information account error !");
+               if (!userData) return responseHandler.error(res, "Update information account error !");
           }
 
-          return responseHandler.ok(res, { ...updatedAccount.toObject(), updatedUser })
+          return responseHandler.ok(res, { ...updatedAccount.toObject(), userData })
 
      } catch {
           responseHandler.error(res);

@@ -15,7 +15,7 @@ const members = [
    },
    {
       "name": "Hong Phuc",
-      "title": "Research & Development Manager",
+      "title": "Head of Marketing",
       "image": "https://firebasestorage.googleapis.com/v0/b/phobypho-2dbae.appspot.com/o/avatars%2Fbfbdd1c59fed31b368fc.jpg?alt=media&token=69ed855d-4d17-43cb-9d28-fb2edd3b87a7"
    },
    {
@@ -25,7 +25,7 @@ const members = [
    },
    {
       "name": "Bao An",
-      "title": "Marketing Manager",
+      "title": "Finance Manager",
       "image": "https://mui.com/static/images/team/ken-gregory.jpg"
    },
    {
@@ -78,7 +78,7 @@ const phobyphoDeals = {
        "id": 1,
        "title": "Đăng ký",
        "description": "Dễ dàng tham gia chương trình thưởng với tài khoản của bạn.",
-       "offer": "Nhận 5.000 điểm khi đăng ký ngay hôm nay."
+       "offer": "Nhận 200 điểm khi đăng ký ngay hôm nay."
      },
      {
        "id": 2,
@@ -89,7 +89,7 @@ const phobyphoDeals = {
      {
        "id": 3,
        "title": "Quy đổi & Thưởng",
-       "description": "Dễ dàng quy đổi điểm lấy phiếu giảm giá và quà tặng miễn phí.",
+       "description": "Dễ dàng quy đổi điểm lấy phiếu giảm giá.",
        "offer": "Thưởng thức những ưu đãi đặc biệt khi quy đổi điểm tích lũy."
      }
    ],

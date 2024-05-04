@@ -1,4 +1,4 @@
-import { ORDER_STATUS } from '../configs/enum.config.js';
+import { ORDER_STATUS, ROLES_LIST } from '../configs/enum.config.js';
 import responseHandler from '../handlers/response.handler.js';
 import nodemailer from "nodemailer";
 import voucherModel from '../models/voucher.model.js';
@@ -8,172 +8,103 @@ import photographerModel from '../models/photographer.model.js';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-const sendEmailCheckout = async (req, res) => {
+import EmailUtils from '../utils/email.util.js';
+
+
+
+
+const transporter = nodemailer.createTransport({
+     host: "smtp.gmail.com",
+     port: 587,
+     secure: false,
+     auth: {
+          user: process.env.EMAIL_ADDRESS,
+          pass: process.env.EMAIL_PASSWORD,
+     },
+});
+
+
+const emailCheckoutSender = async (req, res) => {
      try {
 
           const { photo, service_package, total_price, location, photo_session } = req.body;
-          console.log(photo)
+          const senderEmail = process.env.EMAIL_ADDRESS;
+
+
+          const customerEmailMessage = EmailUtils.getCustomerEmailContent(
+               req.account.displayName, photo.account.displayName, service_package.name,
+               location, photo_session, total_price);
+
+          const photographerEmailMessage = EmailUtils.getPhotographerEmailContent(
+               req.account.displayName, photo.account.displayName, service_package.name,
+               location, photo_session, total_price);
+
+          const mailOptionsForCustomer = EmailUtils.mailOptions(
+               senderEmail, req.account.email, customerEmailMessage, EmailUtils.SUBJECT.checkout.CUSTOMER
+          );
+
+          const mailOptionsForPhotographer = EmailUtils.mailOptions(
+               senderEmail, photo.account.email, photographerEmailMessage, EmailUtils.SUBJECT.checkout.PHOTOGRAPHER
+          )
+
+          let senderCustomerResult = await transporter.sendMail(mailOptionsForCustomer);
+
+          let senderPhotographer = await transporter.sendMail(mailOptionsForPhotographer);
+
+          console.log("Email sent to customer: %s", senderCustomerResult.messageId);
+          console.log("Email sent to photographer: %s", senderPhotographer.messageId);
+
+     } catch (error) {
+          console.error('Error sending email:', error);
+          return responseHandler.error(res, {
+               message: `Failed to send email: ${error.message}`,
+          });
+     }
+};
+
+const getBookingById = async (bookingId) => {
+
+     try {
+          const booking = await bookingModel.findById(bookingId);
+
+          if (!booking) {
+               return responseHandler.notfound(res, { message: 'Không tìm thấy lịch hẹn!' }, 'Không tìm thấy lịch hẹn!');
+          }
+
+          return booking;
+     } catch (error) {
+          return error
+     }
+}
+
+const emailCancelBookingSender = async (req, res) => {
+     try {
+          const { bookingId } = req.params;
+          const { cancelFee } = req.body;
+
+          const booked = await getBookingById(bookingId);
 
           const senderEmail = process.env.EMAIL_ADDRESS;
-          const emailPassword = process.env.EMAIL_PASSWORD;
-
-          const transporter = nodemailer.createTransport({
-               host: "smtp.gmail.com",
-               port: 587,
-               secure: false,
-               auth: {
-                    user: senderEmail,
-                    pass: emailPassword,
-               },
-          });
 
 
 
-          // Construct the HTML email template (for better readability)
-          const htmlContentForCustomer = `
-         <!DOCTYPE html>
-         <html lang="en">
-         <head>
-             <meta charset="UTF-8">
-             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-             <title>PHOBYPHO Booking Confirmation</title>
-             <style>
-                 /* Optional styling for a more professional look */
-                 body {
-                     font-family: sans-serif;
-                 }
-                 table {
-                     border-collapse: collapse;
-                 }
-                 td, th {
-                     padding: 5px;
-                     border: 1px solid #ddd;
-                 }
-             </style>
-         </head>
-         <body>
-             <h2>PHOBYPHO Booking Confirmation</h2>
-             <p>Thân Gửi Quý Khách Hàng:  ${req.account.displayName},</p>
-             <p>Cảm ơn bạn đã tin tưởng và lựa chon dịch vụ của chúng tôi. Chúng tôi sẽ liên hệ với bạn sớm để xác nhận thông tin lịch hẹn ❤️. </p>
-   
-             <h3>Chi tiết lịch hẹn</h3>
-             <table>
-                 <tbody>
-                     <tr>
-                         <th>Tên thợ chụp ảnh:</th>
-                         <td>${photo.account.displayName || 'N/A'}</td> </tr>
-                     <tr>
-                         <th>Gói dịch vụ:</th>
-                         <td>${service_package.name || 'N/A'}</td> </tr>
-                     <tr>
-                         <th>Địa điểm:</th>
-                         <td>${location}</td>
-                     </tr>
-                     <tr>
-                         <th>Ngày & giờ:</th>
-                         <td>${photo_session || 'N/A'}</td> </tr>
-                     <tr>
-                         <th>Thành Tiền:</th>
-                         <td>${total_price}</td>
-                     </tr>
-                 </tbody>
-             </table>
-               <p> Chúc bạn có một trải nghiệm chụp ảnh tuyệt vời và có những bước ảnh thật sự hài lòng nhé ❤️ !</p>
-             <p>Trân Trọng Cảm Ơn !</p>
-             <p>PHOBYPHO : ${senderEmail}</p>
-         </body>
-         </html>
-               `;
+          const cancelBookingMessage = EmailUtils.getCancelBookingMessage(
+               req.account.displayName, booked.photographerName, booked.servicePackageName,
+               booked.location, booked.booking_date, booked.total_price, cancelFee, ROLES_LIST.CUSTOMER);
 
+          const cancelMailOptionCustomer = EmailUtils.mailOptions(
+               senderEmail, req.account.email, cancelBookingMessage, EmailUtils.SUBJECT.cancel
+          );
 
-          const htmlContentForPhotographer = `
-                                   <!DOCTYPE html>
-                                   <html lang="en">
-                                   <head>
-                                   <meta charset="UTF-8">
-                                   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                                   <title>PHOBYPHO Booking Notification</title>
-                                   <style>
-                                        /* Optional styling for a more professional look */
-                                        body {
-                                             font-family: sans-serif;
-                                        }
-                                        table {
-                                             border-collapse: collapse;
-                                        }
-                                        td, th {
-                                             padding: 5px;
-                                             border: 1px solid #ddd;
-                                        }
-                                   </style>
-                                   </head>
-                                   <body>
-                                   <h2>PHOBYPHO Booking Notification</h2>
-                                   <p>Xin chào ${photo.account.displayName || 'Photographer'},</p>
-                                   <p>Bạn đã có một lịch hẹn mới từ PHOBYPHO. Vui lòng kiểm tra chi tiết bên dưới nhé 💖!</p>
-                                   
-                                   <h3>Chi tiết lịch hẹn</h3>
-                                   <table>
-                                        <tbody>
-                                             <tr>
-                                                  <th>Tên khách hàng:</th>
-                                                  <td>${req.account.displayName || 'N/A'}</td>
-                                             </tr>
-                                             <tr>
-                                                  <th>Dịch vụ đặt:</th>
-                                                  <td>${service_package.name || 'N/A'}</td>
-                                             </tr>
-                                             <tr>
-                                                  <th>Địa điểm:</th>
-                                                  <td>${location}</td>
-                                             </tr>
-                                             <tr>
-                                                  <th>Ngày & giờ:</th>
-                                                  <td>${photo_session || 'N/A'}</td>
-                                             </tr>
-                                             <tr>
-                                                  <th>Thành tiền:</th>
-                                                  <td>${total_price}</td>
-                                             </tr>
-                                        </tbody>
-                                   </table>
-                                   
-                                   <p>Xin vui lòng xác nhận lại thông tin và sẵn sàng cho buổi chụp. 
-                                   Nếu bạn có bất kỳ câu hỏi nào, vui lòng liên hệ với chúng tôi ngay nhé ❤️.</p>
-                                   
-                                   <p>Trân trọng,</p>
-                                   <p>PHOBYPHO</p>
-                                   </body>
-                                   </html>
-                     `;
+          const cancelMailOptionPhotographer = EmailUtils.mailOptions(
+               senderEmail, booked.photographerEmail, cancelBookingMessage, EmailUtils.SUBJECT.cancel
+          )
 
+          let senderCustomerResult = await transporter.sendMail(cancelMailOptionCustomer);
+          let senderPhotographer = await transporter.sendMail(cancelMailOptionPhotographer);
 
-          const mailOptionsForCustomer = {
-               from: {
-                    name: "PHOBYPHO",
-                    address: 'hoduy8701@gmail.com',
-               },
-               to: req.account.email,
-               subject: "PHOBYPHO Thank you for your booking",
-               html: htmlContentForCustomer,
-          };
-
-          const mailOptionsForPhotographer = {
-               from: {
-                    name: "PHOBYPHO",
-                    address: 'hoduy8701@gmail.com',
-               },
-               to: photo.account.email,
-               subject: "PHOBYPHO Booking Notification",
-               html: htmlContentForPhotographer,
-          };
-
-
-          let resultForCustomer = await transporter.sendMail(mailOptionsForCustomer);
-          let resultForPhotographer = await transporter.sendMail(mailOptionsForPhotographer);
-
-          console.log("Email sent to customer: %s", resultForCustomer.messageId);
-          console.log("Email sent to photographer: %s", resultForPhotographer.messageId);
+          console.log("Email sent to customer: %s", senderCustomerResult.messageId);
+          console.log("Email sent to photographer: %s", senderPhotographer.messageId);
 
      } catch (error) {
           console.error('Error sending email:', error);
@@ -196,11 +127,11 @@ const checkVoucherAndUpdateCustomer = async (account, voucher_code) => {
      }
 
      customer.vouchers = customer.vouchers.filter((v) => v.toString() !== voucher._id.toString());
-  
+
      await customer.save();
 };
 
-const updateCustomerPoints = async (customerId) => {
+const updateCustomerPoints = async (customerId, price) => {
      try {
           const customer = await customerModel.findOne({ account: customerId });
 
@@ -208,7 +139,7 @@ const updateCustomerPoints = async (customerId) => {
                throw new Error('Không tìm thấy tài khoản này !');
           }
 
-          customer.accumulated_points += 1000;
+          customer.accumulated_points += (price / 1000);
           await customer.save();
      } catch (error) {
           throw new Error("Error updating customer points: " + error.message);
@@ -218,6 +149,7 @@ const updateCustomerPoints = async (customerId) => {
 const createNewBooking = async (req, res) => {
      try {
           const { account } = req;
+          console.log(req.body)
 
           const { photo, service_package, total_price, location, photo_session, voucher_code } = req.body;
 
@@ -229,7 +161,9 @@ const createNewBooking = async (req, res) => {
           const booking = new bookingModel({
                photo: photo.id,
                poster: photo.poster,
+               photographer: photo.author,
                photographerName: photo.account.displayName,
+               photographerEmail: photo.account.email,
                customer: account._id,
                location: location,
                servicePackageId: service_package._id,
@@ -240,9 +174,9 @@ const createNewBooking = async (req, res) => {
           });
 
           await booking.save();
-          await updateCustomerPoints(account._id);
+          await updateCustomerPoints(account._id, total_price);
 
-          await sendEmailCheckout(req, res);
+          await emailCheckoutSender(req, res);
 
           return responseHandler.created(res, booking);
      } catch (error) {
@@ -315,12 +249,37 @@ const getCustomerVouchers = async (req, res) => {
      }
 }
 
+const updateBookingStatus = async (req, res) => {
+     try {
+          const { bookingId } = req.params;
+          const { status, cancelFee } = req.body;
+
+          const booking = await bookingModel.findById(bookingId);
+          if (!booking) {
+               return responseHandler.notfound(res, { message: 'Không tìm thấy lịch hẹn!' }, 'Không tìm thấy lịch hẹn!');
+          }
+
+          booking.status = ORDER_STATUS[status.toLowerCase()];
+          await booking.save();
+
+          if (booking.status === ORDER_STATUS.cancelled) {
+               await emailCancelBookingSender(req, res);
+          }
+
+
+          return responseHandler.ok(res, booking);
+
+     } catch (error) {
+          return responseHandler.error(res, "Lỗi cập nhật trạng thái: " + error.message);
+     }
+}
+
 
 
 
 export default {
      createNewBooking, getCustomerBooking,
      getCustomerByAccountId, updatePoints,
-     getCustomerVouchers, sendEmailCheckout, 
-     getCustomerBookingByPhotoId
+     getCustomerVouchers, emailCheckoutSender,
+     getCustomerBookingByPhotoId, updateBookingStatus
 };

@@ -32,7 +32,6 @@ const PostItem = ({ photo }) => {
      const dispatch = useDispatch();
      const { user } = useSelector((state) => state.user);
 
-     console.log()
 
      const [listFavorites, setListFavorites] = useState([]);
 
@@ -145,7 +144,7 @@ const PostItem = ({ photo }) => {
 
 
                          <CardHeader
-                              title={photo.photo.title}
+                              title={photo.photographer.account.displayName}
                               subheader={moment(photo.photo.createdAt).format('dddd, MMMM YYYY')}
                               titleTypographyProps={textConfigs.style.headerText}
                               subheaderTypographyProps={textConfigs.style.subText}
@@ -164,7 +163,7 @@ const PostItem = ({ photo }) => {
                                              <Typography variant='body2' color="green" sx={{
                                                   textTransform: 'uppercase', ...uiConfigs.style.typoLines(1, 'center'),
                                                   fontWeight: '700'
-                                             }}>Available</Typography>
+                                             }}>Đang Hoạt Động</Typography>
                                         </Stack>
                                    ) : photo.photographer.status === "BUSY" ? (
                                         <Stack direction={'row'} alignItems={'center'} justifyContent={'space-around'}>
@@ -172,7 +171,7 @@ const PostItem = ({ photo }) => {
                                              <Typography variant='body2' color="orange" sx={{
                                                   textTransform: 'uppercase', ...uiConfigs.style.typoLines(1, 'center'),
                                                   fontWeight: '700'
-                                             }}>Busy</Typography>
+                                             }}>Đang Bận</Typography>
                                         </Stack>
                                    ) : (
                                         <Stack direction={'row'} alignItems={'center'} justifyContent={'space-around'}>
@@ -180,7 +179,7 @@ const PostItem = ({ photo }) => {
                                              <Typography variant='body2' color="red" sx={{
                                                   textTransform: 'uppercase', ...uiConfigs.style.typoLines(1, 'center'),
                                                   fontWeight: '700'
-                                             }}>Inactive</Typography>
+                                             }}>Không Hoạt Động</Typography>
                                         </Stack>
                                    )}
                               </Typography>

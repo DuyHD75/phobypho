@@ -1,28 +1,13 @@
 import React, { Fragment, useState, useCallback } from "react";
 import {
-  Card,
-  CardMedia,
-  Typography,
-  Box,
   Stack,
-  Modal,
-  Button,
 } from "@mui/material";
-import uiConfigs from "../../configs/ui.config";
-import dayjs from "dayjs";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import TextField from "@mui/material/TextField";
-import Autocomplete from "@mui/material/Autocomplete";
-import { LoadingButton } from "@mui/lab";
 import ConfirmModal from "./ConfirmModal";
-import { useParams } from "react-router-dom";
 import ServicePackageItem from "./ServicePackageItem";
 
 const ServicePackage = ({ photo, services }) => {
 
+  console.log(services)
   const [openModal, setOpenModal] = useState(false);
   const [bookingData, setBookingData] = useState({ photo: photo });
 
