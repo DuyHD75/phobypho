@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 
 import HeroSlide from '../components/common/HeroSlide';
-import SocialBar from '../components/common/SocialBar';
+import SocialBar from '../components/common/Socialbar';
 import HeroGrid from '../components/common/HeroGrid';
 import uiConfigs from '../configs/ui.config';
 import { Box } from '@mui/material'

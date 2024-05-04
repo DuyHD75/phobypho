@@ -1,7 +1,7 @@
 import React from 'react'
-import { AppBar, Stack, Toolbar, Typography, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
+import { Typography, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
 import menuConfigs from '../../configs/menu.config'
-import Logo from './Logo';
+
 import { Link } from 'react-router-dom';
 
 const SocialBar = () => {
