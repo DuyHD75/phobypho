@@ -61,27 +61,27 @@ accountSchema.methods.hashPassword = function (password) {
      return crypto.pbkdf2Sync(password, this.salt, 1000, 64, "sha512").toString('hex');
 };
 
-accountSchema.post('save', async (doc, next) => {
-     if (doc.role && doc.role === ROLES_LIST.customer) {
-          try {
-               const customer = new customerModel({ account: doc._id });
-               await customer.save();
-               next();
-          } catch (error) {
-               next(error);
-          }
-     }
+// accountSchema.post('save', async (doc, next) => {
+//      if (doc.role && doc.role === ROLES_LIST.customer) {
+//           try {
+//                const customer = new customerModel({ account: doc._id });
+//                await customer.save();
+//                next();
+//           } catch (error) {
+//                next(error);
+//           }
+//      }
 
-     if (doc.role && doc.role === ROLES_LIST.photographer) {
-          try {
-               const photographer = new photographerModel({ account: doc._id });
-               await photographer.save();
-               next();
-          } catch (error) {
-               next(error);
-          }
-     }
-})
+//      if (doc.role && doc.role === ROLES_LIST.photographer) {
+//           try {
+//                const photographer = new photographerModel({ account: doc._id });
+//                await photographer.save();
+//                next();
+//           } catch (error) {
+//                next(error);
+//           }
+//      }
+// })
 
 const accountModel = mongoose.model("Account", accountSchema);
 

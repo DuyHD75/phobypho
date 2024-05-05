@@ -12,7 +12,7 @@ import userApi from '../api/modules/user.api';
 import { setAuthModalOpen } from '../redux/features/authModalSlice';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
-
+import InputLabel from '@mui/material/InputLabel';
 
 const Profile = () => {
 
@@ -24,24 +24,29 @@ const Profile = () => {
 
    const { user } = useSelector(state => state.user);
 
+
    useEffect(() => {
+
       setAvatarUrl(user.avatar);
       if (user.location) {
          setLocation(user.location || user.updatedUser.location);
       }
+      console.log(user.userData);
+
+      
    }, [user]);
 
    const profileForm = useFormik({
       initialValues: {
-         displayName: user?.displayName,
-         phoneNumber: user?.phoneNumber,
-         email: user?.email,
-         avatar: user?.avatar,
-         location: user.role === 'PHOTOGRAPHER' ? user.userData.location || user.updatedUser.location : '',
-         gender: user.role === 'PHOTOGRAPHER' ? user.userData.gender || user.updatedUser.gender : '',
-         age: user.role === 'PHOTOGRAPHER' ? user.userData.age || user.updatedUser.age : '',
-         experienceYears: user.role === 'PHOTOGRAPHER' ? user.userData.experienceYears || user.updatedUser.experienceYears : '',
-         description: user.role === 'PHOTOGRAPHER' ? user.userData.description || user.updatedUser.description : '',
+         displayName: user.displayName,
+         phoneNumber: user.phoneNumber,
+         email: user.email,
+         avatar: user.avatar,
+         location: user.role === 'PHOTOGRAPHER' ? user.userData.location : '',
+         gender: user.role === 'PHOTOGRAPHER' ? user.userData.gender  : '',
+         age: user.role === 'PHOTOGRAPHER' ? user.userData.age  : '',
+         experienceYears: user.role === 'PHOTOGRAPHER' ? user.userData.experienceYears  : '',
+         description: user.role === 'PHOTOGRAPHER' ? user.userData.description : '',
       },
       validationSchema: Yup.object({
          displayName: Yup.string()
@@ -61,6 +66,7 @@ const Profile = () => {
             Yup.number(),
          description: user.role === 'PHOTOGRAPHER' ? Yup.string().required("Description is required.") : Yup.string(),
       }),
+      enableReinitialize: true,
       onSubmit: async values => {
 
          setErrorMessage(undefined);
@@ -105,7 +111,8 @@ const Profile = () => {
             sx={{
                ...uiConfigs.style.typoLines(1, 'center'),
                color: "secondary.colorText",
-               marginTop: 4,
+               marginTop: 2,
+               padding: '1rem'
             }}
          >
             <Stack spacing={2}>
@@ -116,6 +123,7 @@ const Profile = () => {
                   error={profileForm.touched.displayName && profileForm.errors.displayName !== undefined}
                   helperText={profileForm.touched.displayName && profileForm.errors.displayName}
                   label='Tên Đại Diện'
+                  sx={{}}
                >
                </TextField>
 
@@ -146,19 +154,22 @@ const Profile = () => {
                      </TextField>
 
                      <Stack flexDirection={{ sx: 'column', md: 'row' }} justifyContent={'space-between'} alignItems={"center"}>
-                        <Select
-                           labelId="gender_selection"
-                           id="gender"
-                           value={profileForm.values.gender}
-                           onChange={profileForm.handleChange}
-                           placeholder='Select you gender'
-                           name="gender"
-                           sx={{ width: '45%' }}
-                           label="Giới Tính"
-                        >
-                           <MenuItem value={"Nam"}>Nam</MenuItem>
-                           <MenuItem value={"Nữ"}>Nữ</MenuItem>
-                        </Select>
+                        <Box sx={{ width: '45%', position: 'relative' }}>
+                           <InputLabel id="gender_selection">Giới tính</InputLabel>
+                           <Select
+                              labelId="gender_selection"
+                              id="gender"
+                              value={profileForm.values.gender}
+                              onChange={profileForm.handleChange}
+                              placeholder='Chọn giới tính của bạn'
+                              name="gender"
+                              label="Giới Tính"
+                              fullWidth
+                           >
+                              <MenuItem value={"Nam"}>Nam</MenuItem>
+                              <MenuItem value={"Nữ"}>Nữ</MenuItem>
+                           </Select>
+                        </Box>
 
                         <TextField type='number' placeholder='Nhập số năm kinh nghiệm' name='experienceYears'
                            label='Số Năm Kinh Nghiệm'

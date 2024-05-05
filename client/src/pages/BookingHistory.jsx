@@ -49,7 +49,7 @@ const BookingHistoryPage = () => {
      const [bookings, setBookings] = useState([]);
      const { user } = useSelector(state => state.user);
 
-     
+
      const [openModal, setOpenModal] = useState(false);
      const [bookingDate, setBookingDate] = useState();
      const [duration, setDuration] = useState();
@@ -62,7 +62,7 @@ const BookingHistoryPage = () => {
           const getBookings = async () => {
 
                const { response, err } = await customerApi.getBookings(user.id);
-         
+
                if (response) setBookings(response);
                if (err) toast.error(err.message);
           }
@@ -82,7 +82,7 @@ const BookingHistoryPage = () => {
           const percent = calculateCancellationFee(bookingDate, new Date());
           setCancelFee(total_price * percent);
           setBookingId(bookingId);
-     }
+     };
 
      const calculateCancellationFee = (bookingDate, cancelDate) => {
           const remainingTime = moment.duration(moment(bookingDate).diff(cancelDate));
@@ -94,11 +94,11 @@ const BookingHistoryPage = () => {
                return 0.1;
           }
           else if (daysDifference >= 1 && daysDifference < 2) {
-               return 0.5; 
+               return 0.5;
           } else if (daysDifference >= 0.5) {
                return 1;
           } else {
-               return 1; 
+               return 1;
           }
      };
 
@@ -116,8 +116,6 @@ const BookingHistoryPage = () => {
                toast.error(err.message);
           }
      }
-
-
 
      return (
           <Fragment>
@@ -258,7 +256,7 @@ const BookingHistoryPage = () => {
                          overflow: 'hidden',
                     }}>Lịch sử đặt lịch </Typography>
 
-                    <TableContainer component={Paper}>
+                    {bookings.length > 0 ? (<TableContainer component={Paper}>
                          <Table sx={{ width: '100%' }} aria-label="customized table">
                               <TableHead>
                                    <TableRow>
@@ -330,7 +328,8 @@ const BookingHistoryPage = () => {
                                    ))}
                               </TableBody>
                          </Table>
-                    </TableContainer>
+                    </TableContainer>) :
+                         <Typography sx={{ ...uiConfigs.style.typoLines(2, 'center'), color: 'secondary.colorText', fontSize: '1.2rem', marginTop: '2rem' }}>Không có lịch sử đặt lịch nào!</Typography>}
                </UserSidebar >
           </Fragment>
 

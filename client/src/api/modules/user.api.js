@@ -17,12 +17,18 @@ const userApi = {
                return { response };
           } catch (err) { return { err } }
      },
-     signup: async ({ username, displayName, phoneNumber, email, password, confirmPassword, role }) => {
+     signup: async ({ username, displayName, phoneNumber, email, password, confirmPassword, role, location }) => {
           try {
-               const response = await publicClient.post(userEndpoints.signup,
-                    { username, displayName, phoneNumber, email, password, confirmPassword, role })
-
-               return { response };
+               if(role === "PHOTOGRAPHER") {
+                    const response = await publicClient.post(userEndpoints.signup,
+                         { username, displayName, phoneNumber, email, password, confirmPassword, role, location })
+                    return { response };
+               }else {
+                    const response = await publicClient.post(userEndpoints.signup,
+                         { username, displayName, phoneNumber, email, password, confirmPassword, role })
+                    return { response };
+               }
+              
           } catch (err) { return { err } }
      },
      passwordUpdate: async ({ password, newPassword, confirmNewPassword }) => {

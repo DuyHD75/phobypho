@@ -1,7 +1,7 @@
 import jsonwebtoken from 'jsonwebtoken';
 import responseHandler from '../handlers/response.handler.js';
 import accountModel from '../models/account.model.js';
-import { ROLES_LIST } from '../configs/enum.config.js';
+import { ROLES_LIST, PHOTOGRAPHER_STATUS } from '../configs/enum.config.js';
 import customerModel from '../models/customer.model.js';
 import photographerModel from '../models/photographer.model.js';
 
@@ -22,6 +22,21 @@ const signup = async (req, res) => {
           });
           account.setPassword(password);
           await account.save();
+
+          if(role === ROLES_LIST.photographer) {
+               const { location } = req.body;
+               const photographer = new photographerModel({
+                    account: account.id,
+                    status: PHOTOGRAPHER_STATUS.available,
+                    location: location,
+               });
+               await photographer.save();
+          } else {
+               const customer = new customerModel({
+                    account: account.id,
+               });
+               await customer.save();
+          }
 
           const token = jsonwebtoken.sign(
                { data: account.id },

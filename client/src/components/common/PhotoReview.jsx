@@ -14,8 +14,8 @@ import moment from 'moment'
 
 const PhotoReviewItem = ({ review, onRemoved }) => {
 
+     console.log(review)
      const { user } = useSelector((state) => state.user);
-     console.log(user)
      const [onRequest, setOnRequest] = useState(false);
 
      const onRemove = async () => {
@@ -54,12 +54,13 @@ const PhotoReviewItem = ({ review, onRemoved }) => {
                                              ...uiConfigs.style.typoLines(1, 'left'),
                                              borderBottom: '0.6px solid #444',
                                              width: 'max-content',
-                                             textTransform: 'capitalize'
+                                             textTransform: 'capitalize',
+                                             fontSize: '1rem'
                                         }}>
                                              {review.account.username}
-
                                         </Typography>
-                                        <LoadingButton
+
+                                        {user && user.id === review.account.id && (<LoadingButton
                                              variant="text"
                                              startIcon={<DeleteIcon />}
                                              loadingPosition="start"
@@ -74,16 +75,18 @@ const PhotoReviewItem = ({ review, onRemoved }) => {
                                              }}
                                         >
                                              remove
-                                        </LoadingButton>
+                                        </LoadingButton>)}
+
                                    </Stack>
 
 
                                    <Typography variant="caption" sx={{
                                         fontFamily: '"Nunito", sans-serif',
                                         color: "secondary.colorText",
-                                        fontSize: '1rem'
+                                        fontSize: '0.9rem'
+
                                    }}>
-                                        {moment(review.createdAt).format('dddd, MMMM YYYY  HH:mm')}
+                                        {moment(review.createdAt).format('DD-MM-YYYY  HH:mm')}
                                    </Typography>
                               </Stack>
 
@@ -100,7 +103,7 @@ const PhotoReviewItem = ({ review, onRemoved }) => {
 }
 
 const PhotoReview = ({ photo, bookedInfo }) => {
-
+     console.log(bookedInfo)
      const { user } = useSelector((state) => state.user);
      const [reviewList, setReviewList] = useState([]);
      const [filteredReview, setFilteredReview] = useState([]);
@@ -127,7 +130,8 @@ const PhotoReview = ({ photo, bookedInfo }) => {
 
 
      const checkIsBooked = () => {
-          const isPhotoBooked = bookedInfo.filter(booking => booking.photo.toString() === photo.id.toString()).length > 0;
+
+          const isPhotoBooked = bookedInfo.filter(booking => { return booking.photo.toString() === photo.id.toString() && booking.status === "COMPLETED" }).length > 0;
           setIsBooked(isPhotoBooked);
      }
 
@@ -201,70 +205,80 @@ const PhotoReview = ({ photo, bookedInfo }) => {
                          <Box sx={{ padding: '0 1rem', color: "secondary.colorText", }}>
 
                               {user.role === "CUSTOMER" && isBooked && (
-                                   <Stack direction={'row'} alignItems={'center'} padding={'0.5rem 0'} >
-                                        <Typography component="legend"
+                                   <Fragment>
+
+                                        <Stack direction={'row'} alignItems={'center'} padding={'0.5rem 0'} >
+                                             <Typography component="legend"
+                                                  sx={{
+                                                       ...uiConfigs.style.typoLines(1, 'left'),
+                                                       fontSize: { xs: '1rem', md: '1.1rem' },
+                                                       fontWeight: '500',
+                                                       marginRight: '10px',
+                                                       color: "secondary.colorText",
+                                                  }}
+
+                                             >Bạn đánh giá cho photographer này bao nhiêu sao nhỉ  </Typography>
+
+                                             <Rating
+                                                  style={{ fontSize: '1.5rem' }}
+                                                  name="simple-controlled"
+                                                  value={rating}
+                                                  onChange={(event, newValue) => {
+                                                       setRating(newValue);
+                                                  }}
+                                             />
+                                        </Stack>
+
+                                        <TextField
+                                             value={content}
+                                             onChange={(e) => setContent(e.target.value)}
+                                             multiline
+                                             rows={4}
+                                             fullWidth
                                              sx={{
+                                                  border: '1px solid #000',
+                                                  outline: 'none',
                                                   ...uiConfigs.style.typoLines(1, 'left'),
-                                                  fontSize: { xs: '1rem', md: '1.1rem' },
-                                                  fontWeight: '500',
-                                                  marginRight: '10px',
-                                                  color: "secondary.colorText",
+                                                  '&:focus': {
+                                                       borderColor: 'primary.main',
+                                                  }
                                              }}
-
-                                        >Bạn đánh giá cho photographer này bao nhiêu sao nhỉ  </Typography>
-
-                                        <Rating
-                                             style={{ fontSize: '1.5rem' }}
-                                             name="simple-controlled"
-                                             value={rating}
-                                             onChange={(event, newValue) => {
-                                                  setRating(newValue);
-                                             }}
+                                             placeholder="Nhập bình luận của bạn tại đây nhé..."
                                         />
-                                   </Stack>)}
-
-                              <TextField
-                                   value={content}
-                                   onChange={(e) => setContent(e.target.value)}
-                                   multiline
-                                   rows={4}
-                                   fullWidth
-                                   sx={{
-                                        border: '1px solid #000',
-                                        outline: 'none',
-                                        ...uiConfigs.style.typoLines(1, 'left'),
-                                        '&:focus': {
-                                             borderColor: 'primary.main',
-                                        }
-                                   }}
-                                   placeholder="Nhập bình luận của bạn tại đây nhé..."
-                              />
 
 
-                              <LoadingButton
-                                   variant="outlined"
-                                   size="medium"
+                                        <LoadingButton
+                                             variant="outlined"
+                                             size="medium"
 
-                                   sx={{
-                                        width: "max-content",
-                                        border: '1px solid primary.main',
-                                        color: "secondary.colorText",
-                                        marginTop: '1rem',
-                                        padding: '0.6rem 1rem',
-                                        ...uiConfigs.style.typoLines(1, 'left'),
-                                        display: 'flex',
-                                        alignItems: "center",
-                                        fontSize: '0.8rem'
+                                             sx={{
+                                                  width: "max-content",
+                                                  border: '1px solid primary.main',
+                                                  color: "secondary.colorText",
+                                                  marginTop: '1rem',
+                                                  padding: '0.6rem 1rem',
+                                                  ...uiConfigs.style.typoLines(1, 'left'),
+                                                  display: 'flex',
+                                                  alignItems: "center",
+                                                  fontSize: '0.8rem'
 
-                                   }}
-                                   endIcon={<SendOutlinedIcon />}
-                                   loadingPosition="start"
-                                   loading={onRequest}
-                                   onClick={addComment}
+                                             }}
+                                             endIcon={<SendOutlinedIcon />}
+                                             loadingPosition="start"
+                                             loading={onRequest}
+                                             onClick={addComment}
 
-                              >
-                                   Gửi Đánh Giá
-                              </LoadingButton>
+                                        >
+                                             Gửi Đánh Giá
+                                        </LoadingButton>
+
+                                   </Fragment>
+
+
+
+                              )}
+
+
                          </Box>
 
                     </Container>

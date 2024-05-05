@@ -32,27 +32,30 @@ const SignUpModal = ({ switchAuthState }) => {
       email: "",
       password: "",
       confirmPassword: "",
-      role: ""
+      role: "",
+      location: ""
     },
     validationSchema: Yup.object({
       username: Yup.string()
-        .min(8, "Username at least 8 characters !")
-        .required("Username is required !"),
+        .min(8, "Username có ít nhất 8 ký tự !")
+        .required("Username cần phải nhập !"),
       displayName: Yup.string()
-        .min(8, "Display name at least 8 characters !")
-        .required("Display name is required !"),
+        .min(8, "Tên hiển thị có ít nhất 8 ký tự !")
+        .required("Tên hiển thị cần phải nhập !"),
       phoneNumber: Yup.string()
-        .matches(/^0\d{9}$/, 'Phone number is not valid')
-        .required("Phone number is required!"),
+        .matches(/^0\d{9}$/, 'Số điện thoại is not valid')
+        .required("Số điện thoại cần phải nhập!"),
       email: Yup.string()
         .email()
-        .required("Email is required !"),
+        .required("Email cần phải nhập !"),
       password: Yup.string()
-        .min(8, "Password at least 8 character !")
-        .required("Password is required !"),
+        .min(8, "Mật khẩu ít nhất 8 ký tự !")
+        .required("Mật khẩu cần phải nhập !"),
       confirmPassword: Yup.string()
-        .min(8, "ConfirmPassword minimum 8 characters")
-        .required("ConfirmPassword is required"),
+        .min(8, "Xác nhận mật khẩu ít nhất 8 ký tự !")
+        .required("Xác nhận mật khẩu cần phải nhập"),
+      location: Yup.string()
+        .required("Địa chỉ cần phải nhập")
     }),
     onSubmit: async (values) => {
       setErrorMessage(undefined);
@@ -78,38 +81,38 @@ const SignUpModal = ({ switchAuthState }) => {
       component={'form'} onSubmit={signUpForm.handleSubmit}
     >
       <Stack spacing={2}>
-        <TextField type='text' placeholder='Enter your username' name='username'
+        <TextField  type='text' placeholder='Nhập username' name='username'
           fullWidth value={signUpForm.values.username} onChange={signUpForm.handleChange} color='warning'
           error={signUpForm.touched.username && signUpForm.errors.username !== undefined}
           helperText={signUpForm.touched.username && signUpForm.errors.username}
         >
         </TextField>
-        <TextField type='text' placeholder='Enter your display name' name='displayName'
+        <TextField type='text' placeholder='Nhập tên đại diện' name='displayName'
           fullWidth value={signUpForm.values.displayName} onChange={signUpForm.handleChange} color='warning'
           error={signUpForm.touched.displayName && signUpForm.errors.displayName !== undefined}
           helperText={signUpForm.touched.displayName && signUpForm.errors.displayName}
         >
         </TextField>
-        <TextField type='text' placeholder='Enter your phone number' name='phoneNumber'
+        <TextField type='text' placeholder='Nhập số điện thoại' name='phoneNumber'
           fullWidth value={signUpForm.values.phoneNumber} onChange={signUpForm.handleChange} color='warning'
           error={signUpForm.touched.phoneNumber && signUpForm.errors.phoneNumber !== undefined}
           helperText={signUpForm.touched.phoneNumber && signUpForm.errors.phoneNumber}
         >
         </TextField>
-        <TextField type='email' placeholder='Enter your email' name='email'
+        <TextField type='email' placeholder='Nhập email' name='email'
           fullWidth value={signUpForm.values.email} onChange={signUpForm.handleChange} color='warning'
           error={signUpForm.touched.email && signUpForm.errors.email !== undefined}
           helperText={signUpForm.touched.email && signUpForm.errors.email}
         >
         </TextField>
-        <TextField type='password' placeholder='Enter your password' name='password'
+        <TextField type='password' placeholder='Nhập mật khẩu' name='password'
           fullWidth value={signUpForm.values.password}
           onChange={signUpForm.handleChange} color='warning'
           error={signUpForm.touched.password && signUpForm.errors.password !== undefined}
           helperText={signUpForm.touched.password && signUpForm.errors.password}
         >
         </TextField>
-        <TextField type='password' placeholder='Enter your confirm password' name='confirmPassword'
+        <TextField type='password' placeholder='Nhập xác nhận mật khẩu' name='confirmPassword'
           fullWidth value={signUpForm.values.confirmPassword} onChange={signUpForm.handleChange} color='warning'
           error={signUpForm.touched.confirmPassword && signUpForm.errors.confirmPassword !== undefined}
           helperText={signUpForm.touched.confirmPassword && signUpForm.errors.confirmPassword}
@@ -123,10 +126,20 @@ const SignUpModal = ({ switchAuthState }) => {
           onChange={signUpForm.handleChange}
           placeholder='Select you role'
           name="role"
+          sx={{
+            padding: '0',
+          }}
         >
           <MenuItem value={"PHOTOGRAPHER"}>Photographer</MenuItem>
           <MenuItem value={"CUSTOMER"}>Customer</MenuItem>
         </Select>
+
+        {signUpForm.values.role === "PHOTOGRAPHER" && (<TextField type='text' placeholder='Nhập your location' name='location'
+          fullWidth value={signUpForm.values.location} onChange={signUpForm.handleChange} color='warning'
+          error={signUpForm.touched.location && signUpForm.errors.location !== undefined}
+          helperText={signUpForm.touched.location && signUpForm.errors.location} />)}
+
+
       </Stack>
 
       <LoadingButton

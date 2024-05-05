@@ -22,8 +22,8 @@ const PhotographerSchema = new Schema({
           default: 0
      },
      experienceYears: {
-          type: String,
-          default: ""
+          type: Number,
+          default: 0
      },
      description: {
           type: String,
@@ -37,7 +37,7 @@ const PhotographerSchema = new Schema({
      },
      bookingCount: {
           type: Number,
-          default: 0
+          default: 0 
      }
 });
 

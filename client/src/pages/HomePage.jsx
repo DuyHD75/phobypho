@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect } from 'react'
 
 import HeroSlide from '../components/common/HeroSlide';
 import SocialBar from '../components/common/Socialbar';
@@ -9,6 +9,10 @@ import Container from '../components/common/Container';
 import PhotographerSlide from '../components/common/PhotographerSlide';
 
 const HomePage = () => {
+
+  
+
+
      return (
           <Fragment>
                <SocialBar />

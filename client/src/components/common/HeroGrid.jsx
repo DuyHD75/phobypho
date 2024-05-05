@@ -20,6 +20,7 @@ const HeroGrid = () => {
     const getListPhotos = async () => {
       try {
 
+        dispatch(setGlobalLoading(true));
 
         setPhotoLoading(true);
 

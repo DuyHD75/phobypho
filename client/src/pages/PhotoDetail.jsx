@@ -71,6 +71,7 @@ const PhotoDetailPage = () => {
     };
 
 
+
     const getPhotoDetail = async () => {
       const { response, err } = await photoApi.getPhotoDetail({ photo_id });
 
@@ -108,10 +109,6 @@ const PhotoDetailPage = () => {
       {photo && (
 
         <Fragment>
-
-
-
-
           <Box
             sx={{
 

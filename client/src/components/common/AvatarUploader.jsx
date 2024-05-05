@@ -24,8 +24,10 @@ const AvatarUploader = ({ handleUpload, avatar }) => {
 
       setIsUploading(true);
       const avatarLink = await uploadImageApi.uploadAvatar(avatar);
+      console.log(avatarLink);
       setIsUploading(false);
       setAvatarUrl(avatarLink);
+      console.log(avatarUrl)
       handleUpload(avatarLink);
 
    }, []);
@@ -51,7 +53,7 @@ const AvatarUploader = ({ handleUpload, avatar }) => {
             >
                <input {...getInputProps()} />
 
-               {isUploading ? <Typography>Uploading...</Typography> : <Box> <Typography
+               {isUploading ? <Typography
 
                   variant='p'
                   sx={{
@@ -68,31 +70,51 @@ const AvatarUploader = ({ handleUpload, avatar }) => {
                      fontSize: '2rem',
                      marginBottom: '10px'
                   }} />
-                  Thả ảnh vào đây hoặc click để chọn ảnh
-               </Typography>
+                 Đang tải lên...
+               </Typography> :
+                  <Box>
+                     <Typography
 
-                  <em style={{
-                     fontSize: '0.8rem',
-                     color: '#5a626e',
-                     ...uiConfigs.style.typoLines(1, 'center'),
-                  }}>
-                     (chỉ hỗ trợ file ảnh định dạng .jpg, .png, .jpeg, dung lượng tối đa 100kb)
-                  </em>
-               </Box>}
+                        variant='p'
+                        sx={{
+                           ...uiConfigs.style.typoLines(1, 'center'),
+                           color: 'secondary.colorText',
+                           display: 'flex',
+                           alignItems: 'center',
+                           justifyContent: 'center',
+                           flexDirection: 'column'
+                        }}
+                     >
+                        <FiUploadCloud style={{
+                           color: 'secondary.main',
+                           fontSize: '2rem',
+                           marginBottom: '10px'
+                        }} />
+                        Thả ảnh vào đây hoặc click để chọn ảnh
+                     </Typography>
+
+                     <em style={{
+                        fontSize: '0.8rem',
+                        color: '#5a626e',
+                        ...uiConfigs.style.typoLines(1, 'center'),
+                     }}>
+                        (chỉ hỗ trợ file ảnh định dạng .jpg, .png, .jpeg, dung lượng tối đa 100kb)
+                     </em>
+                  </Box>}
             </Box>
          </Box >
 
-         <Box sx={{
-            width: {sx: '100%', md: '30%'},
+         {avatarUrl && <Box sx={{
+            width: { sx: '100%', md: '30%' },
             borderRadius: '10px',
             border: '2px solid #000',
-            backgroundSize: 'cover',
+            backgroundSize: 'contain',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
             backgroundImage: `url(${avatarUrl})`,
             boxShadow: '0 0 10px rgba(0,0,0,0.5)'
          }} />
-
+         }
       </Stack>
    )
 }

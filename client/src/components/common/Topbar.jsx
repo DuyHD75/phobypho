@@ -1,4 +1,4 @@
-import React, { useState, cloneElement } from "react";
+import React, { useState, cloneElement, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
@@ -44,9 +44,15 @@ const Topbar = () => {
   const { user } = useSelector((state) => state.user);
   const { appState } = useSelector((state) => state.appState);
 
-  const [openSideBar, setOpenSideBar] = useState(false);
 
+
+  const [openSideBar, setOpenSideBar] = useState(false);
   const [isActive, setIsActive] = useState(true);
+
+  useEffect(() => {
+    setIsActive(user && user.userData.status === "AVAILABLE");
+  }, [user])
+
 
   const dispatch = useDispatch();
 
@@ -234,7 +240,7 @@ const Topbar = () => {
                 </Button>
               )}
             </Stack>
-            
+
             {user && <UserMenu />}
           </Toolbar>
         </AppBar>

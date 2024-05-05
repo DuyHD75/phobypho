@@ -26,7 +26,10 @@ const style = {
      color: 'secondary.colorText',
      boxShadow: 24,
      p: 4,
-     maxWidth: '500px'
+     maxWidth: '500px', 
+     maxHeight: '90vh',
+     overflowY: 'scroll',
+     
 };
 
 
@@ -53,14 +56,12 @@ const AuthModal = () => {
                onClose={handleCloseModal}
                aria-labelledby="modal-modal-title"
                aria-describedby="modal-modal-description"
+              
           >
                <Box sx={style}>
-                    <Box sx={{
-                         padding: 4,
-                  
-                    }}>
+                    <Box >
                          <Box sx={{
-                              textAlign: 'center', marginBottom: "2rem",
+                              textAlign: 'center', marginBottom: "1rem",
                               display: 'flex', alignItems: "center",
                               justifyContent: 'center'
 

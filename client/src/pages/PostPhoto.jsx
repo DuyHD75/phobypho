@@ -41,6 +41,7 @@ const PostPhoto = () => {
 
   const navigate = useNavigate();
 
+
   useEffect(() => {
     const getPostPhoto = async () => {
       const { response, err } = await photoApi.getPostByAuth(user.id);
@@ -183,7 +184,7 @@ const PostPhoto = () => {
         }}
       >
         <Box sx={{ padding: "10%", display: "flex" }}>
-          <Container header={photo ? "Cập nhật bài viết" : "Tạo bài viết"} size={"3rem"}>
+          <Container header={photo.length > 0 ? "Cập nhật bài viết" : "Tạo bài viết"} size={"3rem"}>
             <Box
               component={"form"}
               onSubmit={postPhotoForm.handleSubmit}
