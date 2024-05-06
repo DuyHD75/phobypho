@@ -21,7 +21,15 @@ const photographerApi = {
       } catch (err) {
          return { err };
       }
-   }
+   }, 
+   getBookingOfPhotographer: async (photographerId) => {
+      try {
+         const response = await privateClient.get(`photographers/${photographerId}/bookingList`);
+         return { response };
+      } catch (err) {
+         return { err };
+      }
+   },
 };
 
 export default photographerApi;

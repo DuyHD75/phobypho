@@ -1,7 +1,3 @@
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import SlideshowOutlinedIcon from "@mui/icons-material/SlideshowOutlined";
-import LiveTvOutlinedIcon from "@mui/icons-material/LiveTvOutlined";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import RateReviewOutlinedIcon from "@mui/icons-material/RateReviewOutlined";
 import LockResetOutlinedIcon from "@mui/icons-material/LockResetOutlined";
 import FacebookIcon from '@mui/icons-material/Facebook';
@@ -10,11 +6,10 @@ import TwitterIcon from '@mui/icons-material/Twitter';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 
 import { FiSettings } from "react-icons/fi";
-import { FaListAlt } from "react-icons/fa";
 import { FaHeart } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { TbBrandBooking } from "react-icons/tb";
-
+import { GiUpgrade } from "react-icons/gi";
 const main = [
      {
           display: "Trang Chủ",
@@ -50,28 +45,36 @@ const user = [
      {
           display: "Cập nhật thông tin",
           path: "/profile",
-          icon: <FiSettings style={{ fontSize: '1.3rem' }} />,
+          icon: <FiSettings style={{ fontSize: '1rem' }} />,
           state: "profile"
+     },
+     {
+          display: "Nâng cấp tài khoản",
+          path: "/upgrade-account",
+          icon: <GiUpgrade style={{ fontSize: '1rem' }} />,
+          state: "upgrade-account",
+          role: 'PHOTOGRAPHER'
      },
      {
           display: "Lịch sử đặt lịch",
           path: "/booking_history",
-          icon: <TbBrandBooking style={{ fontSize: '1.3rem' }} />,
+          icon: <TbBrandBooking style={{ fontSize: '1rem' }} />,
           state: "booking.history"
      },
      {
           display: "Đổi mật khẩu",
           path: "/password-update",
-          icon: <LockResetOutlinedIcon style={{ fontSize: '1.3rem' }} />,
+          icon: <LockResetOutlinedIcon style={{ fontSize: '1rem' }} />,
           state: "password.update"
      },
      {
-          display: "Danh Sách Yêu Thích",
+          display: "Danh sách yêu thích",
           path: "/favorites",
-          icon: <FaHeart style={{ fontSize: '1.3rem' }} />,
+          icon: <FaHeart style={{ fontSize: '1rem' }} />,
           state: "favorites",
           role: 'CUSTOMER'
-     }
+     },
+
 ];
 
 const photographer = [

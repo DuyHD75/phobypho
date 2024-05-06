@@ -12,4 +12,9 @@ router.post("/updateStatus", tokenMiddleware.authenticate, photographerControlle
 router.post("/updateProfile", tokenMiddleware.authenticate, photographerController.updatePhotographer);
 
 router.get("/:photoId/booking", tokenMiddleware.authenticate, photographerController.getBookingByPhotoId);
+
+router.get("/:photographerId/bookingList", tokenMiddleware.authenticate, photographerController.getBookingOfPhotographer);
+
+
+
 export default router;

@@ -76,11 +76,16 @@ const ServicePackageItem = ({
             Đã chọn
           </Box>
 
-          <CardMedia
-            component="img"
-            sx={{ width: "32%", height: "max-content" }}
-            image="https://mui.com/static/images/cards/live-from-space.jpg"
-            alt="Live from space album cover"
+          <Box
+            style={{
+              width: '30%',
+              borderRadius: "5px",
+              backgroundImage: `url(${service.icon})`,
+              objectFit: 'center',
+              backgroundSize: '65%',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+            }}
           />
 
           <Box

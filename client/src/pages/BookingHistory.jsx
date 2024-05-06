@@ -22,6 +22,9 @@ import { LoadingButton } from '@mui/lab';
 import { toast } from 'react-toastify';
 import ORDER_STATUS from '../api/configs/OrderStatus.Config';
 
+import photographerApi from '../api/modules/photographer.api';
+import NotFound from '../components/common/NotFound';
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
      [`&.${tableCellClasses.head}`]: {
           backgroundColor: "#fff",
@@ -61,10 +64,15 @@ const BookingHistoryPage = () => {
      useEffect(() => {
           const getBookings = async () => {
 
-               const { response, err } = await customerApi.getBookings(user.id);
-
-               if (response) setBookings(response);
-               if (err) toast.error(err.message);
+               if (user.role === "CUSTOMER") {
+                    const { response, err } = await customerApi.getBookings(user.id);
+                    if (response) setBookings(response);
+                    if (err) toast.error(err.message);
+               } else {
+                    const { response, err } = await photographerApi.getBookingOfPhotographer(user.id);
+                    if (response) setBookings(response);
+                    if (err) toast.error(err.message);
+               }
           }
           getBookings();
      }, []);
@@ -239,8 +247,6 @@ const BookingHistoryPage = () => {
                </CommonModal>
 
                <UserSidebar >
-
-
                     <Typography sx={{
                          ...uiConfigs.style.typoLines(1, 'left'),
                          fontSize: '1rem',
@@ -267,8 +273,8 @@ const BookingHistoryPage = () => {
                                         <StyledTableCell align="left">Combo</StyledTableCell>
                                         <StyledTableCell align="left">Trạng Thái</StyledTableCell>
                                         <StyledTableCell align="left">Tổng Tiền</StyledTableCell>
-                                        <StyledTableCell align="left">Hủy</StyledTableCell>
-                                        <StyledTableCell align="left">Đánh Giá</StyledTableCell>
+                                        {user.role === "CUSTOMER" && <StyledTableCell align="left">Hủy</StyledTableCell>}
+                                        {user.role === "CUSTOMER" && <StyledTableCell align="left">Đánh giá</StyledTableCell>}
                                    </TableRow>
                               </TableHead>
                               <TableBody>
@@ -304,7 +310,8 @@ const BookingHistoryPage = () => {
                                                   <StyledTableCell align="left">{
                                                        row.total_price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
                                                   }</StyledTableCell>
-                                                  <StyledTableCell align="left">{
+
+                                                  {user.role === "CUSTOMER" && (<StyledTableCell align="left">{
                                                        <Button
                                                             variant="outlined"
                                                             onClick={() => handleCancelBooking(row.id, row.booking_date, row.total_price, row.createdAt)}
@@ -313,8 +320,9 @@ const BookingHistoryPage = () => {
                                                        >
                                                             <MdOutlineFreeCancellation style={{ fontSize: '1.2rem', }} />
                                                        </Button>
-                                                  }</StyledTableCell>
-                                                  <StyledTableCell align="left">{
+                                                  }</StyledTableCell>)}
+
+                                                  {user.role === "CUSTOMER" && (<StyledTableCell align="left">{
                                                        <Button
                                                             variant="outlined"
                                                             onClick={() => { alert(row.id) }}
@@ -322,14 +330,15 @@ const BookingHistoryPage = () => {
                                                        >
                                                             <MdOutlineRateReview style={{ fontSize: '1.2rem', }} />
                                                        </Button>
-                                                  }</StyledTableCell>
+                                                  }</StyledTableCell>)}
                                              </StyledTableRow>
                                         </Fragment>
                                    ))}
                               </TableBody>
                          </Table>
                     </TableContainer>) :
-                         <Typography sx={{ ...uiConfigs.style.typoLines(2, 'center'), color: 'secondary.colorText', fontSize: '1.2rem', marginTop: '2rem' }}>Không có lịch sử đặt lịch nào!</Typography>}
+                         (<NotFound></NotFound>)
+                    }
                </UserSidebar >
           </Fragment>
 

@@ -35,9 +35,13 @@ const PhotographerSchema = new Schema({
           default: PHOTOGRAPHER_STATUS.available,
           enum: PHOTOGRAPHER_STATUS
      },
+     type_of_account: {
+          type: String,
+          default: ""
+     },
      bookingCount: {
           type: Number,
-          default: 0 
+          default: 0
      }
 });
 

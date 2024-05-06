@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react'
 import UserSidebar from '../components/common/UserSidebar';
-import { Box, Stack, TextField, Button, Alert, Select, MenuItem, Typography } from '@mui/material';
+import { Box, Stack, TextField, Alert, Select, MenuItem, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import uiConfigs from '../configs/ui.config';
 import AvatarUploader from '../components/common/AvatarUploader';
@@ -9,7 +9,6 @@ import { useDispatch } from 'react-redux';
 import { setUser } from '../redux/features/userSlice';
 import * as Yup from 'yup';
 import userApi from '../api/modules/user.api';
-import { setAuthModalOpen } from '../redux/features/authModalSlice';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import InputLabel from '@mui/material/InputLabel';

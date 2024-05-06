@@ -10,6 +10,7 @@ import AboutUs from './../pages/AboutUs';
 import Profile from '../pages/Profile';
 import ChangePassword from '../components/common/ChangePassword';
 import BookingHistory from '../pages/BookingHistory';
+import UpgradeAccount from '../components/common/UpgradeAccount';
 
 export const routesGen = {
      home: "/",
@@ -98,6 +99,15 @@ const routes = [
                </ProtectedPage>
           ),
           state: "profile"
+     },
+     {
+          path: "/upgrade-account",
+          element: (
+               <ProtectedPage>
+                    <UpgradeAccount />
+               </ProtectedPage>
+          ),
+          state: "upgrade-account"
      },
 
 ];

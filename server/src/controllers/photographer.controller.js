@@ -1,7 +1,7 @@
 import responseHandler from '../handlers/response.handler.js';
 import photographerModel from '../models/photographer.model.js';
 
-
+import bookingModel from '../models/booking.model.js';
 
 const updatePhotographer = async (req, res) => {
      try {
@@ -92,6 +92,23 @@ const getBookingByPhotoId = async (req, res) => {
 }
 
 
+const getBookingOfPhotographer = async (req, res) => {
+     try {
+          const { photographerId } = req.params;
+          const bookingList = await bookingModel.find({ photographer: photographerId });
 
-export default { updateBookingCount, updateStatus, getPhotographerByLocation, updatePhotographer, getBookingByPhotoId };
+          console.log(bookingList)
+
+          return responseHandler.ok(res, bookingList);
+     }
+     catch (err) {
+          return responseHandler.error(res, "Fetching booking of photographer: " + err);
+     }
+};
+
+
+export default {
+     updateBookingCount, updateStatus, getPhotographerByLocation,
+     updatePhotographer, getBookingByPhotoId, getBookingOfPhotographer
+};
 

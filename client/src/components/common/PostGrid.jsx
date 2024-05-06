@@ -1,6 +1,10 @@
-import React from 'react';
-import { Grid, Typography } from '@mui/material';
+import React, { Fragment } from 'react';
+import { Grid, Typography, Box } from '@mui/material';
 import PostItem from './PostItem';
+import uiconfig from '../../configs/ui.config';
+import NotFound from './NotFound';
+
+
 
 const PostGrid = ({ photos }) => {
 
@@ -11,7 +15,9 @@ const PostGrid = ({ photos }) => {
                          <PostItem photo={photo} />
                     </Grid>
                ))}
-          </Grid>) : (<Typography variant="h6" align="center">No photos found</Typography>)
+          </Grid>) : (
+               <NotFound />
+          )
      );
 };
 

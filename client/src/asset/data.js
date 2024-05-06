@@ -2,6 +2,12 @@ import { GiCableStayedBridge } from "react-icons/gi";
 import { GiPagoda } from "react-icons/gi";
 import { GiTowerFlag } from "react-icons/gi";
 import { MdOutlineTravelExplore } from "react-icons/md";
+import { IoDiamond } from "react-icons/io5";
+import { GiGoldShell } from "react-icons/gi";
+import { RiCopperCoinLine } from "react-icons/ri";
+
+
+
 const members = [
    {
       "name": "Kim Ngan",
@@ -55,45 +61,84 @@ const eventImages = [
 const categories = [
    {
       "name": "All",
-      "icon": <MdOutlineTravelExplore style={{fontSize: '1.4rem', marginRight: '4px'}} />
+      "icon": <MdOutlineTravelExplore style={{ fontSize: '1.4rem', marginRight: '4px' }} />
    },
    {
       "name": "Huế",
-      "icon": <GiPagoda style={{fontSize: '1.4rem', marginRight: '4px'}} />
+      "icon": <GiPagoda style={{ fontSize: '1.4rem', marginRight: '4px' }} />
    },
    {
       "name": "Đà Nẵng",
-      "icon": <GiCableStayedBridge style={{fontSize: '1.4rem', marginRight: '4px'}} />
+      "icon": <GiCableStayedBridge style={{ fontSize: '1.4rem', marginRight: '4px' }} />
    },
    {
       "name": "Quảng Nam",
-      "icon": <GiTowerFlag style={{fontSize: '1.4rem', marginRight: '4px'}} />
+      "icon": <GiTowerFlag style={{ fontSize: '1.4rem', marginRight: '4px' }} />
    },
 ];
 
 
 const phobyphoDeals = {
    deals: [
-     {
-       "id": 1,
-       "title": "Đăng ký",
-       "description": "Dễ dàng tham gia chương trình thưởng với tài khoản của bạn.",
-       "offer": "Nhận 200 điểm khi đăng ký ngay hôm nay."
-     },
-     {
-       "id": 2,
-       "title": "Tích điểm",
-       "description": "Nhận thưởng cho mọi đơn hàng và hoạt động tham gia.",
-       "offer": "Có những ưu đãi đặc biệt khi tích điểm."
-     },
-     {
-       "id": 3,
-       "title": "Quy đổi & Thưởng",
-       "description": "Dễ dàng quy đổi điểm lấy phiếu giảm giá.",
-       "offer": "Thưởng thức những ưu đãi đặc biệt khi quy đổi điểm tích lũy."
-     }
+      {
+         "id": 1,
+         "title": "Đăng ký",
+         "description": "Dễ dàng tham gia chương trình thưởng với tài khoản của bạn.",
+         "offer": "Nhận 200 điểm khi đăng ký ngay hôm nay."
+      },
+      {
+         "id": 2,
+         "title": "Tích điểm",
+         "description": "Nhận thưởng cho mọi đơn hàng và hoạt động tham gia.",
+         "offer": "Có những ưu đãi đặc biệt khi tích điểm."
+      },
+      {
+         "id": 3,
+         "title": "Quy đổi & Thưởng",
+         "description": "Dễ dàng quy đổi điểm lấy phiếu giảm giá.",
+         "offer": "Thưởng thức những ưu đãi đặc biệt khi quy đổi điểm tích lũy."
+      }
    ],
- };
+};
+
+const upgradeAccountPolicy = {
+   "title": "Nâng cấp tài khoản",
+   "features": [
+      {
+         "id": 1,
+         "title": "Tài khoản đồng",
+         "description": "20 booking",
+         "offer": "Giảm 1% hoa hồng chi trả cho PHOBYPHO trên mỗi booking",
+         "timeReset": "Thời hạn duy trì 4 tháng",
+
+         "icon": 'https://firebasestorage.googleapis.com/v0/b/phobypho-2dbae.appspot.com/o/icons%2Fundraw_upgrade_re_gano.svg?alt=media&token=351e467c-88a6-434b-8907-bf60ce6dedad'
+      },
+      {
+         "id": 2,
+         "title": "Tài khoản Bạc",
+         "description": "50 booking",
+         "offer": "Giảm 3% hoa hồng chi trả cho PHOBYPHO trên mỗi booking",
+         "timeReset": "Thời hạn duy trì 4 tháng",
+         "icon": 'https://firebasestorage.googleapis.com/v0/b/phobypho-2dbae.appspot.com/o/icons%2Fundraw_fireworks_re_2xi7.svg?alt=media&token=884d6879-fe57-48fb-aa8e-f2f7cddd1c0c'
+      },
+      {
+         "id": 3,
+         "title": "Tài khoản Vàng",
+         "description": "100 booking",
+         "offer": "Giảm 5% hoa hồng chi trả cho PHOBYPHO trên mỗi booking",
+         "timeReset": "Thời hạn duy trì 4 tháng",
+         "icon": 'https://firebasestorage.googleapis.com/v0/b/phobypho-2dbae.appspot.com/o/icons%2Fundraw_fashion_blogging_re_fhi5.svg?alt=media&token=d41b6445-b6b9-46b5-8bc5-c3b0b9733f0d'
+      },
+      {
+         "id": 4,
+         "title": "Tài khoản Kim Cương",
+         "description": "200 booking",
+         "offer": "Giảm 7% hoa hồng chi trả cho PHOBYPHO trên mỗi booking",
+         "timeReset": "Thời hạn duy trì 4 tháng",
+         "icon": 'https://firebasestorage.googleapis.com/v0/b/phobypho-2dbae.appspot.com/o/icons%2Fundraw_happy_news_re_tsbd.svg?alt=media&token=68b704a9-2181-43d6-843c-908b60b01542'
+      }
+   ]
+}
 
 
-export { eventImages, members, categories, phobyphoDeals };
+export { eventImages, members, categories, phobyphoDeals, upgradeAccountPolicy };

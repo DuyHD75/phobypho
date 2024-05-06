@@ -108,7 +108,7 @@ const AvatarUploader = ({ handleUpload, avatar }) => {
             width: { sx: '100%', md: '30%' },
             borderRadius: '10px',
             border: '2px solid #000',
-            backgroundSize: 'contain',
+            backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
             backgroundImage: `url(${avatarUrl})`,

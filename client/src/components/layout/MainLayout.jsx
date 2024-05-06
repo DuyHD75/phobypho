@@ -1,5 +1,5 @@
-import React, { Fragment } from 'react'
-import { Box, Toolbar } from '@mui/material';
+import React from 'react'
+import { Box } from '@mui/material';
 import { Outlet } from "react-router-dom";
 import GlobalLoading from '../common/GlobalLoading';
 import Footer from '../common/Footer';
@@ -9,9 +9,6 @@ import ReceiveVouchersModal from '../common/ReceiveVouchersModal';
 import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { setListFavorites } from '../../redux/features/userSlice';
-import favoriteApi from '../../api/modules/favorite.api';
-import { toast } from 'react-toastify';
 import { setUser } from '../../redux/features/userSlice';
 import userApi from '../../api/modules/user.api';
 

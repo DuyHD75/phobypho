@@ -7,7 +7,6 @@ import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import { useSelector } from 'react-redux';
 import reviewApi from '../../api/modules/review.api';
 import { toast } from 'react-toastify'
-import dayjs from "dayjs";
 import DeleteIcon from "@mui/icons-material/Delete";
 import moment from 'moment'
 
@@ -57,7 +56,7 @@ const PhotoReviewItem = ({ review, onRemoved }) => {
                                              textTransform: 'capitalize',
                                              fontSize: '1rem'
                                         }}>
-                                             {review.account.username}
+                                             {review.account.displayName}
                                         </Typography>
 
                                         {user && user.id === review.account.id && (<LoadingButton
@@ -201,11 +200,12 @@ const PhotoReview = ({ photo, bookedInfo }) => {
                )}
 
                {user && (
-                    <Container header={'Gửi lại những đánh giá'} size={'1rem'}>
-                         <Box sx={{ padding: '0 1rem', color: "secondary.colorText", }}>
+                    <Fragment>
+                         {user.role === "CUSTOMER" && isBooked && (
+                              <Container header={'Gửi lại những đánh giá'} size={'1rem'}>
+                                   <Box sx={{ padding: '0 1rem', color: "secondary.colorText", }}>
 
-                              {user.role === "CUSTOMER" && isBooked && (
-                                   <Fragment>
+
 
                                         <Stack direction={'row'} alignItems={'center'} padding={'0.5rem 0'} >
                                              <Typography component="legend"
@@ -272,16 +272,11 @@ const PhotoReview = ({ photo, bookedInfo }) => {
                                              Gửi Đánh Giá
                                         </LoadingButton>
 
-                                   </Fragment>
+                                   </Box>
 
-
-
-                              )}
-
-
-                         </Box>
-
-                    </Container>
+                              </Container>
+                         )}
+                    </Fragment>
                )}
 
           </Fragment>

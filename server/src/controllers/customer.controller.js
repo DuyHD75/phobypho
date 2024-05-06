@@ -146,6 +146,24 @@ const updateCustomerPoints = async (customerId, price) => {
      }
 };
 
+
+const updatePhotographerBookingCount = async (photographerId) => {
+     try {
+          const photo = await photographerModel.findOne({ account: photographerId });
+
+          if (!photo) {
+               throw new Error('Không tìm thấy tài khoản này !');
+          }
+
+          photo.bookingCount += 1;
+          await photo.save();
+
+     } catch (error) {
+          throw new Error("Error updating photographer booking count: " + error.message);
+     }
+}
+
+
 const createNewBooking = async (req, res) => {
      try {
           const { account } = req;
@@ -175,6 +193,8 @@ const createNewBooking = async (req, res) => {
 
           await booking.save();
           await updateCustomerPoints(account._id, total_price);
+
+          await updatePhotographerBookingCount(photo.author);
 
           await emailCheckoutSender(req, res);
 

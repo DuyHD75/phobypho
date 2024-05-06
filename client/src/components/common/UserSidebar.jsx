@@ -50,7 +50,7 @@ const UserSidebar = ({ children }) => {
                                     fontSize: "0.9rem",
                                     fontWeight: "600",
                                     color: 'secondary.contrastText',
-                                    textTransform: 'capitalize',
+                                    textTransform: 'normal',
                                     display: 'flex',
                                     alignItems: 'center',
                                     flexDirection: 'row',
@@ -66,7 +66,12 @@ const UserSidebar = ({ children }) => {
                                  }}
                               >
                                  <Box sx={{ marginRight: '1rem', }}>  {item.icon}</Box>
-                                 <Typography variant="p">{item.display}</Typography>
+                                 <Typography variant="p" sx={{
+                                    ...uiConfigs.style.typoLines(1, 'center'),
+                                    fontSize: '1rem',
+                                    textTransform: 'none',
+
+                                 }}>{item.display}</Typography>
                               </Button>
                            )
                         } else {
@@ -83,7 +88,7 @@ const UserSidebar = ({ children }) => {
                                        fontSize: "0.9rem",
                                        fontWeight: "600",
                                        color: 'secondary.contrastText',
-                                       textTransform: 'capitalize',
+                                       textTransform: 'none',
                                        display: 'flex',
                                        alignItems: 'center',
                                        flexDirection: 'row',
@@ -114,7 +119,7 @@ const UserSidebar = ({ children }) => {
                            fontSize: "0.9rem",
                            fontWeight: "600",
                            color: 'secondary.contrastText',
-                           textTransform: 'capitalize',
+                           textTransform: 'none',
                            display: 'flex',
                            alignItems: 'center',
                            flexDirection: 'row',
@@ -128,8 +133,13 @@ const UserSidebar = ({ children }) => {
                            }
                         }}
                      >
-                        <Box sx={{ marginRight: '1rem', }}><RiLogoutCircleLine style={{ fontSize: '1.3rem' }} /></Box>
-                        <Typography variant="p">{"Logout"}</Typography>
+                        <Box sx={{ marginRight: '1rem', }}><RiLogoutCircleLine style={{ fontSize: '1rem' }} /></Box>
+                        <Typography variant="p" sx={{
+                           ...uiConfigs.style.typoLines(1, 'center'),
+                           fontSize: '1rem',
+                           textTransform: 'none',
+
+                        }}>{"Đăng xuất"}</Typography>
                      </Button>
                   </Box>
                </Box>

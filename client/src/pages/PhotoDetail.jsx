@@ -35,7 +35,6 @@ const userFiled = [
   {
     'Giới Tính': 'gender'
   },
-
 ]
 
 const buttonAnimation = keyframes`
