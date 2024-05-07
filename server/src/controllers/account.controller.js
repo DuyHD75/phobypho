@@ -1,9 +1,9 @@
-import jsonwebtoken from 'jsonwebtoken';
 import responseHandler from '../handlers/response.handler.js';
 import accountModel from '../models/account.model.js';
 import { ROLES_LIST, PHOTOGRAPHER_STATUS } from '../configs/enum.config.js';
 import customerModel from '../models/customer.model.js';
 import photographerModel from '../models/photographer.model.js';
+import { createToken } from '../utils/token.util.js';
 
 const signup = async (req, res) => {
      try {
@@ -11,7 +11,7 @@ const signup = async (req, res) => {
 
           const isExisted = await accountModel.findOne({ username });
 
-          if (isExisted) return responseHandler.badRequest(res, "Account already exists!");
+          if (isExisted) return responseHandler.badRequest(res, "Tài khoản đã tồn tại!");
 
           const account = new accountModel({
                username,
@@ -22,15 +22,22 @@ const signup = async (req, res) => {
           });
           account.setPassword(password);
           await account.save();
+          let photographer = null;
 
           if(role === ROLES_LIST.photographer) {
                const { location } = req.body;
-               const photographer = new photographerModel({
+               photographer = new photographerModel({
                     account: account.id,
                     status: PHOTOGRAPHER_STATUS.available,
                     location: location,
+                    gender: "",
+                    age: 0,
+                    description: "",
+                    experienceYears: 0,
+                    bookingCount: 0
                });
                await photographer.save();
+               
           } else {
                const customer = new customerModel({
                     account: account.id,
@@ -38,11 +45,7 @@ const signup = async (req, res) => {
                await customer.save();
           }
 
-          const token = jsonwebtoken.sign(
-               { data: account.id },
-               process.env.TOKEN_SECRET_KEY,
-               { expiresIn: "6h" }
-          );
+          const token = createToken(account.id);
 
           account.password = undefined;
           account.salt = undefined;
@@ -50,6 +53,7 @@ const signup = async (req, res) => {
           responseHandler.created(res, {
                token,
                ...account._doc,
+               userData: photographer ? photographer : {},
           });
      } catch (error) {
           console.error(error);
@@ -84,11 +88,7 @@ const login = async (req, res) => {
 
           if (!account.validatePassword(password)) return responseHandler.badRequest(res, "Wrong password !");
 
-          const token = jsonwebtoken.sign(
-               { data: account.id },
-               process.env.TOKEN_SECRET_KEY,
-               { expiresIn: '6h' }
-          );
+          const token = createToken(account.id);
 
           account.password = undefined;
           account.salt = undefined;
@@ -96,9 +96,9 @@ const login = async (req, res) => {
 
           responseHandler.created(res, {
                token,
+               id: account.id,
                ...account._doc,
                userData,
-               id: account.id
           });
      } catch {
           responseHandler.error(res);

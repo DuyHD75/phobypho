@@ -13,7 +13,6 @@ import photoApi from "../api/modules/photo.api";
 import PhotoReview from "../components/common/PhotoReview";
 import ServicePackage from "../components/common/ServicePackage";
 import { toast } from "react-toastify";
-import moment from "moment";
 import ModalImageSlider from "../components/common/ModalImageSlider";
 import WavingHandIcon from '@mui/icons-material/WavingHand';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
@@ -50,6 +49,10 @@ const buttonAnimation = keyframes`
 `;
 
 
+const AnimatedButton = styled(Button)`
+animation: ${buttonAnimation} 1s infinite;
+`;
+
 const PhotoDetailPage = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
@@ -59,17 +62,14 @@ const PhotoDetailPage = () => {
   const [isOpenModalSlider, setIsOpenModalSlider] = useState(false);
   const [bookedInfo, setBookedInfo] = useState([]);
   const scrollRef = useRef(null);
+
   useEffect(() => {
     window.scrollTo(0, 0);
-
-
     const getBookingByPhotoId = async () => {
       const { response, err } = await customerApi.getBookingByPhotoId(photo_id);
       if (response) setBookedInfo(response);
       if (err) toast.error(err.message);
     };
-
-
 
     const getPhotoDetail = async () => {
       const { response, err } = await photoApi.getPhotoDetail({ photo_id });
@@ -90,11 +90,6 @@ const PhotoDetailPage = () => {
     setAlbumSelected(album);
     setIsOpenModalSlider(true);
   }
-
-  const AnimatedButton = styled(Button)`
-  animation: ${buttonAnimation} 1s infinite;
-`;
-
 
   return (
     <Fragment>

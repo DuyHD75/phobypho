@@ -6,8 +6,8 @@ const NotFound = () => {
    return (
       <Stack flexDirection={"column"} justifyContent={'center'} alignItems={"center"}>
          <Box sx={{
-            widows: '100%',
-            height: '60vh',
+            width: '100%',
+            height: '50vh',
             backgroundImage: 'url(https://firebasestorage.googleapis.com/v0/b/phobypho-2dbae.appspot.com/o/icons%2Fundraw_void_-3-ggu.svg?alt=media&token=f577fe77-c187-4d7e-b92b-9f276a4c9d95)',
             backgroundSize: 'contain',
             backgroundPosition: 'center',

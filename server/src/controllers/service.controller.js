@@ -3,13 +3,14 @@ import servicePackagesModel from "../models/servicePackage.model.js";
 
 const createServicePackage = async (req, res) => {
      try {
-          const { name, description, price, numberOfPeople } = req.body;
+          const { name, description, price, numberOfPeople, icon } = req.body;
 
           const servicePackage = new servicePackagesModel({
                name: name,
                description: description,
                price: price,
-               numberOfPeople: numberOfPeople
+               numberOfPeople: numberOfPeople, 
+               icon: icon
           });
 
           const result = await servicePackage.save();

@@ -12,16 +12,17 @@ import userApi from '../api/modules/user.api';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import InputLabel from '@mui/material/InputLabel';
-
+import FormControl from '@mui/material/FormControl';
 const Profile = () => {
 
+   const { user } = useSelector(state => state.user);
    const dispatch = useDispatch();
    const [errorMessage, setErrorMessage] = useState(undefined);
    const [isUpdateRequest, setIsUpdateRequest] = useState(false);
    const [avatarUrl, setAvatarUrl] = useState('');
    const [location, setLocation] = useState('');
 
-   const { user } = useSelector(state => state.user);
+
 
 
    useEffect(() => {
@@ -30,10 +31,9 @@ const Profile = () => {
       if (user.location) {
          setLocation(user.location || user.updatedUser.location);
       }
-      console.log(user.userData);
 
-      
-   }, [user]);
+
+   }, []);
 
    const profileForm = useFormik({
       initialValues: {
@@ -41,11 +41,11 @@ const Profile = () => {
          phoneNumber: user.phoneNumber,
          email: user.email,
          avatar: user.avatar,
-         location: user.role === 'PHOTOGRAPHER' ? user.userData.location : '',
-         gender: user.role === 'PHOTOGRAPHER' ? user.userData.gender  : '',
-         age: user.role === 'PHOTOGRAPHER' ? user.userData.age  : '',
-         experienceYears: user.role === 'PHOTOGRAPHER' ? user.userData.experienceYears  : '',
-         description: user.role === 'PHOTOGRAPHER' ? user.userData.description : '',
+         location: user?.role === 'PHOTOGRAPHER' ? user.userData?.location : '',
+         gender: user.role === 'PHOTOGRAPHER' ? user.userData?.gender : '',
+         age: user.role === 'PHOTOGRAPHER' ? user.userData?.age : '',
+         experienceYears: user.role === 'PHOTOGRAPHER' ? user.userData?.experienceYears : '',
+         description: user.role === 'PHOTOGRAPHER' ? user.userData?.description : '',
       },
       validationSchema: Yup.object({
          displayName: Yup.string()
@@ -122,7 +122,7 @@ const Profile = () => {
                   error={profileForm.touched.displayName && profileForm.errors.displayName !== undefined}
                   helperText={profileForm.touched.displayName && profileForm.errors.displayName}
                   label='Tên Đại Diện'
-                  sx={{}}
+               
                >
                </TextField>
 
@@ -154,20 +154,26 @@ const Profile = () => {
 
                      <Stack flexDirection={{ sx: 'column', md: 'row' }} justifyContent={'space-between'} alignItems={"center"}>
                         <Box sx={{ width: '45%', position: 'relative' }}>
-                           <InputLabel id="gender_selection">Giới tính</InputLabel>
-                           <Select
-                              labelId="gender_selection"
-                              id="gender"
-                              value={profileForm.values.gender}
-                              onChange={profileForm.handleChange}
-                              placeholder='Chọn giới tính của bạn'
-                              name="gender"
-                              label="Giới Tính"
-                              fullWidth
-                           >
-                              <MenuItem value={"Nam"}>Nam</MenuItem>
-                              <MenuItem value={"Nữ"}>Nữ</MenuItem>
-                           </Select>
+
+
+
+                           <FormControl fullWidth>
+                              <InputLabel id="demo-select-small-label">Giới tính</InputLabel>
+                              <Select
+                                 labelId="demo-select-small-label"
+                                 id="demo-select-small"
+                                 value={profileForm.values.gender}
+                                 label="Gender"
+                                 name="gender"
+                                 onChange={profileForm.handleChange}
+                              >
+                                 <MenuItem value="">
+                                    <em>None</em>
+                                 </MenuItem>
+                                 <MenuItem value={"Nam"}>Nam</MenuItem>
+                                 <MenuItem value={"Nữ"}>Nữ</MenuItem>
+                              </Select>
+                           </FormControl>
                         </Box>
 
                         <TextField type='number' placeholder='Nhập số năm kinh nghiệm' name='experienceYears'

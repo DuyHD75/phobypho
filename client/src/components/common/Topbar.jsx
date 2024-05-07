@@ -50,7 +50,8 @@ const Topbar = () => {
   const [isActive, setIsActive] = useState(true);
 
   useEffect(() => {
-    setIsActive(user && user.userData.status === "AVAILABLE");
+    console.log(user)
+    setIsActive(user ? user.status=== "AVAILABLE" || user.userData.status === "AVAILABLE" : false);
   }, [user])
 
 

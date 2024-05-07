@@ -49,10 +49,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 
 const BookingHistoryPage = () => {
-     const [bookings, setBookings] = useState([]);
      const { user } = useSelector(state => state.user);
 
 
+     const [bookings, setBookings] = useState([]);
      const [openModal, setOpenModal] = useState(false);
      const [bookingDate, setBookingDate] = useState();
      const [duration, setDuration] = useState();
@@ -71,6 +71,7 @@ const BookingHistoryPage = () => {
                } else {
                     const { response, err } = await photographerApi.getBookingOfPhotographer(user.id);
                     if (response) setBookings(response);
+                    console.log(bookings.length)
                     if (err) toast.error(err.message);
                }
           }
@@ -262,81 +263,83 @@ const BookingHistoryPage = () => {
                          overflow: 'hidden',
                     }}>Lịch sử đặt lịch </Typography>
 
-                    {bookings.length > 0 ? (<TableContainer component={Paper}>
-                         <Table sx={{ width: '100%' }} aria-label="customized table">
-                              <TableHead>
-                                   <TableRow>
-                                        <StyledTableCell align='left'>Thợ Chụp Ảnh</StyledTableCell>
-                                        <StyledTableCell align="left">Địa Điểm</StyledTableCell>
-                                        <StyledTableCell align="left">Thời gian đặt lịch</StyledTableCell>
-                                        <StyledTableCell align="left">Thời gian cuộc hẹn</StyledTableCell>
-                                        <StyledTableCell align="left">Combo</StyledTableCell>
-                                        <StyledTableCell align="left">Trạng Thái</StyledTableCell>
-                                        <StyledTableCell align="left">Tổng Tiền</StyledTableCell>
-                                        {user.role === "CUSTOMER" && <StyledTableCell align="left">Hủy</StyledTableCell>}
-                                        {user.role === "CUSTOMER" && <StyledTableCell align="left">Đánh giá</StyledTableCell>}
-                                   </TableRow>
-                              </TableHead>
-                              <TableBody>
-                                   {bookings.map((row, index) => (
-                                        <Fragment key={index}>
-                                             <StyledTableRow key={row.name} >
-                                                  <StyledTableCell align='left' component="th" scope="row">
-                                                       <Link to={`/photos/${row.photo}`}
-                                                            style={{ ...uiConfigs.style.typoLines(2, "left"), fontSize: '0.9rem' }}>
-                                                            {row.photographerName}
-                                                       </Link>
-                                                  </StyledTableCell>
-                                                  <StyledTableCell align="left">{row.location}</StyledTableCell>
-                                                  <StyledTableCell align="left">{moment(row.createdAt).format("DD-MM-YYYY HH:MM")}</StyledTableCell>
-                                                  <StyledTableCell align="left">{moment(row.booking_date).format("DD-MM-YYYY HH:MM")}</StyledTableCell>
-                                                  <StyledTableCell align="left">{row.servicePackageName}</StyledTableCell>
-                                                  <StyledTableCell
-                                                       align="left"
-                                                       style={{
-                                                            color: Object.values(ORDER_STATUS).includes(row.status) ?
-                                                                 row.status === ORDER_STATUS.pending ? '#ffdc48' : 'primary.main' :
-                                                                 '#0000',
-                                                            textTransform: 'uppercase',
-                                                            textShadow: '1px 1px 1px rgba(0,0,0,0.5)'
-                                                       }}
-                                                  >
-                                                       {row.status === ORDER_STATUS.pending ? "Đang chờ" :
-                                                            row.status === ORDER_STATUS.confirmed ? "Đã xác nhận" :
-                                                                 row.status === ORDER_STATUS.completed ? "Hoàn thành" :
-                                                                      row.status === ORDER_STATUS.cancelled ? "Đã hủy" :
-                                                                           "Trạng thái không xác định"} {/* Or some default message */}
-                                                  </StyledTableCell>
-                                                  <StyledTableCell align="left">{
-                                                       row.total_price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
-                                                  }</StyledTableCell>
-
-                                                  {user.role === "CUSTOMER" && (<StyledTableCell align="left">{
-                                                       <Button
-                                                            variant="outlined"
-                                                            onClick={() => handleCancelBooking(row.id, row.booking_date, row.total_price, row.createdAt)}
-                                                            disabled={row.status === ORDER_STATUS.pending ||
-                                                                 row.status === ORDER_STATUS.confirmed ? false : true}
+                    {bookings.length > 0 ? (
+                         <TableContainer component={Paper}>
+                              <Table sx={{ width: '100%' }} aria-label="customized table">
+                                   <TableHead>
+                                        <TableRow>
+                                             <StyledTableCell align='left'>Thợ Chụp Ảnh</StyledTableCell>
+                                             <StyledTableCell align="left">Địa Điểm</StyledTableCell>
+                                             <StyledTableCell align="left">Thời gian đặt lịch</StyledTableCell>
+                                             <StyledTableCell align="left">Thời gian cuộc hẹn</StyledTableCell>
+                                             <StyledTableCell align="left">Combo</StyledTableCell>
+                                             <StyledTableCell align="left">Trạng Thái</StyledTableCell>
+                                             <StyledTableCell align="left">Tổng Tiền</StyledTableCell>
+                                             {user.role === "CUSTOMER" && <StyledTableCell align="left">Hủy</StyledTableCell>}
+                                             {user.role === "CUSTOMER" && <StyledTableCell align="left">Đánh giá</StyledTableCell>}
+                                        </TableRow>
+                                   </TableHead>
+                                   <TableBody>
+                                        {bookings.map((row, index) => (
+                                             <Fragment key={index}>
+                                                  <StyledTableRow key={row.name} >
+                                                       <StyledTableCell align='left' component="th" scope="row">
+                                                            <Link to={`/photos/${row.photo}`}
+                                                                 style={{ ...uiConfigs.style.typoLines(2, "left"), fontSize: '0.9rem' }}>
+                                                                 {row.photographerName}
+                                                            </Link>
+                                                       </StyledTableCell>
+                                                       <StyledTableCell align="left">{row.location}</StyledTableCell>
+                                                       <StyledTableCell align="left">{moment(row.createdAt).format("DD-MM-YYYY HH:MM")}</StyledTableCell>
+                                                       <StyledTableCell align="left">{moment(row.booking_date).format("DD-MM-YYYY HH:MM")}</StyledTableCell>
+                                                       <StyledTableCell align="left">{row.servicePackageName}</StyledTableCell>
+                                                       <StyledTableCell
+                                                            align="left"
+                                                            style={{
+                                                                 color: Object.values(ORDER_STATUS).includes(row.status) ?
+                                                                      row.status === ORDER_STATUS.pending ? '#ffdc48' : 'primary.main' :
+                                                                      '#0000',
+                                                                 textTransform: 'uppercase',
+                                                                 textShadow: '1px 1px 1px rgba(0,0,0,0.5)'
+                                                            }}
                                                        >
-                                                            <MdOutlineFreeCancellation style={{ fontSize: '1.2rem', }} />
-                                                       </Button>
-                                                  }</StyledTableCell>)}
+                                                            {row.status === ORDER_STATUS.pending ? "Đang chờ" :
+                                                                 row.status === ORDER_STATUS.confirmed ? "Đã xác nhận" :
+                                                                      row.status === ORDER_STATUS.completed ? "Hoàn thành" :
+                                                                           row.status === ORDER_STATUS.cancelled ? "Đã hủy" :
+                                                                                "Trạng thái không xác định"} {/* Or some default message */}
+                                                       </StyledTableCell>
+                                                       <StyledTableCell align="left">{
+                                                            row.total_price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+                                                       }</StyledTableCell>
 
-                                                  {user.role === "CUSTOMER" && (<StyledTableCell align="left">{
-                                                       <Button
-                                                            variant="outlined"
-                                                            onClick={() => { alert(row.id) }}
-                                                            disabled={row.status !== ORDER_STATUS.completed ? true : false}
-                                                       >
-                                                            <MdOutlineRateReview style={{ fontSize: '1.2rem', }} />
-                                                       </Button>
-                                                  }</StyledTableCell>)}
-                                             </StyledTableRow>
-                                        </Fragment>
-                                   ))}
-                              </TableBody>
-                         </Table>
-                    </TableContainer>) :
+                                                       {user.role === "CUSTOMER" && (<StyledTableCell align="left">{
+                                                            <Button
+                                                                 variant="outlined"
+                                                                 onClick={() => handleCancelBooking(row.id, row.booking_date, row.total_price, row.createdAt)}
+                                                                 disabled={row.status === ORDER_STATUS.pending ||
+                                                                      row.status === ORDER_STATUS.confirmed ? false : true}
+                                                            >
+                                                                 <MdOutlineFreeCancellation style={{ fontSize: '1.2rem', }} />
+                                                            </Button>
+                                                       }</StyledTableCell>)}
+
+                                                       {user.role === "CUSTOMER" && (<StyledTableCell align="left">{
+                                                            <Button
+                                                                 variant="outlined"
+                                                                 onClick={() => { alert(row.id) }}
+                                                                 disabled={row.status !== ORDER_STATUS.completed ? true : false}
+                                                            >
+                                                                 <MdOutlineRateReview style={{ fontSize: '1.2rem', }} />
+                                                            </Button>
+                                                       }</StyledTableCell>)}
+                                                  </StyledTableRow>
+                                             </Fragment>
+                                        ))}
+                                   </TableBody>
+                              </Table>
+                         </TableContainer>
+                    ) :
                          (<NotFound></NotFound>)
                     }
                </UserSidebar >

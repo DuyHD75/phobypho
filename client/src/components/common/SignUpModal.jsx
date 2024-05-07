@@ -20,9 +20,7 @@ const SignUpModal = ({ switchAuthState }) => {
   const [errorMessage, setErrorMessage] = useState();
   const [role, setRole] = useState();
 
-  const handleRoleChange = (event) => {
-    setRole(event.target.value);
-  }
+ 
 
   const signUpForm = useFormik({
     initialValues: {

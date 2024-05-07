@@ -104,6 +104,7 @@ const PostPhoto = () => {
         const validateResult = validateData(values);
         if (validateResult) {
           toast.error(`Một số trường chưa có thông tin vui lòng nhập thêm !`);
+          setIsPostRequest(false);
           return;
         }
 
@@ -196,7 +197,7 @@ const PostPhoto = () => {
             >
               {headerAndSubHeaderOfInput(
                 "Tiêu đề",
-                "Tiêu đề cho bức ảnh của bạn. nên ngắn gọn và hấp dẫn như trong quảng cáo"
+                "Tiêu đề cho bức ảnh của bạn, nên ngắn gọn và hấp dẫn như trong quảng cáo"
               )}
               <TextField
                 type="text"
@@ -217,7 +218,7 @@ const PostPhoto = () => {
 
               {headerAndSubHeaderOfInput(
                 "Mô tả",
-                "Mô tả cho bức ảnh của bạn. nên ngắn gọn và hấp dẫn như trong quảng cáo"
+                "Mô tả cho bức ảnh của bạn, nên ngắn gọn và hấp dẫn như trong quảng cáo"
               )}
               <TextField
                 type="text"

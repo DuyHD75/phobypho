@@ -34,18 +34,25 @@ const SideBar = ({ open, toggleSideBar }) => {
                     sx={{ paddingX: "30px" }}
                >
                     <Typography
+                         sx={{
+                              ...uiConfigs.style.typoLines(1, 'left'),
+                              fontWeight: 700,
+                         }}
                          variant='h6' marginBottom="20px"
                          fontFamily={"Saira Condensed"}
                          fontSize={'1.4rem'}
+
                     >MENU</Typography>
 
                     {menuConfigs.main.map((item, index) => (
                          <ListItemButton
+                              variant="contained"
                               key={index}
                               sx={{
                                    borderRadius: "10px",
                                    marginY: 1,
-                                   backgroundColor: appState.includes(item.state) ? "primary.main" : "unset"
+                                   backgroundColor: appState.includes(item.state) ? "primary.main" : "unset",
+                                   color: appState.includes(item.state) ? "primary.contrastText" : "secondary.colorText"
                               }}
                               component={Link}
                               to={item.path}
@@ -56,17 +63,22 @@ const SideBar = ({ open, toggleSideBar }) => {
                                    disableTypography
                                    primary={
                                         <Typography
-                                             textTransform="uppercase"
+                                             textTransform="capitalize"
                                              fontFamily={"Saira Condensed"}
-                                             fontSize={'1.2rem'}
+                                             fontSize={'1rem'}
                                              fontWeight={500}
+                                             sx={{ ...uiConfigs.style.typoLines(1, 'left') }}
                                         >{item.display}</Typography>}
                               />
                          </ListItemButton>
                     ))}
                     {user && (
                          <div>
-                              <Typography variant='h6' marginBottom="20px">PERSONAL</Typography>
+                              <Typography variant='h6' marginBottom="20px" sx={{
+                                   ...uiConfigs.style.typoLines(1, 'left')
+                                   , fontWeight: 700,
+
+                              }}>PERSONAL</Typography>
 
                               {menuConfigs.user.map((item, index) => (
                                    <ListItemButton
@@ -82,9 +94,14 @@ const SideBar = ({ open, toggleSideBar }) => {
                                         <ListItemIcon>{item.icon}</ListItemIcon>
                                         <ListItemText
                                              disableTypography
-                                             primary={<Typography
-                                                  textTransform="uppercase"
-                                             >{item.display}</Typography>}
+                                             primary={
+                                                  <Typography
+                                                       fontSize={'1rem'}
+                                                       sx={{ ...uiConfigs.style.typoLines(1, 'left') }}
+                                                       textTransform="capitalize"
+                                                       color={appState.includes(item.state) ? "primary.contrastText" : "secondary.colorText"}
+                                                  >{item.display}</Typography>
+                                             }
                                         />
                                    </ListItemButton>
                               ))}

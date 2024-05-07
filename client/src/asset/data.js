@@ -10,14 +10,14 @@ import { RiCopperCoinLine } from "react-icons/ri";
 
 const members = [
    {
-      "name": "Kim Ngan",
-      "title": "Co-Founder",
-      "image": "https://firebasestorage.googleapis.com/v0/b/phobypho-2dbae.appspot.com/o/avatars%2F5df5935be773492d1062.jpg?alt=media&token=99773d0e-c474-4e77-8057-dbf295b480ce"
-   },
-   {
       "name": "Ngoc Duong",
       "title": "Founder",
       "image": "https://firebasestorage.googleapis.com/v0/b/phobypho-2dbae.appspot.com/o/avatars%2Fd47f2fb31098bec6e789.jpg?alt=media&token=700993a4-7f60-41a3-b86f-b2d62f982ace"
+   },
+   {
+      "name": "Kim Ngan",
+      "title": "Co-Founder",
+      "image": "https://firebasestorage.googleapis.com/v0/b/phobypho-2dbae.appspot.com/o/avatars%2F5df5935be773492d1062.jpg?alt=media&token=99773d0e-c474-4e77-8057-dbf295b480ce"
    },
    {
       "name": "Hong Phuc",
@@ -25,18 +25,18 @@ const members = [
       "image": "https://firebasestorage.googleapis.com/v0/b/phobypho-2dbae.appspot.com/o/avatars%2Fbfbdd1c59fed31b368fc.jpg?alt=media&token=69ed855d-4d17-43cb-9d28-fb2edd3b87a7"
    },
    {
-      "name": "Quan Dinh",
+      "name": "Dinh Quan",
       "title": "Head of Human Resources",
       "image": "https://firebasestorage.googleapis.com/v0/b/phobypho-2dbae.appspot.com/o/avatars%2F4db3e7088e20207e7931.jpg?alt=media&token=ac328775-f708-4c49-8c45-769da95d167b"
    },
    {
       "name": "Bao An",
       "title": "Finance Manager",
-      "image": "https://mui.com/static/images/team/ken-gregory.jpg"
+      "image": "https://scontent.fdad3-6.fna.fbcdn.net/v/t39.30808-1/331968902_1361095038025317_4816663891989595398_n.jpg?stp=dst-jpg_p200x200&_nc_cat=110&ccb=1-7&_nc_sid=5f2048&_nc_ohc=1yyxYuhdwRcQ7kNvgFd7pJi&_nc_ht=scontent.fdad3-6.fna&oh=00_AfCh1gKN2NXSCvw_lXriiRTyYAPZ7Q4KebddV8Oj6yOYFg&oe=663ED3BB"
    },
    {
       "name": "Duc Duy",
-      "title": "IT",
+      "title": "IT Support",
       "image": "https://avatars.githubusercontent.com/u/2007468?s=70"
    }
 ];

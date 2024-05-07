@@ -95,9 +95,9 @@ const getBookingByPhotoId = async (req, res) => {
 const getBookingOfPhotographer = async (req, res) => {
      try {
           const { photographerId } = req.params;
-          const bookingList = await bookingModel.find({ photographer: photographerId });
+          if(!photographerId) return responseHandler.badRequest(res, "Photographer id is required !");
 
-          console.log(bookingList)
+          const bookingList = await bookingModel.find({ photographer: photographerId });
 
           return responseHandler.ok(res, bookingList);
      }
