@@ -98,7 +98,7 @@ const HeroGrid = () => {
       <Box sx={{ width: '100%', height: "auto", }}>
         <ImageList variant="masonry" cols={4} gap={8}>
           {photoList.map((item, index) => (
-            <Link to={`/photos/${item.photo.id}`}>
+            <Link to={`/photos/${item.photo.id}`} key={index}>
               <ImageListItem
                 key={index}
                 sx={{

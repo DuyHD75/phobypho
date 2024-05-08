@@ -39,10 +39,10 @@ const ScrollAppBar = ({ children, window }) => {
 };
 
 
-
 const Topbar = () => {
   const { user } = useSelector((state) => state.user);
   const { appState } = useSelector((state) => state.appState);
+
 
 
 
@@ -50,8 +50,10 @@ const Topbar = () => {
   const [isActive, setIsActive] = useState(true);
 
   useEffect(() => {
-    console.log(user)
-    setIsActive(user ? user.status=== "AVAILABLE" || user.userData.status === "AVAILABLE" : false);
+    if (user && user.role === "PHOTOGRAPHER") {
+      setIsActive(user ? user.status === "AVAILABLE" || user.userData.status === "AVAILABLE" : false);
+    }
+
   }, [user])
 
 

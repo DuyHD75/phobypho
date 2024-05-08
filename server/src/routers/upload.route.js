@@ -12,7 +12,7 @@ const imageFileFilter = (req, file, cb) => {
 };
 const upload = multer({ storage: multer.memoryStorage(), fileFilter: imageFileFilter });
 
-router.post("/", upload.array('images', 5), uploadImageController.uploadMultiImages);
+router.post("/", upload.array('images', 10), uploadImageController.uploadMultiImages);
 
 router.post("/avatar", upload.single('avatar'), uploadImageController.uploadAvatar);
 

@@ -1,7 +1,7 @@
-import React, { Fragment, useCallback, useState } from "react";
+import React, { Fragment, useCallback } from "react";
 import {
   Card,
-  CardMedia,
+
   Typography,
   Box
 } from "@mui/material";
@@ -15,26 +15,24 @@ const ServicePackageItem = ({
   handleCardAction,
   addedServices,
 }) => {
-  const [checked, setChecked] = useState(false);
-
-  const handleCheckboxChange = () => {
-    setChecked(!checked);
-  };
+  
 
   const handleCardClick = useCallback(() => {
     if (handleCardAction) {
-      handleCardAction((prev) => {
-        if (prev.includes(service._id)) {
-          return prev.filter((id) => id !== service._id);
-        } else {
-          return [...prev, service._id];
-        }
-      });
+      let servicePackages = [...addedServices];
+      if (servicePackages.includes(service._id)) {
+        console.log('remove')
+        servicePackages = servicePackages.filter((id) => id !== service._id);
+      } else {
+        servicePackages.push(service._id);
+      }
+      handleCardAction(servicePackages);
     }
-  }, []);
+  }, [addedServices]);
 
   const hasAddedService = addedServices && addedServices.includes(service._id);
-
+  const serviceNameParts = service.name.split(" ");
+  const serviceDescriptionParts = service.description.split(".");
   return (
     <Fragment>
       {addedServices ? (
@@ -115,7 +113,7 @@ const ServicePackageItem = ({
                     color: 'secondary.colorText'
                   }}
 
-                >{service.name.split(" ")[0]}</Typography>
+                >{serviceNameParts[0]}</Typography>
 
                 <Typography
                   sx={{
@@ -125,11 +123,11 @@ const ServicePackageItem = ({
                     paddingLeft: "4px"
                   }}
 
-                >{service.name.split(" ").slice(1).join(" ")}</Typography>
+                >{serviceNameParts.slice(1).join(" ")}</Typography>
 
               </Box>
 
-              {service.description.split(".").map((item, index) => (
+              {serviceDescriptionParts.map((item, index) => (
                 <Typography key={index} sx={{
                   display: 'flex',
                   alignItems: 'center',
@@ -203,7 +201,7 @@ const ServicePackageItem = ({
                   color: 'secondary.colorText'
                 }}
 
-              >{service.name.split(" ")[0]}</Typography>
+              >{serviceNameParts[0]}</Typography>
 
               <Typography
                 sx={{
@@ -213,11 +211,11 @@ const ServicePackageItem = ({
                   paddingLeft: "4px"
                 }}
 
-              >{service.name.split(" ").slice(1).join(" ")}</Typography>
+              >{serviceNameParts.slice(1).join(" ")}</Typography>
 
             </Box>
 
-            {service.description.split(".").map((item, index) => (
+            {serviceDescriptionParts.map((item, index) => (
               <Typography key={index} sx={{
                 display: 'flex',
                 alignItems: 'center',

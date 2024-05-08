@@ -150,24 +150,17 @@ const updateCustomerPoints = async (customerId, price) => {
 const updatePhotographerBookingCount = async (photographerId) => {
      try {
           const photo = await photographerModel.findOne({ account: photographerId });
-
-          if (!photo) {
-               throw new Error('Không tìm thấy tài khoản này !');
-          }
-
+          if (!photo) throw new Error("Không tìm thấy tài khoản này !");
           photo.bookingCount += 1;
           await photo.save();
-
      } catch (error) {
           throw new Error("Error updating photographer booking count: " + error.message);
      }
 }
 
-
 const createNewBooking = async (req, res) => {
      try {
           const { account } = req;
-          console.log(req.body)
 
           const { photo, service_package, total_price, location, photo_session, voucher_code } = req.body;
 
@@ -197,6 +190,8 @@ const createNewBooking = async (req, res) => {
           await updatePhotographerBookingCount(photo.author);
 
           await emailCheckoutSender(req, res);
+
+          // booking count >=10 && nam trong 1 quy <=> reset booking count
 
           return responseHandler.created(res, booking);
      } catch (error) {

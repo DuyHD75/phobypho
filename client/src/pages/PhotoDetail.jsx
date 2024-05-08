@@ -345,14 +345,26 @@ const PhotoDetailPage = () => {
                             paddingTop: "100%",
                             width: "100%",
                             height: "100%",
-                            backgroundImage: `url(${album.images[0]})`,
-                            backgroundPosition: "top",
-                            backgroundSize: "cover",
+                      
                             border: '1px solid #fff',
-                            borderRadius: '10px'
+                            borderRadius: '10px', 
+                            ...uiConfigs.style.backgroundImage(album.images[0]),
                           }}
                           onClick={() => handleAlbumClick(album)}
-                        />
+                        >
+                        <Typography sx={{
+                          ...uiConfigs.style.typoLines(1, 'center'),  
+                          color: "#fff", 
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: 'translate(-50%, -50%)', 
+                          fontSize: '1rem',
+                          fontWeight: '600',
+                          textShadow: '1px 1px 0.5px #000',
+                          textTransform: 'capitalize',
+                        }}>{album.albumName}</Typography>
+                        </Box>
                       </Grid>
                     ))}
                   </Grid>
@@ -457,113 +469,3 @@ const PhotoDetailPage = () => {
 };
 
 export default PhotoDetailPage;
-
-
-
-
-
-// <Box
-// className="post_button"
-// sx={{
-//   display: "flex",
-//   flexDirection: "row",
-//   padding: "2rem 0",
-//   alignItems: "center",
-//   justifyContent: "space-between",
-//   borderBottom: "0.4px solid rgba(255,255,255,0.5)",
-// }}
-// >
-// <Stack
-//   direction={{ sx: "column", md: 'row' }}
-//   alignItems={"center"}
-//   sx={{
-//     bgcolor: "primary.main",
-//     paddingRight: " 1rem",
-//   }}
-// >
-//   <IconButton onClick={handleLikeCountClick}>
-//     <FavoriteBorderIcon></FavoriteBorderIcon>
-//   </IconButton>
-//   <Typography variant="body1" sx={textConfigs.style.normalText}>
-//     {" "}
-//     {`${photo.likeCount} ${photo.likeCount > 1 ? "likes" : "like"
-//       }`}
-//   </Typography>
-// </Stack>
-
-// <Stack
-//   direction={"row"}
-//   alignItems={"center"}
-//   width={"40%"}
-//   justifyContent={"space-between"}
-// >
-//   <Box
-//     sx={{
-//       display: "flex",
-//       flexDirection: "row",
-//       alignItems: "center",
-//       justifyContent: "space-around",
-//     }}
-//   >
-//     <IconButton>
-//       <NavigateBeforeIcon></NavigateBeforeIcon>
-//     </IconButton>
-//     <Typography
-//       variant="body1"
-//       sx={textConfigs.style.normalText}
-//     >
-//       Previous post
-//     </Typography>
-//   </Box>
-
-//   <Box
-//     sx={{
-//       width: "1px",
-//       height: "2rem",
-//       bgcolor: "primary.main",
-//       borderRadius: "10px",
-//       margin: "0 10px",
-//     }}
-//   />
-
-//   <Box
-//     sx={{
-//       display: "flex",
-//       flexDirection: "row",
-//       alignItems: "center",
-//       justifyContent: "space-around",
-//     }}
-//   >
-//     <Typography
-//       variant="body1"
-//       sx={textConfigs.style.normalText}
-//     >
-//       Next post
-//     </Typography>
-//     <IconButton>
-//       <NavigateNextIcon></NavigateNextIcon>
-//     </IconButton>
-//   </Box>
-// </Stack>
-// </Box>
-
-
-// <Stack
-//   flexDirection={{ sx: 'column', md: 'row' }}
-//   alignItems={"center"}
-//   justifyContent={"space-between"}
-//   width={"50%"}
-// >
-//   <Typography
-//     sx={{
-//       ...uiConfigs.style.typoLines(1, "left"),
-//       margin: "1rem 0",
-//       color: 'secondary.main',
-//       textShadow: '1px 1px 0.8px #333',
-//     }}
-//   >
-//     {moment(photo.createdAt).format("dddd, MMMM YYYY")}
-//   </Typography>
-
-
-// </Stack>
