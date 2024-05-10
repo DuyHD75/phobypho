@@ -66,55 +66,50 @@ const signup = async (req, res) => {
   }
 };
 
+
 const login = async (req, res, next) => {
-  try {
-    const { username, password } = req.body;
-    const userData = {};
+     try {
+          const { username, password } = req.body;
+          const userData = {};
 
-    const account = await accountModel
-      .findOne({ username })
-      .select(
-        "id username displayName password salt phoneNumber email role avatar "
-      );
+          const account = await accountModel.findOne({ username })
+               .select("id username displayName password salt phoneNumber email role avatar");
 
-    if (account.role === ROLES_LIST.photographer) {
-      const photographer = await photographerModel
-        .findOne({ account: account.id })
-        .select(
-          "location status gender age description experienceYears bookingCount type_of_account"
-        );
-      userData.location = photographer.location;
-      userData.status = photographer.status;
-      userData.gender = photographer.gender;
-      userData.age = photographer.age;
-      userData.description = photographer.description;
-      userData.experienceYears = photographer.experienceYears;
-      userData.bookingCount = photographer.bookingCount;
-      userData.typeOfAccount = photographer.type_of_account;
-    }
 
-    if (account == null)
-      return responseHandler.notfound(res, "Account not found !");
+          if (account.role === ROLES_LIST.photographer) {
+               const photographer = await photographerModel.findOne({ account: account.id })
+                    .select("location status gender age description experienceYears bookingCount");
+               userData.location = photographer.location;
+               userData.status = photographer.status;
+               userData.gender = photographer.gender;
+               userData.age = photographer.age;
+               userData.description = photographer.description;
+               userData.experienceYears = photographer.experienceYears;
+               userData.bookingCount = photographer.bookingCount;
 
-    if (!account.validatePassword(password))
-      return responseHandler.badRequest(res, "Wrong password !");
+          }
 
-    const token = createToken(account.id);
+          if (account == null) return responseHandler.notfound(res, "Account not found !");
 
-    account.password = undefined;
-    account.salt = undefined;
-    userData.token = token;
+          if (!account.validatePassword(password)) return responseHandler.badRequest(res, "Wrong password !");
 
-    responseHandler.created(res, {
-      token,
-      id: account.id,
-      ...account._doc,
-      userData,
-    });
-    next();
-  } catch {
-    responseHandler.error(res);
-  }
+          const token = createToken(account.id);
+
+          account.password = undefined;
+          account.salt = undefined;
+          userData.token = token;
+
+          responseHandler.created(res, {
+               token,
+               id: account.id,
+               ...account._doc,
+               userData,
+          });
+          
+          next();
+     } catch {
+          responseHandler.error(res);
+     }
 };
 
 const isNewQuarterPhotographer = async (req, res) => {

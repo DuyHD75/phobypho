@@ -1,24 +1,29 @@
 import responseHandler from "../handlers/response.handler.js";
 import reviewModel from "../models/review.model.js";
 
-const addReview = async (req, res) => {
+
+const addReview = async (req, res, next) => {
      try {
+          if (req.body.booking_id === undefined) {
+               return responseHandler.error(res, "Bạn đã hết lượt đánh giá cho thợ chụp ảnh này!");
+          }
+          
           const review = new reviewModel({
                account: req.account.id,
                ...req.body
           });
-
           await review.save();
-
           responseHandler.created(res, {
                ...review._doc,
                id: review.id,
                account: req.account
           });
-     } catch {
-          responseHandler.error(res);
+          next();
+     } catch (error) {
+          responseHandler.error(res, res.message);
      }
 };
+
 
 const removeReview = async (req, res) => {
      try {

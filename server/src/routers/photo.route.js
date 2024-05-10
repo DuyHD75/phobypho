@@ -1,6 +1,6 @@
 import express from 'express';
 import {
-     getAllPhotoInfo, getPhotoDetail, searchPhotoByMultiFactor, createNewPost, updatePost, deletePost,
+     getAllPhotoInfo, getPhotoDetail, searchPhotoByMultiFactor, createNewPost, deletePost,
      getPhotosByAuthor,
      updatePostByAuth
 } from '../controllers/photo.controller.js';
@@ -21,7 +21,7 @@ router.get("/:photo_id", getPhotoDetail);
 
 router.get("/search", searchPhotoByMultiFactor);
 
-router.put("/:photo_id", tokenMiddleware.authenticate, updatePost);
+// router.put("/:photo_id", tokenMiddleware.authenticate, updatePost);
 
 router.delete("/:photo_id", tokenMiddleware.authenticate, tokenMiddleware.authorize, deletePost);
 

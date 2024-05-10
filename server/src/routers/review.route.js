@@ -3,6 +3,8 @@ import { body } from 'express-validator';
 import reviewController from '../controllers/review.controller.js'
 import tokenMiddleware from '../middlewares/token.middleware.js';
 import requestHandler from '../handlers/request.handler.js';
+import customerController from '../controllers/customer.controller.js';
+
 
 const router = express.Router({ mergeParams: true });
 
@@ -25,7 +27,8 @@ router.post(
           .exists().withMessage("Contend is required !")
           .isLength({ min: 0 }).withMessage("Content can not be empty !"),
      requestHandler.validate,
-     reviewController.addReview
+     reviewController.addReview, 
+     customerController.updateCustomerPoints
 );
 
 router.delete(

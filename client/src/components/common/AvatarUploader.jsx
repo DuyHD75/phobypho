@@ -24,12 +24,9 @@ const AvatarUploader = ({ handleUpload, avatar }) => {
 
       setIsUploading(true);
       const avatarLink = await uploadImageApi.uploadAvatar(avatar);
-      console.log(avatarLink);
-      setIsUploading(false);
       setAvatarUrl(avatarLink);
-      console.log(avatarUrl)
+      setIsUploading(false);
       handleUpload(avatarLink);
-
    }, []);
 
 

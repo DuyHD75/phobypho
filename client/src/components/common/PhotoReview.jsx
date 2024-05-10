@@ -13,7 +13,6 @@ import moment from 'moment'
 
 const PhotoReviewItem = ({ review, onRemoved }) => {
 
-     console.log(review)
      const { user } = useSelector((state) => state.user);
      const [onRequest, setOnRequest] = useState(false);
 
@@ -101,8 +100,7 @@ const PhotoReviewItem = ({ review, onRemoved }) => {
 
 }
 
-const PhotoReview = ({ photo, bookedInfo }) => {
-     console.log(bookedInfo)
+const PhotoReview = ({ bookingId, photo, bookedInfo }) => {
      const { user } = useSelector((state) => state.user);
      const [reviewList, setReviewList] = useState([]);
      const [filteredReview, setFilteredReview] = useState([]);
@@ -111,7 +109,10 @@ const PhotoReview = ({ photo, bookedInfo }) => {
      const [page, setPage] = useState(1);
      const [onRequest, setOnRequest] = useState(false);
      const [rating, setRating] = useState(0);
-     const [isBooked, setIsBooked] = useState();
+     const [isReviewed, setIsReviewed] = useState(undefined);
+     const [bookedId, setBookedId] = useState(bookingId ? bookingId : undefined);
+     const [bookingPoint, setBookingPoint] = useState(0);
+
 
      const skip = 4;
 
@@ -122,27 +123,51 @@ const PhotoReview = ({ photo, bookedInfo }) => {
      }, [photo]);
 
      useEffect(() => {
-          if (bookedInfo.length > 0) {
-               checkIsBooked();
+          if (user) {
+               checkReviewConditions();
           }
-     }, [bookedInfo]);
+     }, [reviewList, bookedInfo]);
+     console.log(bookedInfo)
 
 
-     const checkIsBooked = () => {
+     const checkReviewConditions = () => {
 
-          const isPhotoBooked = bookedInfo.filter(booking => { return booking.photo.toString() === photo.id.toString() && booking.status === "COMPLETED" }).length > 0;
-          setIsBooked(isPhotoBooked);
+          if (reviewList.length !== 0) {
+               for (let i = 0; i < reviewList.length; i++) {
+                    if (reviewList[i].account.id === user.id && reviewList[i].photo_id === photo.id) {
+                         if (bookedId && reviewList[i].booking_id === bookedId) {
+                              return setIsReviewed(true);
+                         }
+                    }
+               }
+          }
+          bookedInfo.length !== 0 && bookedInfo.forEach(e => {
+               if (e.photo === photo.id && e.status === "COMPLETED") {
+
+                    const hasReview = reviewList.some(review => review.booking_id === e.id);
+                    if (!hasReview) {
+                         setBookedId(e.id);
+                         setIsReviewed(false);
+                         setBookingPoint(e.total_price);
+                         return;
+                    } else return setIsReviewed(true);
+               }
+          })
      }
-
 
      const addComment = async () => {
           setOnRequest(true);
+
           const body = {
+               booking_id: bookedId,
+               content: content,
                photo_id: photo.id,
                photo_poster: photo.poster,
-               content: content,
-               rating: rating
+               rating: rating, 
+               point: bookingPoint
           };
+
+          setBookedId(undefined);
 
           const { response, err } = await reviewApi.add(body);
           setOnRequest(false);
@@ -150,11 +175,14 @@ const PhotoReview = ({ photo, bookedInfo }) => {
           if (err) toast.error(err.message);
 
           if (response) {
-               toast.success("Post review successfully!");
+               toast.success("Thêm Đánh Giá Thành Công!");
                setFilteredReview([...filteredReview, response]);
                setReviewCount(reviewCount + 1)
                setContent("");
                setRating(0);
+          }
+          if (err) {
+               toast.error(err.message);
           }
      };
 
@@ -201,7 +229,7 @@ const PhotoReview = ({ photo, bookedInfo }) => {
 
                {user && (
                     <Fragment>
-                         {user.role === "CUSTOMER" && isBooked && (
+                         {user.role === "CUSTOMER" && !isReviewed && (
                               <Container header={'Gửi lại những đánh giá'} size={'1rem'}>
                                    <Box sx={{ padding: '0 1rem', color: "secondary.colorText", }}>
 

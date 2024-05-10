@@ -16,9 +16,9 @@ import PhotoAlbumIcon from "@mui/icons-material/PhotoAlbum";
 import { LoadingButton } from "@mui/lab";
 import InputAdornment from '@mui/material/InputAdornment';
 
-const PhotoUploader = ({ addedPhotos, onChange }) => {
+const PhotoUploader = ({photoUploading, addedPhotos, onChange }) => {
 
-
+ 
   const [isUploading, setIsUploading] = useState(false);
   const [albumName, setAlbumName] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -32,42 +32,35 @@ const PhotoUploader = ({ addedPhotos, onChange }) => {
       images.append("images", files[i]);
     }
 
+    photoUploading(true);
     const photoLinks = await uploadImageApi.uploadPhotoByFiles(images);
-
-    onChange((prev) => {
-      if (albumIndex !== undefined && prev[albumIndex]) {
-        const updatedAlbums = [...prev];
-        updatedAlbums[albumIndex].images.push(...photoLinks);
-        return updatedAlbums;
-      } else {
-        return [...prev, { albumName: albumName, images: photoLinks }];
-      }
-    });
+    
+    if (albumIndex !== undefined && addedPhotos[albumIndex]) {
+      addedPhotos[albumIndex].images.push(...photoLinks);
+    } else {
+      addedPhotos.push({ albumName: albumName, images: [...photoLinks] });
+    }
+    onChange(addedPhotos);
+    photoUploading(false);
     setAlbumName("");
     setIsUploading(false);
   };
 
   const removePhoto = (ev, albumIndex, imgIdx) => {
     ev.preventDefault();
+    const updatedAlbums = [...addedPhotos];
 
-    onChange((prev) => {
-      const updatedAlbums = [...prev];
-
-      updatedAlbums[albumIndex].images.splice(imgIdx, 1);
-      console.log(updatedAlbums)
-
-      return updatedAlbums;
-    });
+    updatedAlbums[albumIndex].images.splice(imgIdx, 1);
+    onChange(updatedAlbums);
   };
 
   const selectAsMainPhoto = (ev, albumIndex, imgIdx) => {
     ev.preventDefault();
-    onChange((prev) => {
-      const updatedAlbums = [...prev];
-      const selectedImage = updatedAlbums[albumIndex].images.splice(imgIdx, 1);
-      updatedAlbums[albumIndex].images.unshift(selectedImage);
-      return updatedAlbums;
-    });
+    const updatedAlbums = [...addedPhotos];
+    const selectedImage = updatedAlbums[albumIndex].images.splice(imgIdx, 1);
+    updatedAlbums[albumIndex].images.unshift(selectedImage);
+ 
+    onChange(updatedAlbums);
   };
 
   const handleChangeAlbumName = (value, index) => {
@@ -85,11 +78,9 @@ const PhotoUploader = ({ addedPhotos, onChange }) => {
   };
 
   const handleRemoveAlbum = (albumIndex) => {
-    onChange((prev) => {
-      const updatedAlbums = [...prev];
-      updatedAlbums.splice(albumIndex, 1);
-      return updatedAlbums;
-    });
+    const updatedAlbums = [...addedPhotos];
+    updatedAlbums.splice(albumIndex, 1);
+    onChange(updatedAlbums);
   };
 
   return (
@@ -130,7 +121,7 @@ const PhotoUploader = ({ addedPhotos, onChange }) => {
 
             <LoadingButton
               variant="text"
-              startIcon={<DeleteIcon />}
+              startIcon={<DeleteIcon   />}
               loadingPosition="start"
               onClick={() => handleRemoveAlbum(albumIndex)}
               sx={{
@@ -190,7 +181,7 @@ const PhotoUploader = ({ addedPhotos, onChange }) => {
                     onClick={(ev) => removePhoto(ev, albumIndex, index)}
                     className="cursor-pointer absolute bottom-1 right-1 text-white bg-black bg-opacity-50 rounded-2xl"
                   >
-                    <DeleteIcon sx={{ fontSize: "1.3rem" }} />
+                    <DeleteIcon sx={{ fontSize: "1.3rem",  color: "#ffdc48" }} />
                   </IconButton>
 
                   <IconButton
@@ -203,9 +194,9 @@ const PhotoUploader = ({ addedPhotos, onChange }) => {
                     onClick={(ev) => selectAsMainPhoto(ev, albumIndex, index)}
                   >
                     {image === album.images[0] ? (
-                      <CheckCircleIcon sx={{ fontSize: "1.3rem" }} />
+                      <CheckCircleIcon sx={{ fontSize: "1.3rem", color: "#ffdc48" }} />
                     ) : (
-                      <StarIcon sx={{ fontSize: "1.4rem" }} />
+                      <StarIcon sx={{ fontSize: "1.4rem",color: '#ffdc48' }} />
                     )}
                   </IconButton>
                 </Box>
@@ -233,7 +224,7 @@ const PhotoUploader = ({ addedPhotos, onChange }) => {
                   style={{ display: "none" }}
                   onChange={(ev) => uploadPhoto(ev, albumIndex)}
                   disabled={isUploading}
-                  
+
                 />
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

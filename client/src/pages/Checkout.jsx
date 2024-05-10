@@ -122,8 +122,6 @@ const Checkout = () => {
                               Thanh Toán
                          </Typography>
 
-
-
                          <Stack spacing={2}
                               direction={{ xs: 'column', md: 'row', lg: 'row' }}
                               sx={{ marginTop: '2rem ' }}

@@ -8,7 +8,7 @@ router.post("/checkout",
      tokenMiddleware.authenticate,
      customerController.createNewBooking
 );
-
+ 
 
 router.post('/bookings', tokenMiddleware.authenticate, customerController.createNewBooking);
 

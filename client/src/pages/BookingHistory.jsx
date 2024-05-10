@@ -1,4 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react'
+import { useNavigate } from 'react-router-dom';
 import UserSidebar from '../components/common/UserSidebar';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import uiConfigs from '../configs/ui.config';
@@ -39,7 +40,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
      '&:nth-of-type(odd)': {
           backgroundColor: theme.palette.action.hover,
      },
-     // hide last border
      '&:last-child td, &:last-child th': {
           border: 0,
      },
@@ -51,7 +51,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const BookingHistoryPage = () => {
      const { user } = useSelector(state => state.user);
 
-
      const [bookings, setBookings] = useState([]);
      const [openModal, setOpenModal] = useState(false);
      const [bookingDate, setBookingDate] = useState();
@@ -60,20 +59,21 @@ const BookingHistoryPage = () => {
      const [isProcessing, setIsProcessing] = useState(false);
      const [cancelFee, setCancelFee] = useState();
      const [createdAt, setCreatedAt] = useState();
+     const navigate = useNavigate();
 
      useEffect(() => {
           const getBookings = async () => {
 
-               if (user.role === "CUSTOMER") {
+               if (user && user.role === "CUSTOMER") {
                     const { response, err } = await customerApi.getBookings(user.id);
                     if (response) setBookings(response);
                     if (err) toast.error(err.message);
                } else {
                     const { response, err } = await photographerApi.getBookingOfPhotographer(user.id);
                     if (response) setBookings(response);
-                    console.log(bookings.length)
                     if (err) toast.error(err.message);
                }
+
           }
           getBookings();
      }, []);
@@ -327,7 +327,9 @@ const BookingHistoryPage = () => {
                                                        {user.role === "CUSTOMER" && (<StyledTableCell align="left">{
                                                             <Button
                                                                  variant="outlined"
-                                                                 onClick={() => { alert(row.id) }}
+                                                                 onClick={() => {
+                                                                      navigate(`/photos/${row.photo}`, { state: { bookingId: row.id  } })
+                                                                 }}
                                                                  disabled={row.status !== ORDER_STATUS.completed ? true : false}
                                                             >
                                                                  <MdOutlineRateReview style={{ fontSize: '1.2rem', }} />

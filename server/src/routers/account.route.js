@@ -64,7 +64,6 @@ router.post(
      requestHandler.validate,
      accountController.login,
      accountController.isNewQuarterPhotographer,
-
 );
 
 

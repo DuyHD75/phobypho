@@ -164,20 +164,7 @@ const checkVoucherAndUpdateCustomer = async (account, voucher_code) => {
   await customer.save();
 };
 
-const updateCustomerPoints = async (customerId, price) => {
-  try {
-    const customer = await customerModel.findOne({ account: customerId });
 
-    if (!customer) {
-      throw new Error("Không tìm thấy tài khoản này !");
-    }
-
-    customer.accumulated_points += price / 1000;
-    await customer.save();
-  } catch (error) {
-    throw new Error("Error updating customer points: " + error.message);
-  }
-};
 
 const updatePhotographerInfo = async (authorId) => {
   try {
@@ -307,11 +294,27 @@ const createNewBooking = async (req, res) => {
   }
 };
 
-const getCustomerBooking = async (req, res) => {
-  try {
-    const { customerId } = req.params;
+const updateCustomerPoints = async (req, res) => {
+     try {
+          const customer = await customerModel.findOne({ account: req.account.id });
 
-    const bookingList = await bookingModel.find({ customer: customerId });
+          if (!customer) {
+               throw new Error('Không tìm thấy tài khoản này !');
+          }
+
+          customer.accumulated_points += (req.body.point / 1000);
+          await customer.save();
+     } catch (error) {
+          throw new Error("Error updating customer points: " + error.message);
+     }
+};
+
+
+
+const getCustomerBooking = async (req, res) => {
+     try {
+          const { customerId } = req.params;
+          const bookingList = await bookingModel.find({ customer: customerId });
 
     return responseHandler.ok(res, bookingList);
   } catch (error) {
@@ -380,46 +383,35 @@ const getCustomerVouchers = async (req, res) => {
 };
 
 const updateBookingStatus = async (req, res) => {
-  try {
-    const { bookingId } = req.params;
-    const { status, cancelFee } = req.body;
+     try {
+          const { bookingId } = req.params;
+          const { status, cancelFee } = req.body;
 
-    const booking = await bookingModel.findById(bookingId);
+          const booking = await bookingModel.findById(bookingId);
+          if (!booking) {
+               return responseHandler.notfound(res, { message: 'Không tìm thấy lịch hẹn!' }, 'Không tìm thấy lịch hẹn!');
+          }
 
-    if (!booking) {
-      return responseHandler.notfound(
-        res,
-        { message: "Không tìm thấy lịch hẹn!" },
-        "Không tìm thấy lịch hẹn!"
-      );
-    }
+          booking.status = ORDER_STATUS[status.toLowerCase()];
+          await booking.save();
 
-    booking.status = ORDER_STATUS[status.toLowerCase()];
-    await booking.save();
+          if (booking.status === ORDER_STATUS.cancelled) {
+               await emailCancelBookingSender(req, res);
+          }
 
-    
 
-    if (booking.status === ORDER_STATUS.cancelled) {
-      await emailCancelBookingSender(req, res);
-    }
+          return responseHandler.ok(res, booking);
 
-    return responseHandler.ok(res, booking);
-  } catch (error) {
-    return responseHandler.error(
-      res,
-      "Lỗi cập nhật trạng thái: " + error.message
-    );
-  }
-};
+     } catch (error) {
+          return responseHandler.error(res, "Lỗi cập nhật trạng thái: " + error.message);
+     }
+}
 
 export default {
-  createNewBooking,
-  getCustomerBooking,
-  getCustomerByAccountId,
-  updatePoints,
-  getCustomerVouchers,
-  emailCheckoutSender,
-  getCustomerBookingByPhotoId,
-  updateBookingStatus,
-  checkRankingOfPhotographer,
+     createNewBooking, getCustomerBooking,
+     getCustomerByAccountId, updatePoints,
+     getCustomerVouchers, emailCheckoutSender,
+     getCustomerBookingByPhotoId, updateBookingStatus,
+     updateCustomerPoints, checkRankingOfPhotographer
 };
+

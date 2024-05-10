@@ -1,12 +1,10 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect, useCallback } from "react";
 import Container from "../components/common/Container";
 import uiConfigs from "../configs/ui.config";
 import {
   Box,
   Typography,
   TextField,
-  Button,
-  Stack,
   Alert,
 } from "@mui/material";
 import * as Yup from "yup";
@@ -21,60 +19,83 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from "react-router-dom";
 
 
-
-
 const PostPhoto = () => {
 
-  const [servicePackages, setServicePackages] = useState([]);
-  const [addedPhotos, setAddedPhotos] = useState([]);
-  const [title, setTitle] = useState('');
-  const [descriptions, setDescriptions] = useState('');
-  const [poster, setPoster] = useState('');
-  const [isPostRequest, setIsPostRequest] = useState(false);
-  const [errorMessage, setErrorMessage] = useState();
-  const [addedServices, setAddedServices] = useState([]);
-  const [isDataRetrieved, setIsDataRetrieved] = useState(false)
-  const [postId, setPostId] = useState({});
-  const [photo, setPhoto] = useState({});
-
   const { user } = useSelector((state) => state.user);
-
   const navigate = useNavigate();
 
+  const [photoState, setPhotoState] = useState({
+    servicePackages: [],
+    addedPhotos: [],
+    title: '',
+    descriptions: '',
+    poster: '',
+    isPostRequest: false,
+    errorMessage: '',
+    addedServices: [],
+    isDataRetrieved: false,
+    postId: {},
+    photo: {},
+    photoUploading: false
+  });
+
+  const getPostPhoto = useCallback(async () => {
+    const { response, err } = await photoApi.getPostByAuth(user.id);
+
+    if (response && response.length > 0) {
+      const { id, title, descriptions, poster, attachments, servicePackages } = response[0];
+      setPhotoState(prevState => ({
+        ...prevState,
+        photo: response[0],
+        postId: id,
+        isDataRetrieved: true,
+        title,
+        descriptions,
+        poster,
+        addedPhotos: attachments,
+        addedServices: servicePackages,
+      }));
+
+      postPhotoForm.setValues({
+        title: title,
+        descriptions: descriptions,
+      });
+    }
+    if (err) {
+      toast.error(err);
+    }
+  }, [user.id]);
+
+  const getServices = useCallback(async () => {
+    const { response, err } = await servicesApi.getList();
+    if (!response) {
+      return toast.error(err);
+    }
+    setPhotoState(prevState => ({ ...prevState, servicePackages: response }));
+  }, []);
 
   useEffect(() => {
-    const getPostPhoto = async () => {
-      const { response, err } = await photoApi.getPostByAuth(user.id);
-
-      if (response && response.length > 0) {
-
-        const { id, title, descriptions, poster, attachments, servicePackages } = response[0];
-        setPhoto(response[0]);
-        setPostId(id);
-        setIsDataRetrieved(true);
-        setTitle(title);
-        setDescriptions(descriptions);
-        setPoster(poster);
-        setAddedPhotos(attachments);
-        setAddedServices(servicePackages);
-
-        postPhotoForm.setValues({
-          title: title,
-          descriptions: descriptions,
-        })
-      }
-      if (err) {
-        toast.error(err);
-      }
-    }
-
     getPostPhoto();
-  }, [])
+    getServices();
+  }, [getPostPhoto, getServices]);
+
+  const setAddedPhotos = (newPhotos) => {
+    setPhotoState(prevState => ({ ...prevState, addedPhotos: newPhotos }));
+  };
+
+  const setAddedServices = (newServices) => {
+    setPhotoState(prevState => ({ ...prevState, addedServices: newServices }));
+  };
+
+  const setPhotoUploading = (isUploading) => {
+    setPhotoState(prevState => ({ ...prevState, photoUploading: isUploading }));
+  };
+
 
   const postPhotoForm = useFormik({
     initialValues: {
-      title: photo.title,
-      descriptions: photo.descriptions,
+      title: photoState.photo.title,
+      descriptions: photoState.photo.descriptions,
       poster: '',
       attachments: [],
       servicePackages: [],
@@ -89,45 +110,47 @@ const PostPhoto = () => {
     }),
     onSubmit: async (values) => {
       try {
-        setErrorMessage(undefined);
-        setIsPostRequest(true);
+        setPhotoState(prevState => ({ ...prevState, errorMessage: undefined, isPostRequest: true }));
 
-        if (addedPhotos.length === 0 || addedServices.length === 0) {
-          setErrorMessage("Vui lòng thêm album của bạn và các gói dịch vụ!");
+        if (photoState.addedPhotos.length === 0 || photoState.addedServices.length === 0) {
+          setPhotoState(prevState => ({ ...prevState, errorMessage: "Vui lòng thêm album của bạn và các gói dịch vụ!" }));
           return;
         }
 
-        values.poster = addedPhotos[0].images[0];
-        values.attachments = addedPhotos;
-        values.servicePackages = addedServices;
+        values.poster = photoState.addedPhotos[0].images[0];
+        values.attachments = photoState.addedPhotos;
+        values.servicePackages = photoState.addedServices;
 
         const validateResult = validateData(values);
         if (validateResult) {
           toast.error(`Một số trường chưa có thông tin vui lòng nhập thêm !`);
-          setIsPostRequest(false);
+          setPhotoState(prevState => ({ ...prevState, isPostRequest: false }));
           return;
         }
 
+
         let response;
-        if (isDataRetrieved) {
+        if (photoState.isDataRetrieved) {
           response = await photoApi.updatePhotoByAuth(values);
+          toast.success("Bài viết được cập nhật thành công!");
         } else {
           response = await photoApi.createPhoto(values);
+          toast.success("Bài viết được tạo thành công!");
         }
 
-        setIsPostRequest(false);
+        setPhotoState(prevState => ({ ...prevState, isPostRequest: false }));
 
         if (response) {
           postPhotoForm.resetForm();
-          setAddedPhotos([]);
-          setAddedServices([]);
-          navigate(`/photos/${postId}`);
-          toast.success("Post created successfully !");
+          setPhotoState(prevState => ({ ...prevState, addedPhotos: [] }));
+          setPhotoState(prevState => ({ ...prevState, addedServices: [] }));
+          navigate(`/photos/${photoState.postId}`);
+
         } else {
           toast.error("Failed to create/update post.");
         }
       } catch (err) {
-        setIsPostRequest(false);
+        setPhotoState(prevState => ({ ...prevState, isPostRequest: false }));
         toast.error(err.message);
       }
     },
@@ -138,20 +161,9 @@ const PostPhoto = () => {
     const undefinedFields = Object.keys(values).filter((key) => {
       return (values[key] === undefined || values[key].length === 0);
     });
-
     return undefinedFields.length > 0 && undefinedFields;
   };
 
-  useEffect(() => {
-    const getServices = async () => {
-      const { response, err } = await servicesApi.getList();
-      if (!response) {
-        return toast.error(err);
-      }
-      setServicePackages(response);
-    };
-    getServices();
-  }, []);
 
   const headerAndSubHeaderOfInput = (header, description) => {
     return (
@@ -185,7 +197,7 @@ const PostPhoto = () => {
         }}
       >
         <Box sx={{ padding: "10%", display: "flex" }}>
-          <Container header={photo.length > 0 ? "Cập nhật bài viết" : "Tạo bài viết"} size={"3rem"}>
+          <Container header={photoState.photo.length > 0 ? "Cập nhật bài viết" : "Tạo bài viết"} size={"3rem"}>
             <Box
               component={"form"}
               onSubmit={postPhotoForm.handleSubmit}
@@ -243,7 +255,8 @@ const PostPhoto = () => {
 
               {headerAndSubHeaderOfInput("Bộ sưu tập ", "Tải ảnh của bạn lên đây nhé ")}
               <PhotoUploader
-                addedPhotos={addedPhotos}
+                photoUploading={setPhotoUploading}
+                addedPhotos={photoState.addedPhotos}
                 onChange={setAddedPhotos}
               />
 
@@ -253,9 +266,9 @@ const PostPhoto = () => {
               )}
 
               <ServicePackageGrid
-                servicePackages={servicePackages}
+                servicePackages={photoState.servicePackages}
                 handleCardAction={setAddedServices}
-                addedServices={addedServices}
+                addedServices={photoState.addedServices}
               />
 
               <LoadingButton
@@ -268,15 +281,16 @@ const PostPhoto = () => {
                   fontFamily: '"Nunito", sans-serif',
                   fontSize: "1rem",
                 }}
-                loading={isPostRequest}
+                disabled={photoState.photoUploading}
+                loading={photoState.isPostRequest}
               >
-                {photo ? "Cập nhật" : "Đăng bài viết"}
+                {photoState.photo ? "Cập nhật" : "Đăng bài viết"}
               </LoadingButton>
 
-              {errorMessage && (
+              {photoState.errorMessage && (
                 <Box sx={{ marginTop: 2 }}>
                   <Alert severity="error" variant="outlined">
-                    {errorMessage}
+                    {photoState.errorMessage}
                   </Alert>
                 </Box>
               )}

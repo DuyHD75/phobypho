@@ -42,19 +42,15 @@ const removeFileByUrl = async (req, res) => {
      }
 };
 
-// Function to extract file name from URL
 const extractFileNameFromUrl = (url) => {
      const parts = url.split('/');
      return parts[parts.length - 1];
 };
 
 
-
 const uploadMultiImages = async (req, res) => {
      try {
-          console.log("This isisisis")
           const files = req.files;
-          console.log(files)
           const uploadedFilesUrl = [];
 
           for (const file of files) {
