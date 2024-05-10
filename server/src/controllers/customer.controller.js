@@ -1,136 +1,298 @@
-import { ORDER_STATUS, ROLES_LIST } from '../configs/enum.config.js';
-import responseHandler from '../handlers/response.handler.js';
+import { ORDER_STATUS, ROLES_LIST } from "../configs/enum.config.js";
+import { getRankByBookingCount } from "../utils/rankOfAccount.util.js";
+import responseHandler from "../handlers/response.handler.js";
 import nodemailer from "nodemailer";
-import voucherModel from '../models/voucher.model.js';
-import customerModel from '../models/customer.model.js';
-import bookingModel from '../models/booking.model.js';
-import photographerModel from '../models/photographer.model.js';
-import * as dotenv from 'dotenv';
+import voucherModel from "../models/voucher.model.js";
+import customerModel from "../models/customer.model.js";
+import bookingModel from "../models/booking.model.js";
+import photographerModel from "../models/photographer.model.js";
+import * as dotenv from "dotenv";
 dotenv.config();
 
-import EmailUtils from '../utils/email.util.js';
-
-
-
+import EmailUtils from "../utils/email.util.js";
 
 const transporter = nodemailer.createTransport({
-     host: "smtp.gmail.com",
-     port: 587,
-     secure: false,
-     auth: {
-          user: process.env.EMAIL_ADDRESS,
-          pass: process.env.EMAIL_PASSWORD,
-     },
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.EMAIL_ADDRESS,
+    pass: process.env.EMAIL_PASSWORD,
+  },
 });
 
-
 const emailCheckoutSender = async (req, res) => {
-     try {
+  try {
+    const { photo, service_package, total_price, location, photo_session } =
+      req.body;
+    const senderEmail = process.env.EMAIL_ADDRESS;
 
-          const { photo, service_package, total_price, location, photo_session } = req.body;
-          const senderEmail = process.env.EMAIL_ADDRESS;
+    const customerEmailMessage = EmailUtils.getCustomerEmailContent(
+      req.account.displayName,
+      photo.account.displayName,
+      service_package.name,
+      location,
+      photo_session,
+      total_price
+    );
 
+    const photographerEmailMessage = EmailUtils.getPhotographerEmailContent(
+      req.account.displayName,
+      photo.account.displayName,
+      service_package.name,
+      location,
+      photo_session,
+      total_price
+    );
 
-          const customerEmailMessage = EmailUtils.getCustomerEmailContent(
-               req.account.displayName, photo.account.displayName, service_package.name,
-               location, photo_session, total_price);
+    const mailOptionsForCustomer = EmailUtils.mailOptions(
+      senderEmail,
+      req.account.email,
+      customerEmailMessage,
+      EmailUtils.SUBJECT.checkout.CUSTOMER
+    );
 
-          const photographerEmailMessage = EmailUtils.getPhotographerEmailContent(
-               req.account.displayName, photo.account.displayName, service_package.name,
-               location, photo_session, total_price);
+    const mailOptionsForPhotographer = EmailUtils.mailOptions(
+      senderEmail,
+      photo.account.email,
+      photographerEmailMessage,
+      EmailUtils.SUBJECT.checkout.PHOTOGRAPHER
+    );
 
-          const mailOptionsForCustomer = EmailUtils.mailOptions(
-               senderEmail, req.account.email, customerEmailMessage, EmailUtils.SUBJECT.checkout.CUSTOMER
-          );
+    let senderCustomerResult = await transporter.sendMail(
+      mailOptionsForCustomer
+    );
 
-          const mailOptionsForPhotographer = EmailUtils.mailOptions(
-               senderEmail, photo.account.email, photographerEmailMessage, EmailUtils.SUBJECT.checkout.PHOTOGRAPHER
-          )
+    let senderPhotographer = await transporter.sendMail(
+      mailOptionsForPhotographer
+    );
 
-          let senderCustomerResult = await transporter.sendMail(mailOptionsForCustomer);
-
-          let senderPhotographer = await transporter.sendMail(mailOptionsForPhotographer);
-
-          console.log("Email sent to customer: %s", senderCustomerResult.messageId);
-          console.log("Email sent to photographer: %s", senderPhotographer.messageId);
-
-     } catch (error) {
-          console.error('Error sending email:', error);
-          return responseHandler.error(res, {
-               message: `Failed to send email: ${error.message}`,
-          });
-     }
+    console.log("Email sent to customer: %s", senderCustomerResult.messageId);
+    console.log("Email sent to photographer: %s", senderPhotographer.messageId);
+  } catch (error) {
+    console.error("Error sending email:", error);
+    return responseHandler.error(res, {
+      message: `Failed to send email: ${error.message}`,
+    });
+  }
 };
 
 const getBookingById = async (bookingId) => {
+  try {
+    const booking = await bookingModel.findById(bookingId);
 
-     try {
-          const booking = await bookingModel.findById(bookingId);
+    if (!booking) {
+      return responseHandler.notfound(
+        res,
+        { message: "Không tìm thấy lịch hẹn!" },
+        "Không tìm thấy lịch hẹn!"
+      );
+    }
 
-          if (!booking) {
-               return responseHandler.notfound(res, { message: 'Không tìm thấy lịch hẹn!' }, 'Không tìm thấy lịch hẹn!');
-          }
-
-          return booking;
-     } catch (error) {
-          return error
-     }
-}
+    return booking;
+  } catch (error) {
+    return error;
+  }
+};
 
 const emailCancelBookingSender = async (req, res) => {
-     try {
-          const { bookingId } = req.params;
-          const { cancelFee } = req.body;
+  try {
+    const { bookingId } = req.params;
+    const { cancelFee } = req.body;
 
-          const booked = await getBookingById(bookingId);
+    const booked = await getBookingById(bookingId);
 
-          const senderEmail = process.env.EMAIL_ADDRESS;
+    const senderEmail = process.env.EMAIL_ADDRESS;
 
+    const cancelBookingMessage = EmailUtils.getCancelBookingMessage(
+      req.account.displayName,
+      booked.photographerName,
+      booked.servicePackageName,
+      booked.location,
+      booked.booking_date,
+      booked.total_price,
+      cancelFee,
+      ROLES_LIST.CUSTOMER
+    );
 
+    const cancelMailOptionCustomer = EmailUtils.mailOptions(
+      senderEmail,
+      req.account.email,
+      cancelBookingMessage,
+      EmailUtils.SUBJECT.cancel
+    );
 
-          const cancelBookingMessage = EmailUtils.getCancelBookingMessage(
-               req.account.displayName, booked.photographerName, booked.servicePackageName,
-               booked.location, booked.booking_date, booked.total_price, cancelFee, ROLES_LIST.CUSTOMER);
+    const cancelMailOptionPhotographer = EmailUtils.mailOptions(
+      senderEmail,
+      booked.photographerEmail,
+      cancelBookingMessage,
+      EmailUtils.SUBJECT.cancel
+    );
 
-          const cancelMailOptionCustomer = EmailUtils.mailOptions(
-               senderEmail, req.account.email, cancelBookingMessage, EmailUtils.SUBJECT.cancel
-          );
+    let senderCustomerResult = await transporter.sendMail(
+      cancelMailOptionCustomer
+    );
+    let senderPhotographer = await transporter.sendMail(
+      cancelMailOptionPhotographer
+    );
 
-          const cancelMailOptionPhotographer = EmailUtils.mailOptions(
-               senderEmail, booked.photographerEmail, cancelBookingMessage, EmailUtils.SUBJECT.cancel
-          )
-
-          let senderCustomerResult = await transporter.sendMail(cancelMailOptionCustomer);
-          let senderPhotographer = await transporter.sendMail(cancelMailOptionPhotographer);
-
-          console.log("Email sent to customer: %s", senderCustomerResult.messageId);
-          console.log("Email sent to photographer: %s", senderPhotographer.messageId);
-
-     } catch (error) {
-          console.error('Error sending email:', error);
-          return responseHandler.error(res, {
-               message: `Failed to send email: ${error.message}`,
-          });
-     }
+    console.log("Email sent to customer: %s", senderCustomerResult.messageId);
+    console.log("Email sent to photographer: %s", senderPhotographer.messageId);
+  } catch (error) {
+    console.error("Error sending email:", error);
+    return responseHandler.error(res, {
+      message: `Failed to send email: ${error.message}`,
+    });
+  }
 };
-
 
 const checkVoucherAndUpdateCustomer = async (account, voucher_code) => {
-     const voucher = await voucherModel.findOne({ code: voucher_code });
-     if (!voucher) {
-          throw new Error('Mã voucher không hợp lệ');
-     }
+  const voucher = await voucherModel.findOne({ code: voucher_code });
+  if (!voucher) {
+    throw new Error("Mã voucher không hợp lệ");
+  }
 
-     const customer = await customerModel.findOne({ account: account._id });
-     if (!customer.vouchers.includes(voucher._id)) {
-          throw new Error('Bạn không có quyền sử dụng mã voucher này !');
-     }
+  const customer = await customerModel.findOne({ account: account._id });
+  if (!customer.vouchers.includes(voucher._id)) {
+    throw new Error("Bạn không có quyền sử dụng mã voucher này !");
+  }
 
-     customer.vouchers = customer.vouchers.filter((v) => v.toString() !== voucher._id.toString());
+  customer.vouchers = customer.vouchers.filter(
+    (v) => v.toString() !== voucher._id.toString()
+  );
 
-     await customer.save();
+  await customer.save();
 };
 
+
+
+const updatePhotographerInfo = async (authorId) => {
+  try {
+    const photographer = await photographerModel.findOne({ account: authorId });
+    if (!photographer) {
+      throw new Error("Không tìm thấy tài khoản này !");
+    }
+    if (await checkRankingOfPhotographer(authorId)) {
+      updatePhotographerAccountType(photographer);
+    }
+    updatePhotographerBookingCount(authorId);
+  } catch (error) {
+    throw new Error("Error updating photographer info: " + error.message);
+  }
+};
+const updatePhotographerAccountType = async (photographer) => {
+  try {
+    if (!photographer) {
+      throw new Error("Không tìm thấy tài khoản này !");
+    }
+    const bookingCount = photographer.bookingCount + 1;
+    const rank = getRankByBookingCount(bookingCount);
+     photographer.type_of_account = rank;
+    await photographer.save();
+  } catch (error) {
+    throw new Error("Error updating photographer info: " + error.message);
+  }
+};
+
+const checkRankingOfPhotographer = async (photographerId) => {
+  try {
+    // Get the current quarter
+    const currentDate = new Date();
+    const currentQuarter = Math.floor(currentDate.getMonth() / 3) + 1;
+
+    // Retrieve the last booking for the photographer from the booking collection
+    const lastBooking = await bookingModel
+      .findOne({ photographer: photographerId })
+      .sort({ createdAt: -1 });
+    if (!lastBooking) {
+      throw new Error("No bookings found for this photographer!");
+    }
+
+    // Get the quarter of the last booking date
+     const lastBookingDate = new Date(lastBooking.createdAt);
+    const lastBookingQuarter = Math.floor(lastBookingDate.getMonth() / 3) + 1;
+
+    // Check if it's a new quarter
+    if (currentQuarter > lastBookingQuarter) {
+      const photographer = await photographerModel.findOne({
+        account: photographerId,
+      });
+      photographer.bookingCount = 0;
+      photographer.type_of_account = "";
+      await photographer.save();
+      return false;
+    } else {
+      return true;
+    }
+  } catch (error) {
+    throw new Error("Error checking ranking of photographer: " + error.message);
+  }
+};
+
+const updatePhotographerBookingCount = async (photographerId) => {
+  try {
+    const photo = await photographerModel.findOne({ account: photographerId });
+
+    if (!photo) {
+      throw new Error("Không tìm thấy tài khoản này !");
+    }
+
+    photo.bookingCount += 1;
+    await photo.save();
+  } catch (error) {
+    throw new Error(
+      "Error updating photographer booking count: " + error.message
+    );
+  }
+};
+
+const createNewBooking = async (req, res) => {
+  try {
+    const { account } = req;
+    console.log(req.body);
+
+    const {
+      photo,
+      service_package,
+      total_price,
+      location,
+      photo_session,
+      voucher_code,
+    } = req.body;
+
+    console.log(voucher_code);
+    if (voucher_code) {
+      await checkVoucherAndUpdateCustomer(account._id, voucher_code);
+    }
+
+    const booking = new bookingModel({
+      photo: photo.id,
+      poster: photo.poster,
+      photographer: photo.author,
+      photographerName: photo.account.displayName,
+      photographerEmail: photo.account.email,
+      customer: account._id,
+      location: location,
+      servicePackageId: service_package._id,
+      servicePackageName: service_package.name,
+      booking_date: photo_session,
+      status: ORDER_STATUS.pending,
+      total_price: total_price,
+    });
+
+    await booking.save();
+    await updateCustomerPoints(account._id, total_price);
+
+    // await updatePhotographerBookingCount(photo.author);
+    await updatePhotographerInfo(photo.author);
+
+    await emailCheckoutSender(req, res);
+
+    return responseHandler.created(res, booking);
+  } catch (error) {
+    responseHandler.error(res, error.message);
+  }
+};
 
 const updateCustomerPoints = async (req, res) => {
      try {
@@ -147,118 +309,78 @@ const updateCustomerPoints = async (req, res) => {
      }
 };
 
-const updatePhotographerBookingCount = async (photographerId) => {
-     try {
-          const photo = await photographerModel.findOne({ account: photographerId });
-          if (!photo) throw new Error("Không tìm thấy tài khoản này !");
-          photo.bookingCount += 1;
-          await photo.save();
-     } catch (error) {
-          throw new Error("Error updating photographer booking count: " + error.message);
-     }
-}
 
-const createNewBooking = async (req, res) => {
-     try {
-          const { account } = req;
-
-          const { photo, service_package, total_price, location, photo_session, voucher_code } = req.body;
-
-          if (voucher_code) {
-               await checkVoucherAndUpdateCustomer(account._id, voucher_code);
-          }
-
-          const booking = new bookingModel({
-               photo: photo.id,
-               poster: photo.poster,
-               photographer: photo.author,
-               photographerName: photo.account.displayName,
-               photographerEmail: photo.account.email,
-               customer: account._id,
-               location: location,
-               servicePackageId: service_package._id,
-               servicePackageName: service_package.name,
-               booking_date: photo_session,
-               status: ORDER_STATUS.pending,
-               total_price: total_price
-          });
-
-          await booking.save();
-          // await updateCustomerPoints(account._id, total_price);
-
-          await updatePhotographerBookingCount(photo.author);
-
-          await emailCheckoutSender(req, res);
-
-          return responseHandler.created(res, booking);
-     } catch (error) {
-          responseHandler.error(res, error.message);
-     }
-};
 
 const getCustomerBooking = async (req, res) => {
      try {
           const { customerId } = req.params;
           const bookingList = await bookingModel.find({ customer: customerId });
 
-          return responseHandler.ok(res, bookingList);
-     } catch (error) {
-          return responseHandler.error(res, "Fetching all booking: " + error);
-     }
+    return responseHandler.ok(res, bookingList);
+  } catch (error) {
+    return responseHandler.error(res, "Fetching all booking: " + error);
+  }
 };
 
 const getCustomerBookingByPhotoId = async (req, res) => {
-     try {
-          const { photoId } = req.params;
+  try {
+    const { photoId } = req.params;
 
-          const bookingList = await bookingModel.find({ customer: req.account.id, photo: photoId });
+    const bookingList = await bookingModel.find({
+      customer: req.account.id,
+      photo: photoId,
+    });
 
-          return responseHandler.ok(res, bookingList);
-     } catch (err) {
-          return responseHandler.error(res, "Fetching booking by photoId: " + err);
-     }
-}
+    return responseHandler.ok(res, bookingList);
+  } catch (err) {
+    return responseHandler.error(res, "Fetching booking by photoId: " + err);
+  }
+};
 
 const getCustomerByAccountId = async (req, res) => {
-     try {
-          const customer = await customerModel.findOne({ account: req.account.id });
-          if (!customer) {
-               return responseHandler.notfound(res, { message: 'Customer not found' }, 'Customer not found');
-          }
-          return responseHandler.ok(res, customer);
-     } catch (error) {
-          return responseHandler.error(res, error.message)
-     }
-}
+  try {
+    const customer = await customerModel.findOne({ account: req.account.id });
+    if (!customer) {
+      return responseHandler.notfound(
+        res,
+        { message: "Customer not found" },
+        "Customer not found"
+      );
+    }
+    return responseHandler.ok(res, customer);
+  } catch (error) {
+    return responseHandler.error(res, error.message);
+  }
+};
 
 const updatePoints = async (req, res) => {
-     try {
-          const { customerId, points } = req.body;
-          const customer = await customerModel.findById(customerId);
-          if (!customer) {
-               return res.status(404).json({ message: 'Customer not found' });
-          }
-          await customer.updatePoints(points);
-          return responseHandler.ok(res, customer);
-     } catch (error) {
-          return responseHandler.error(res, "Error updating points: " + error);
-     }
-}
-
+  try {
+    const { customerId, points } = req.body;
+    const customer = await customerModel.findById(customerId);
+    if (!customer) {
+      return res.status(404).json({ message: "Customer not found" });
+    }
+    await customer.updatePoints(points);
+    return responseHandler.ok(res, customer);
+  } catch (error) {
+    return responseHandler.error(res, "Error updating points: " + error);
+  }
+};
 
 const getCustomerVouchers = async (req, res) => {
-     try {
+  try {
+    const { account } = req;
+    const vouchers = await customerModel
+      .findOne({ account: account._id })
+      .populate("vouchers");
 
-          const { account } = req;
-          const vouchers = await customerModel.findOne({ account: account._id }).populate('vouchers');
-
-          if (vouchers) {
-               return responseHandler.ok(res, vouchers);
-          }
-     } catch (err) {
-          return responseHandler.error(res, "Error getting all vouchers: " + err);
-     }
-}
+    if (vouchers) {
+      return responseHandler.ok(res, vouchers);
+    }
+  } catch (err) {
+    return responseHandler.error(res, "Error getting all vouchers: " + err);
+  }
+};
 
 const updateBookingStatus = async (req, res) => {
      try {
@@ -290,5 +412,6 @@ export default {
      getCustomerByAccountId, updatePoints,
      getCustomerVouchers, emailCheckoutSender,
      getCustomerBookingByPhotoId, updateBookingStatus,
-     updateCustomerPoints
+     updateCustomerPoints, checkRankingOfPhotographer
 };
+
