@@ -62,7 +62,7 @@ const signup = async (req, res) => {
 };
 
 
-const login = async (req, res) => {
+const login = async (req, res, next) => {
      try {
           const { username, password } = req.body;
           const userData = {};
@@ -100,6 +100,8 @@ const login = async (req, res) => {
                ...account._doc,
                userData,
           });
+          
+          next();
      } catch {
           responseHandler.error(res);
      }

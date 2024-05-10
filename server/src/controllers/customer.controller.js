@@ -131,21 +131,21 @@ const checkVoucherAndUpdateCustomer = async (account, voucher_code) => {
      await customer.save();
 };
 
-const updateCustomerPoints = async (customerId, price) => {
+
+const updateCustomerPoints = async (req, res) => {
      try {
-          const customer = await customerModel.findOne({ account: customerId });
+          const customer = await customerModel.findOne({ account: req.account.id });
 
           if (!customer) {
                throw new Error('Không tìm thấy tài khoản này !');
           }
 
-          customer.accumulated_points += (price / 1000);
+          customer.accumulated_points += (req.body.point / 1000);
           await customer.save();
      } catch (error) {
           throw new Error("Error updating customer points: " + error.message);
      }
 };
-
 
 const updatePhotographerBookingCount = async (photographerId) => {
      try {
@@ -164,7 +164,6 @@ const createNewBooking = async (req, res) => {
 
           const { photo, service_package, total_price, location, photo_session, voucher_code } = req.body;
 
-          console.log(voucher_code)
           if (voucher_code) {
                await checkVoucherAndUpdateCustomer(account._id, voucher_code);
           }
@@ -185,13 +184,11 @@ const createNewBooking = async (req, res) => {
           });
 
           await booking.save();
-          await updateCustomerPoints(account._id, total_price);
+          // await updateCustomerPoints(account._id, total_price);
 
           await updatePhotographerBookingCount(photo.author);
 
           await emailCheckoutSender(req, res);
-
-          // booking count >=10 && nam trong 1 quy <=> reset booking count
 
           return responseHandler.created(res, booking);
      } catch (error) {
@@ -202,7 +199,6 @@ const createNewBooking = async (req, res) => {
 const getCustomerBooking = async (req, res) => {
      try {
           const { customerId } = req.params;
-
           const bookingList = await bookingModel.find({ customer: customerId });
 
           return responseHandler.ok(res, bookingList);
@@ -289,12 +285,10 @@ const updateBookingStatus = async (req, res) => {
      }
 }
 
-
-
-
 export default {
      createNewBooking, getCustomerBooking,
      getCustomerByAccountId, updatePoints,
      getCustomerVouchers, emailCheckoutSender,
-     getCustomerBookingByPhotoId, updateBookingStatus
+     getCustomerBookingByPhotoId, updateBookingStatus,
+     updateCustomerPoints
 };

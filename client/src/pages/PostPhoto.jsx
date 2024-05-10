@@ -36,6 +36,7 @@ const PostPhoto = () => {
     isDataRetrieved: false,
     postId: {},
     photo: {},
+    photoUploading: false
   });
 
   const getPostPhoto = useCallback(async () => {
@@ -86,6 +87,10 @@ const PostPhoto = () => {
     setPhotoState(prevState => ({ ...prevState, addedServices: newServices }));
   };
 
+  const setPhotoUploading = (isUploading) => {
+    setPhotoState(prevState => ({ ...prevState, photoUploading: isUploading }));
+  };
+
 
   const postPhotoForm = useFormik({
     initialValues: {
@@ -126,7 +131,6 @@ const PostPhoto = () => {
 
         let response;
         if (photoState.isDataRetrieved) {
-          console.log(values)
           response = await photoApi.updatePhotoByAuth(values);
           toast.success("Bài viết được cập nhật thành công!");
         } else {
@@ -251,6 +255,7 @@ const PostPhoto = () => {
 
               {headerAndSubHeaderOfInput("Bộ sưu tập ", "Tải ảnh của bạn lên đây nhé ")}
               <PhotoUploader
+                photoUploading={setPhotoUploading}
                 addedPhotos={photoState.addedPhotos}
                 onChange={setAddedPhotos}
               />
@@ -276,6 +281,7 @@ const PostPhoto = () => {
                   fontFamily: '"Nunito", sans-serif',
                   fontSize: "1rem",
                 }}
+                disabled={photoState.photoUploading}
                 loading={photoState.isPostRequest}
               >
                 {photoState.photo ? "Cập nhật" : "Đăng bài viết"}

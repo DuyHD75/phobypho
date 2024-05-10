@@ -16,6 +16,8 @@ import FormControl from '@mui/material/FormControl';
 const Profile = () => {
 
    const { user } = useSelector(state => state.user);
+
+
    const dispatch = useDispatch();
    const [errorMessage, setErrorMessage] = useState(undefined);
    const [isUpdateRequest, setIsUpdateRequest] = useState(false);
@@ -26,14 +28,16 @@ const Profile = () => {
 
 
    useEffect(() => {
-
       setAvatarUrl(user.avatar);
       if (user.location) {
          setLocation(user.location || user.updatedUser.location);
       }
-
-
    }, []);
+
+   const handleAvatarUpload = async (avatarLink) => {
+      console.log(avatarLink)
+      setAvatarUrl(avatarLink);
+   }
 
    const profileForm = useFormik({
       initialValues: {
@@ -102,7 +106,7 @@ const Profile = () => {
          }}>Cập nhật thông tin </Typography>
 
          {/* Avatar uploader */}
-         <AvatarUploader handleUpload={setAvatarUrl} avatar={user.avatar} />
+         <AvatarUploader handleUpload={handleAvatarUpload} avatar={user.avatar} />
          {/* Avatar uploader */}
 
 
@@ -111,7 +115,7 @@ const Profile = () => {
                ...uiConfigs.style.typoLines(1, 'center'),
                color: "secondary.colorText",
                marginTop: 2,
-               padding: '1rem'
+               paddingTop: '1rem',
             }}
          >
             <Stack spacing={2}>

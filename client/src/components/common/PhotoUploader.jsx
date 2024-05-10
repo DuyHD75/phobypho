@@ -16,8 +16,9 @@ import PhotoAlbumIcon from "@mui/icons-material/PhotoAlbum";
 import { LoadingButton } from "@mui/lab";
 import InputAdornment from '@mui/material/InputAdornment';
 
-const PhotoUploader = ({ addedPhotos, onChange }) => {
+const PhotoUploader = ({photoUploading, addedPhotos, onChange }) => {
 
+ 
   const [isUploading, setIsUploading] = useState(false);
   const [albumName, setAlbumName] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -31,17 +32,16 @@ const PhotoUploader = ({ addedPhotos, onChange }) => {
       images.append("images", files[i]);
     }
 
+    photoUploading(true);
     const photoLinks = await uploadImageApi.uploadPhotoByFiles(images);
-
-    const updatedAlbums = [...addedPhotos];
-
+    
     if (albumIndex !== undefined && addedPhotos[albumIndex]) {
-      updatedAlbums[albumIndex].images.push(...photoLinks);
+      addedPhotos[albumIndex].images.push(...photoLinks);
     } else {
-      updatedAlbums.push({ albumName: albumName, images: photoLinks });
+      addedPhotos.push({ albumName: albumName, images: [...photoLinks] });
     }
-    onChange(updatedAlbums);
-
+    onChange(addedPhotos);
+    photoUploading(false);
     setAlbumName("");
     setIsUploading(false);
   };
@@ -59,7 +59,7 @@ const PhotoUploader = ({ addedPhotos, onChange }) => {
     const updatedAlbums = [...addedPhotos];
     const selectedImage = updatedAlbums[albumIndex].images.splice(imgIdx, 1);
     updatedAlbums[albumIndex].images.unshift(selectedImage);
-    console.log(updatedAlbums)
+ 
     onChange(updatedAlbums);
   };
 

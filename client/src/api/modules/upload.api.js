@@ -9,6 +9,7 @@ const uploadImageEndpoint = {
 const uploadImageApi = {
   uploadPhotoByFiles: async (images) => {
     try {
+      console.log(images)
       const response = await privateClient.post(
         uploadImageEndpoint.uploadByFiles,
         images,

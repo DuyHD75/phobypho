@@ -1,4 +1,4 @@
-import React, { Fragment} from "react";
+import React, { Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
@@ -46,68 +46,11 @@ const Voucher = () => {
             },
             backgroundPosition: "top",
             backgroundSize: "cover",
-            backgroundImage: `url(https://promo-theme.com/novo/wp-content/uploads/2017/08/slide1.jpg)`,
+            backgroundImage: `url(https://firebasestorage.googleapis.com/v0/b/phobypho-2dbae.appspot.com/o/banner%2Fvoucher_banner.jpg?alt=media&token=2c0ef898-0b9e-405e-8a64-5e73f4ff6c53)`,
             position: "relative",
           }}
         >
-          {!user ? (
-            <Box
-              spacing={6}
-              sx={{
-                width: "70%",
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                textAlign: "center",
-              }}
-            >
-              <Typography sx={{
-                ...uiConfigs.style.typoLines(1, 'center'),
-                stroke: "#313131",
-                strokeWidth: "1px",
-                fontSize: { xs: "2rem", md: "3rem" },
-                textShadow: "2px 2px 4px #000",
-                color: 'primary.headerColor',
-                textTransform: 'uppercase',
-                fontWeight: "900",
-
-              }}>PHOBYPHO</Typography>
-              <Typography
-                variant="h4"
-
-                sx={{
-                  ...uiConfigs.style.typoLines(2, "center"),
-                  fontWeight: "800",
-                  marginY: 1,
-                  textTransform: "uppercase",
-                  fontSize: {
-                    xs: "0.9rem", md: "1.5rem", lg: "2.6rem",
-                  }
-                }}
-              >
-                Nhiều mã ưu đãi hấp dẫn áp dụng cho khách hàng thân thiết 
-              </Typography>
-              <Button
-                size="small"
-                variant="contained"
-                sx={{
-                  fontWeight: "500",
-                  marginY: "15px",
-                  padding: "10px 30px",
-                  borderRadius: "10px",
-                  fontSize: "0.9rem",
-                  marginX: "auto",
-                  ...uiConfigs.style.typoLines(1, "center"),
-                }}
-                onClick={() => dispatch(setAuthModalOpen(true))}
-              >
-                Đăng nhập
-              </Button>
-            </Box>
-          ) : (
-            <VoucherUserPanner />
-          )}
+          {user && (<VoucherUserPanner />)}
         </Box>
         <VoucherRewards />
         <VoucherFeatures />

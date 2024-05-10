@@ -1,4 +1,5 @@
 import React, { Fragment, useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import {
   Box,
   Stack,
@@ -17,7 +18,7 @@ import ModalImageSlider from "../components/common/ModalImageSlider";
 import WavingHandIcon from '@mui/icons-material/WavingHand';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
 import customerApi from "../api/modules/customer.api";
-import { setAuthModalOpen } from "../redux/features/authModalSlice";
+
 import { styled, keyframes } from '@mui/system';
 
 const userFiled = [
@@ -54,6 +55,8 @@ animation: ${buttonAnimation} 1s infinite;
 `;
 
 const PhotoDetailPage = () => {
+  const locationHook = useLocation();
+  
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
   const { photo_id } = useParams();
@@ -62,7 +65,7 @@ const PhotoDetailPage = () => {
   const [isOpenModalSlider, setIsOpenModalSlider] = useState(false);
   const [bookedInfo, setBookedInfo] = useState([]);
   const scrollRef = useRef(null);
-
+  
   useEffect(() => {
     window.scrollTo(0, 0);
     const getBookingByPhotoId = async () => {
@@ -90,6 +93,7 @@ const PhotoDetailPage = () => {
     setAlbumSelected(album);
     setIsOpenModalSlider(true);
   }
+
 
   return (
     <Fragment>
@@ -455,7 +459,7 @@ const PhotoDetailPage = () => {
                 margin: { xs: "0 auto 1rem", md: "0 1rem 0 0" },
               }}
             >
-              <PhotoReview photo={photo} bookedInfo={bookedInfo} />
+              <PhotoReview bookingId={locationHook.state?.bookingId} photo={photo} bookedInfo={bookedInfo} />
             </Box>
           </Box >
 

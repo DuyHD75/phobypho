@@ -8,6 +8,7 @@ import favoriteApi from "../api/modules/favorite.api";
 import UserSidebar from "../components/common/UserSidebar";
 import PostItem from "../components/common/PostItem";
 import uiConfigs from "../configs/ui.config";
+import NotFound from "../components/common/NotFound";
 
 const FavoriteItem = ({ photo, onRemoved }) => {
 
@@ -106,14 +107,7 @@ const FavoriteList = () => {
                               <Button onClick={onLoadMore}>load more</Button>
                          )}
                     </Box>) : (
-                    <Container>
-                         <Typography sx={{
-                              ...uiConfigs.style.typoLines(1, 'center'),
-                              color: 'secondary.colorText',
-                              fontSize: '1rem',
-                              fontWeight: '600',
-                         }}>Danh sách yêu thích trống !</Typography>
-                    </Container>
+                         <NotFound/>
                )}
           </UserSidebar>
      );
