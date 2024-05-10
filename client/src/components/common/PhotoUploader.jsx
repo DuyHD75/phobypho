@@ -181,7 +181,7 @@ const PhotoUploader = ({photoUploading, addedPhotos, onChange }) => {
                     onClick={(ev) => removePhoto(ev, albumIndex, index)}
                     className="cursor-pointer absolute bottom-1 right-1 text-white bg-black bg-opacity-50 rounded-2xl"
                   >
-                    <DeleteIcon sx={{ fontSize: "1.3rem",  color: "#ffdc48" }} />
+                    <DeleteIcon sx={{ fontSize: "1.4rem",  color: "#fff", borderRadius: '10px', bgcolor: "#333", }} />
                   </IconButton>
 
                   <IconButton
@@ -194,9 +194,9 @@ const PhotoUploader = ({photoUploading, addedPhotos, onChange }) => {
                     onClick={(ev) => selectAsMainPhoto(ev, albumIndex, index)}
                   >
                     {image === album.images[0] ? (
-                      <CheckCircleIcon sx={{ fontSize: "1.3rem", color: "#ffdc48" }} />
+                      <CheckCircleIcon sx={{fontSize: "1.4rem",  color: "#fff", borderRadius: '10px', bgcolor: "#333", }} />
                     ) : (
-                      <StarIcon sx={{ fontSize: "1.4rem",color: '#ffdc48' }} />
+                      <StarIcon sx={{ fontSize: "1.4rem",  color: "#fff", borderRadius: '10px', bgcolor: "#333", }} />
                     )}
                   </IconButton>
                 </Box>

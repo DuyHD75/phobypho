@@ -7,6 +7,7 @@ import uiConfigs from "../../configs/ui.config";
 import customerApi from "../../api/modules/customer.api";
 import { toast } from "react-toastify";
 import { BiSolidDiscount } from "react-icons/bi";
+import zIndex from "@mui/material/styles/zIndex";
 
 
 
@@ -26,6 +27,7 @@ const style = {
   maxWidth: '500px',
   maxHeight: '500px',
   overflowY: 'scroll',
+  zIndex: 100
 };
 
 
@@ -107,115 +109,118 @@ function VoucherUserPanner() {
   return (
     <Fragment>
       <VouchersModal isOpenVoucherModal={isOpenVouchersModal} handleCloseModal={setIsOpenVouchersModal} vouchers={vouchers.vouchers} />
-      {customerInfo && (<Stack
-        spacing={2}
-        sx={{
-          width: "50%",
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          textAlign: "center",
-          alignItems: "center",
-        }}
-      >
-        <Stack>
-          <Typography
-            variant="h4"
-            fontSize={{ xs: "1.2rem", md: "1.8rem", lg: "2rem" }}
-            fontWeight="600"
-            sx={{
-              ...uiConfigs.style.typoLines(2, "center"),
-              textTransform: "capitalize",
-            }}
-          >
-            Chào mừng bạn quay trở lại
-          </Typography>
-          <Typography
-            variant="h4"
-            fontSize={{ xs: "2rem", md: "2.6rem", lg: "3rem" }}
-            fontWeight="800"
-            sx={{
-              ...uiConfigs.style.typoLines(2, "center"),
-              color: 'primary.headerColor',
-              textTransform: "capitalize",
-              textShadow: "1px 1px 1px #000",
-            }}
-          >
-            {user.displayName}
-          </Typography>
-        </Stack>
+      {customerInfo && (
+        <Stack
+          spacing={2}
+          sx={{
+            width: "50%",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            textAlign: "center",
+            alignItems: "center",
+            padding: '3rem',
+            zIndex: 100
+          }}
+        >
+          <Stack>
+            <Typography
+              variant="h4"
+              fontSize={{ xs: "1.2rem", md: "1.8rem", lg: "2rem" }}
+              fontWeight="600"
+              sx={{
+                ...uiConfigs.style.typoLines(2, "center"),
+                textTransform: "capitalize",
+              }}
+            >
+              Chào mừng bạn quay trở lại
+            </Typography>
+            <Typography
+              variant="h4"
+              fontSize={{ xs: "2rem", md: "2.6rem", lg: "3rem" }}
+              fontWeight="800"
+              sx={{
+                ...uiConfigs.style.typoLines(2, "center"),
+                color: '#ffff',
+                textTransform: "capitalize",
+                textShadow: "1px 1px 1px #000",
+              }}
+            >
+              {user.displayName}
+            </Typography>
+          </Stack>
 
 
-        {customerInfo.accumulated_points > 0 ? (
-          <Stack paddingTop="16px" width={"100%"}>
+          {customerInfo.accumulated_points > 0 ? (
+            <Stack paddingTop="16px" width={"100%"}>
+              <Typography
+                variant="h4"
+                fontSize={{ xs: "1rem", md: "1.4rem", lg: "1.6rem" }}
+                fontWeight="600"
+                sx={{
+                  ...uiConfigs.style.typoLines(2, "center"),
+                }}
+              >
+                Tổng điểm tích lũy
+              </Typography>
+
+              <Typography
+                variant="h4"
+                fontSize={{ xs: "2.4rem", md: "2.6rem", lg: "3rem" }}
+                fontWeight="800"
+                sx={{
+                  ...uiConfigs.style.typoLines(2, "center"),
+                  textTransform: "capitalize",
+                  color: '#fff'
+                }}
+              >
+                {customerInfo.accumulated_points.toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} điểm
+              </Typography>
+            </Stack>
+
+
+          ) : (
+
             <Typography
               variant="h4"
               fontSize={{ xs: "1rem", md: "1.4rem", lg: "1.6rem" }}
               fontWeight="600"
               sx={{
                 ...uiConfigs.style.typoLines(2, "center"),
-              }}
-            >
-              Tổng điểm tích lũy
-            </Typography>
-
-            <Typography
-              variant="h4"
-              fontSize={{ xs: "2.4rem", md: "2.6rem", lg: "3rem" }}
-              fontWeight="800"
-              sx={{
-                ...uiConfigs.style.typoLines(2, "center"),
                 textTransform: "capitalize",
-                color: 'primary.main'
               }}
             >
-              {customerInfo.accumulated_points.toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} điểm
+              Bạn Chưa có điểm nào
             </Typography>
-          </Stack>
 
 
-        ) : (
 
-          <Typography
-            variant="h4"
-            fontSize={{ xs: "1rem", md: "1.4rem", lg: "1.6rem" }}
-            fontWeight="600"
+          )}
+
+          <Button
+            size="small"
+            variant="contained"
             sx={{
-              ...uiConfigs.style.typoLines(2, "center"),
-              textTransform: "capitalize",
+              ...uiConfigs.style.typoLines(1, "center"),
+              borderRadius: "10px",
+              fontSize: "0.9rem",
+              width: "fit-content",
+              padding: '10 10px',
+              display: 'flex',
+              alignItems: 'center',
+              flexDirection: 'row',
             }}
+            startIcon={<AccessTimeIcon
+              sx={{
+                fontSize: "2rem",
+              }}
+            />}
+            onClick={() => setIsOpenVouchersModal(true)}
           >
-            Bạn Chưa có điểm nào
-          </Typography>
-
-
-
-        )}
-
-        <Button
-          size="small"
-          variant="contained"
-          sx={{
-            ...uiConfigs.style.typoLines(1, "center"),
-            borderRadius: "10px",
-            fontSize: "0.9rem",
-            width: "fit-content",
-            padding: '10 10px',
-            display: 'flex',
-            alignItems: 'center',
-            flexDirection: 'row',
-          }}
-          startIcon={<AccessTimeIcon
-            sx={{
-              fontSize: "2rem",
-            }}
-          />}
-          onClick={() => setIsOpenVouchersModal(true)}
-        >
-          Voucher của bạn
-        </Button>
-      </Stack>)}
+            Voucher của bạn
+          </Button>
+        </Stack>)}
     </Fragment>
   );
 }

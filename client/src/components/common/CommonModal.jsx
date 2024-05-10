@@ -16,7 +16,7 @@ const style = {
    color: 'secondary.colorText',
    boxShadow: 24,
    p: 4,
-   maxWidth: '500px',
+   maxWidth: '600px',
    minHeight: '500px',
 };
 

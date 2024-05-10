@@ -23,11 +23,11 @@ const LoginModal = ({ switchAuthState }) => {
           },
           validationSchema: Yup.object({
                username: Yup.string()
-                    .min(8, "Username must be 8 characters !")
-                    .required("Username is required !"),
+                    .min(8, "Username ít nhất 8 ký tự !")
+                    .required("Username phải được nhập !"),
                password: Yup.string()
-                    .min(8, "Password at least 8 characters !")
-                    .required("Password is required !")
+                    .min(8, "Password ít nhất 8 ký tự !")
+                    .required("Password phải được nhập !")
           }),
           onSubmit: async values => {
                setErrorMessage(undefined);
@@ -39,7 +39,7 @@ const LoginModal = ({ switchAuthState }) => {
                     loginForm.resetForm();
                     dispatch(setUser(response));
                     dispatch(setAuthModalOpen(false));
-                    toast.success("Login Successfully !");
+                    toast.success("Đăng nhập thành công !");
                }
                if (err) setErrorMessage(err.message);
           }
@@ -50,7 +50,7 @@ const LoginModal = ({ switchAuthState }) => {
           <Box component='form' onSubmit={loginForm.handleSubmit} >
                <Stack spacing={2}>
                     <TextField
-                         type='text' placeholder='Enter you username ...' name='username'
+                         type='text' placeholder='Nhập username của bạn ...' name='username'
                          fullWidth value={loginForm.values.username} onChange={loginForm.handleChange}
                          color='warning'
                          error={loginForm.touched.username && loginForm.errors.username}
@@ -58,7 +58,7 @@ const LoginModal = ({ switchAuthState }) => {
                     ></TextField>
 
                     <TextField
-                         type='password' placeholder='Enter you password ...' name='password'
+                         type='password' placeholder='Nhập password ...' name='password'
                          fullWidth value={loginForm.values.password} onChange={loginForm.handleChange}
                          color='warning'
                          error={loginForm.touched.password && loginForm.errors.password}

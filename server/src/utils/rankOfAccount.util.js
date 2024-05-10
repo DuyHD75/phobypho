@@ -1,22 +1,18 @@
-const RANK_CONFIG = {
-  đồng: { name: "Đồng", minBookingCount: 20 },
-  bạc: { name: "Bạc", minBookingCount: 50 },
-  vàng: { name: "Vàng", minBookingCount: 100 },
-  kim_cương: { name: "Kim cương", minBookingCount: 200 }
-};
+const RANK_CONFIG = [
+  { name: "Kim cương", minBookingCount: 200 },
+  { name: "Vàng", minBookingCount: 100 },
+  { name: "Bạc", minBookingCount: 50 },
+  { name: "Đồng", minBookingCount: 20 }
+];
 
-function getRankByBookingCount(bookingCount) {
-  if (bookingCount >= RANK_CONFIG.kim_cương.minBookingCount) {
-    return RANK_CONFIG.kim_cương.name;
-  } else if (bookingCount >= RANK_CONFIG.vàng.minBookingCount) {
-    return RANK_CONFIG.vàng.name;
-  } else if (bookingCount >= RANK_CONFIG.bạc.minBookingCount) {
-    return RANK_CONFIG.bạc.name;
-  } else if (bookingCount >= RANK_CONFIG.đồng.minBookingCount) {
-    return RANK_CONFIG.đồng.name;
-  } else {
-    return '';
+const getRankByBookingCount = (bookingCount) => {
+  for (let i = 0; i < RANK_CONFIG.length; i++) {
+    const rank = RANK_CONFIG[i];
+    if (bookingCount >= rank.minBookingCount) {
+      return rank.name;
+    }
   }
-}
+  return '';
+};
 
 export { getRankByBookingCount };

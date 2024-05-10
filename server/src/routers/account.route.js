@@ -49,7 +49,6 @@ router.post(
           }),
      requestHandler.validate,
      accountController.signup,
-     accountController.isNewQuarterPhotographer
 );
 
 

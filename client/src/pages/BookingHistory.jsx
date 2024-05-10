@@ -96,6 +96,7 @@ const BookingHistoryPage = () => {
      const calculateCancellationFee = (bookingDate, cancelDate) => {
           const remainingTime = moment.duration(moment(bookingDate).diff(cancelDate));
           const daysDifference = remainingTime.asDays().toFixed(1);
+          console.log(daysDifference);
           if (daysDifference >= 3) {
                return 0;
           }

@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { routesGen } from '../routers/routes';
 import { Box, Stack, TextField, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
@@ -19,6 +19,7 @@ const Checkout = () => {
      const [transactionCode, setTransactionCode] = useState("");
      const [isProcessing, setIsProcessing] = useState(false);
      const [voucherCode, setVoucherCode] = useState('');
+     const navigate = useNavigate();
 
      const currentPrice = bookingData.service_package.price;
 
@@ -61,7 +62,7 @@ const Checkout = () => {
                const voucher = vouchers.find(voucher => voucher.code === userEntryCode);
 
                if (voucher) {
-                  
+
                     setVoucherCode(voucher.code);
                     setTotalPrice(currentPrice * (1 - voucher.value / 100));
                     setErrorMessage(undefined);
@@ -82,6 +83,7 @@ const Checkout = () => {
           const { response, err } = await customerApi.createBooking(updatedBookingData);
           setIsProcessing(false);
           if (response) {
+               navigate(`/booking_history`);
                return toast.success('Thanh toán thành công !');
           }
           if (err) {

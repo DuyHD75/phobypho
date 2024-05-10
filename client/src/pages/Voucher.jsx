@@ -44,10 +44,19 @@ const Voucher = () => {
               md: "60%",
               lg: "40%",
             },
+            position: "relative",
             backgroundPosition: "top",
             backgroundSize: "cover",
             backgroundImage: `url(https://firebasestorage.googleapis.com/v0/b/phobypho-2dbae.appspot.com/o/banner%2Fvoucher_banner.jpg?alt=media&token=2c0ef898-0b9e-405e-8a64-5e73f4ff6c53)`,
-            position: "relative",
+            ':before': user && {
+              content: '""',
+              position: 'absolute',
+              backgroundColor: 'rgba(0,0,0,0.7)',
+              width: '100%',
+              height: '100%',
+              top: 0,
+              zIndex: 1,
+            }
           }}
         >
           {user && (<VoucherUserPanner />)}

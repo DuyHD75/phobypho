@@ -1,25 +1,32 @@
-import React, {useRef} from 'react'
+import React from 'react'
 import UserSidebar from './UserSidebar'
-import { Box, Typography, Stack, Button } from '@mui/material'
+import { Box, Typography, Stack } from '@mui/material'
 import Grid from '@mui/material/Grid';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
 import uiConfigs from '../../configs/ui.config';
 import { SiTicktick } from "react-icons/si";
 import { upgradeAccountPolicy } from '../../asset/data';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import LinearProgress from "@mui/material/LinearProgress";
 
 const UpgradeAccount = () => {
 
-  
-  const { user } = useSelector(state => state.user);
-  
-  const dispatch = useDispatch();
 
-  const handleUpgradeAccount = (id) => {
-    console.log(id);
+  const { user } = useSelector(state => state.user);
+
+  const bookingCount = user && user.userData ? user.userData.bookingCount : 0;
+
+  let nextRankAccount = undefined, typeOfAccount = undefined;
+  if (user && user.userData) {
+    typeOfAccount = user.userData.type_of_account && user.userData.type_of_account.toUpperCase();
+    const findAccountRank = user.userData.type_of_account && upgradeAccountPolicy.features.findIndex(item => item.title.toLowerCase().includes(user.userData.type_of_account.toLowerCase()));
+    nextRankAccount = findAccountRank !== -1 ? upgradeAccountPolicy.features[findAccountRank + 1] : undefined;
   }
+
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth();
+  const timeLimit = new Date(currentDate.getFullYear(), Math.floor(currentMonth / 3) * 3, 0).toLocaleDateString('vi-VN', { year: "numeric", month: "short", day: "numeric" });
+
+
 
   return (
     <UserSidebar>
@@ -41,30 +48,42 @@ const UpgradeAccount = () => {
         padding: '1rem 2rem',
         marginBottom: '2rem',
         position: 'relative',
-        width: 'max-content',
-
+        width: '100%',
         boxShadow: ' rgba(0, 0, 0, 0.24) 0px 3px 8px',
         borderRadius: '10px',
       }}>
         <img src="https://firebasestorage.googleapis.com/v0/b/phobypho-2dbae.appspot.com/o/icons%2Fundraw_all_the_data_re_hh4w.svg?alt=media&token=91feae1d-d639-4213-96b4-c05b1179168f" alt=""
           style={{
-            width: '100px',
-            height: '100px',
+            width:'150px',
+            height: '150px',
             objectFit: 'contain',
             objectPosition: 'center',
             borderRadius: '10px',
             position: 'absolute',
-            top: 10,
-            right: 30,
+            right: 50,
+            top: 0
           }}
         />
 
         <Typography sx={{
-          ...uiConfigs.style.typoLines(1, 'left'),
+          ...uiConfigs.style.typoLines(3, 'left'),
           fontSize: '1.2rem',
           color: '#fb4b20',
           fontWeight: '700',
         }}>{`Nâng Cấp Thứ Hạng Tài Khoản`}  </Typography>
+
+
+        {typeOfAccount && (
+          <Typography sx={{
+            ...uiConfigs.style.typoLines(1, 'left'),
+            fontSize: '1rem',
+            color: 'primary.headerColor',
+            marginTop: '1rem',
+            textShadow: '1px 1px 0.5px #000',
+          }}>
+            {`Bạn đang ở thứ hạng: ${typeOfAccount}`}
+          </Typography>
+        )}
 
 
         <Typography sx={{
@@ -73,21 +92,27 @@ const UpgradeAccount = () => {
           color: 'secondary.colorText',
           marginTop: '1rem',
         }}>
-          {`Lượt booking của bạn: ${user && user.bookingCount ? user.bookingCount : 10} / 20`}
-          <LinearProgress variant="determinate" value={(10/20)*100} 
+          {`Lượt booking của bạn: ${bookingCount} / ${nextRankAccount?.description}`}
+          <LinearProgress variant="determinate" value={(bookingCount / parseInt(nextRankAccount?.description.split(" ")[0])) * 100}
             sx={{
               width: '70%'
             }} />
         </Typography>
 
-        <Typography sx={{
+        <Box sx={{
           ...uiConfigs.style.typoLines(1, 'left'),
           fontSize: '1rem',
           color: 'secondary.subText',
           marginTop: '1rem',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+
         }}>
-          {`Thứ hạng sẽ được cập nhật lại sau: 4 tháng. Chi tiết xem bên dưới!`}
-        </Typography>
+          {`Thứ hạng sẽ được cập nhật lại sau: `}
+          <Typography sx={{ color: '#fb4b20', paddingLef: '5px', ...uiConfigs.style.typoLines(1, 'left'), }}>{timeLimit}</Typography>
+          {`. Chi tiết xem bên dưới ⬇️!`}
+        </Box>
       </Box>
 
 
@@ -130,21 +155,22 @@ const UpgradeAccount = () => {
                 }} />
               </Stack>
 
-              <List sx={{ width: '100%', padding: '1rem 0' }}>
+              <Stack sx={{ width: '100%', padding: '1rem 0.5rem' }} >
 
-                <ListItem sx={{ ...uiConfigs.style.typoLines(2, "center") }}  >
+                <Box sx={{ ...uiConfigs.style.typoLines(2, "center"), marginBottom: '1rem' }}  >
                   <Typography variant='body1' sx={{
                     color: 'secondary.main',
                     textTransform: 'uppercase',
                   }}>
                     {item.description}
                   </Typography>
-                </ListItem>
+                </Box>
 
-                <ListItem sx={{
+                <Box sx={{
                   ...uiConfigs.style.typoLines(3, "left"),
                   display: 'flex',
                   alignItems: 'flex-start',
+                  marginBottom: '1rem'
                 }}  >
                   <SiTicktick style={{
                     color: '#13aa52',
@@ -156,12 +182,13 @@ const UpgradeAccount = () => {
                   }}>
                     {item.offer}
                   </Typography>
-                </ListItem>
+                </Box>
 
-                <ListItem sx={{
+                <Box sx={{
                   ...uiConfigs.style.typoLines(3, "left"),
                   display: 'flex',
                   alignItems: 'flex-start',
+                  marginBottom: '1rem'
                 }}  >
                   <SiTicktick style={{
                     color: '#13aa52',
@@ -174,9 +201,28 @@ const UpgradeAccount = () => {
                   }}>
                     {item.timeReset}
                   </Typography>
-                </ListItem>
+                </Box>
 
-              </List>
+                <Box sx={{
+                  ...uiConfigs.style.typoLines(3, "left"),
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  marginBottom: '1rem'
+                }}  >
+                  <SiTicktick style={{
+                    color: '#13aa52',
+                    fontSize: '3rem',
+                  }} />
+                  <Typography variant='body1' sx={{
+                    color: 'secondary.colorText',
+                    padding: '0 1rem',
+                    fontSize: '1rem'
+                  }}>
+                    {item.rule}
+                  </Typography>
+                </Box>
+
+              </Stack>
 
             </Box>
           </Grid>

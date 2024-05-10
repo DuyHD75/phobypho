@@ -68,66 +68,59 @@ const signup = async (req, res) => {
 
 
 const login = async (req, res, next) => {
-     try {
-          const { username, password } = req.body;
-          const userData = {};
+  try {
+    const { username, password } = req.body;
+    const userData = {};
 
-          const account = await accountModel.findOne({ username })
-               .select("id username displayName password salt phoneNumber email role avatar");
+    const account = await accountModel.findOne({ username })
+      .select("id username displayName password salt phoneNumber email role avatar");
 
 
-          if (account.role === ROLES_LIST.photographer) {
-               const photographer = await photographerModel.findOne({ account: account.id })
-                    .select("location status gender age description experienceYears bookingCount");
-               userData.location = photographer.location;
-               userData.status = photographer.status;
-               userData.gender = photographer.gender;
-               userData.age = photographer.age;
-               userData.description = photographer.description;
-               userData.experienceYears = photographer.experienceYears;
-               userData.bookingCount = photographer.bookingCount;
+    if (account.role === ROLES_LIST.photographer) {
+      const photographer = await photographerModel.findOne({ account: account.id })
+        .select("location status gender age description experienceYears bookingCount type_of_account");
+      userData.location = photographer.location;
+      userData.status = photographer.status;
+      userData.gender = photographer.gender;
+      userData.age = photographer.age;
+      userData.description = photographer.description;
+      userData.experienceYears = photographer.experienceYears;
+      userData.bookingCount = photographer.bookingCount;
+      userData.type_of_account = photographer.type_of_account;
+    }
 
-          }
+    if (account == null) return responseHandler.notfound(res, "Tài khoản không tìm thấy !");
 
-          if (account == null) return responseHandler.notfound(res, "Account not found !");
+    if (!account.validatePassword(password)) return responseHandler.badRequest(res, "Sai mật khẩu !");
 
-          if (!account.validatePassword(password)) return responseHandler.badRequest(res, "Wrong password !");
+    const token = createToken(account.id);
 
-          const token = createToken(account.id);
+    account.password = undefined;
+    account.salt = undefined;
+    userData.token = token;
 
-          account.password = undefined;
-          account.salt = undefined;
-          userData.token = token;
-
-          responseHandler.created(res, {
-               token,
-               id: account.id,
-               ...account._doc,
-               userData,
-          });
-          
-          next();
-     } catch {
-          responseHandler.error(res);
-     }
+    responseHandler.created(res, {
+      token,
+      id: account.id,
+      ...account._doc,
+      userData,
+    });
+    req.account = account;
+    next();
+  } catch {
+    responseHandler.error(res);
+  }
 };
 
 const isNewQuarterPhotographer = async (req, res) => {
   try {
-     const { username, password } = req.body;
-  
-     const account = await accountModel
-       .findOne({ username })
-       .select(
-         "id role"
-       );
-       console.log(account);  
-       if(account.role === ROLES_LIST.photographer){
-          customerController.checkRankingOfPhotographer(account.id)
-           }
+    const { account } = req;
+    if (account.role === ROLES_LIST.photographer) {
+      await customerController.checkRankingOfPhotographer(account._id)
+    }
   } catch (error) {
-    console.error(error);
-    responseHandler.error(res);
+    console.error(error.message);
+    responseHandler.error(res, res.message);
   }
 };
 
