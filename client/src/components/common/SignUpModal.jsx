@@ -52,11 +52,6 @@ const SignUpModal = ({ switchAuthState }) => {
       confirmPassword: Yup.string()
         .min(8, "Xác nhận mật khẩu ít nhất 8 ký tự !")
         .required("Xác nhận mật khẩu cần phải nhập"),
-      location: Yup.string()
-        .when('role', {
-          is: 'PHOTOGRAPHER',
-          then: Yup.string().required("Địa chỉ cần phải nhập")
-        })
     }),
     onSubmit: async (values) => {
       setErrorMessage(undefined);

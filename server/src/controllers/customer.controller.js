@@ -167,7 +167,6 @@ const checkVoucherAndUpdateCustomer = async (account, voucher_code) => {
 
 
 const updatePhotographerInfo = async (authorId) => {
-     console.log("IIIII")
      const photographer = await photographerModel.findOne({ account: authorId });
      if (!photographer) {
           throw new Error("Không tìm thấy tài khoản này !");
@@ -217,12 +216,10 @@ const createNewBooking = async (req, res) => {
      try {
           const { account } = req;
 
-          console.log("Vào đau rồi")
+
           const { photo, service_package, total_price, location, photo_session, voucher_code, } = req.body;
 
-          if (voucher_code) {
-               await checkVoucherAndUpdateCustomer(account._id, voucher_code);
-          }
+
 
           const booking = new bookingModel({
                photo: photo.id,
@@ -240,6 +237,10 @@ const createNewBooking = async (req, res) => {
           });
 
           await booking.save();
+
+          if (voucher_code) {
+               await checkVoucherAndUpdateCustomer(account._id, voucher_code);
+          }
           await emailCheckoutSender(req, res);
 
           await updatePhotographerInfo(photo.author);
