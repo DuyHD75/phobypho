@@ -11,6 +11,8 @@ const signup = async (req, res) => {
     const { username, displayName, password, role, phoneNumber, email } =
       req.body;
 
+      console.log(req.body)
+
     const isExisted = await accountModel.findOne({ username });
 
     if (isExisted)

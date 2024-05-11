@@ -20,7 +20,7 @@ const SignUpModal = ({ switchAuthState }) => {
   const [errorMessage, setErrorMessage] = useState();
   const [role, setRole] = useState();
 
- 
+
 
   const signUpForm = useFormik({
     initialValues: {
@@ -77,7 +77,7 @@ const SignUpModal = ({ switchAuthState }) => {
       component={'form'} onSubmit={signUpForm.handleSubmit}
     >
       <Stack spacing={2}>
-        <TextField  type='text' placeholder='Nhập username' name='username'
+        <TextField type='text' placeholder='Nhập username' name='username'
           fullWidth value={signUpForm.values.username} onChange={signUpForm.handleChange} color='warning'
           error={signUpForm.touched.username && signUpForm.errors.username !== undefined}
           helperText={signUpForm.touched.username && signUpForm.errors.username}
@@ -143,14 +143,16 @@ const SignUpModal = ({ switchAuthState }) => {
         fullWidth
         size='large'
         variant='contained'
-        sx={{ marginTop: 4 }}
+        sx={{ marginTop: 4, fontFamily: '"Nunito", sans-serif', fontSize: '0.9rem' }}
         loading={isSignUpRequest}
+
       >
-        Sign Up
+        Đăng ký
       </LoadingButton>
 
-      <Button fullWidth sx={{ marginTop: 1 }} onClick={() => switchAuthState()} >
-        Log In
+      <Button fullWidth sx={{ marginTop: 1, fontFamily: '"Nunito", sans-serif', fontSize: '0.9rem' }}
+        onClick={() => switchAuthState()} >
+        Đăng nhập
       </Button>
 
       {errorMessage && (

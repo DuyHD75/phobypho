@@ -78,7 +78,7 @@ const LoginModal = ({ switchAuthState }) => {
                     loading={isLoginRequest}
                     startIcon={<FaArrowRightFromBracket />}
                >
-                    Login
+                    Đăng nhập
                </LoadingButton>
 
                <Button
@@ -86,7 +86,7 @@ const LoginModal = ({ switchAuthState }) => {
                     sx={{ marginTop: 1, fontFamily: '"Nunito", sans-serif', fontSize: '0.9rem' }}
                     onClick={() => switchAuthState()}
                >
-                    Sign up
+                    Đăng ký
                </Button>
 
                {errorMessage && (
