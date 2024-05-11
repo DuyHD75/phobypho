@@ -17,9 +17,13 @@ const UpgradeAccount = () => {
 
   let nextRankAccount = undefined, typeOfAccount = undefined;
   if (user && user.userData) {
-    typeOfAccount = user.userData.type_of_account && user.userData.type_of_account.toUpperCase();
-    const findAccountRank = user.userData.type_of_account && upgradeAccountPolicy.features.findIndex(item => item.title.toLowerCase().includes(user.userData.type_of_account.toLowerCase()));
-    nextRankAccount = findAccountRank !== -1 ? upgradeAccountPolicy.features[findAccountRank + 1] : undefined;
+    if (user.userData.typeOfAccount) {
+      typeOfAccount = user.userData.type_of_account.toUpperCase();
+      const findAccountRank = user.userData.type_of_account && upgradeAccountPolicy.features.findIndex(item => item.title.toLowerCase().includes(user.userData.type_of_account.toLowerCase()));
+      nextRankAccount = findAccountRank !== -1 ? upgradeAccountPolicy.features[findAccountRank + 1] : undefined;
+    }else {
+      nextRankAccount = upgradeAccountPolicy.features[0];
+    }
   }
 
   const currentDate = new Date();
@@ -54,7 +58,7 @@ const UpgradeAccount = () => {
       }}>
         <img src="https://firebasestorage.googleapis.com/v0/b/phobypho-2dbae.appspot.com/o/icons%2Fundraw_all_the_data_re_hh4w.svg?alt=media&token=91feae1d-d639-4213-96b4-c05b1179168f" alt=""
           style={{
-            width:'150px',
+            width: '150px',
             height: '150px',
             objectFit: 'contain',
             objectPosition: 'center',
