@@ -41,10 +41,10 @@ const SignUpModal = ({ switchAuthState }) => {
         .min(8, "Tên hiển thị có ít nhất 8 ký tự !")
         .required("Tên hiển thị cần phải nhập !"),
       phoneNumber: Yup.string()
-        .matches(/^0\d{9}$/, 'Số điện thoại is not valid')
+        .matches(/^0\d{9}$/, 'Số điện thoại không hợp lệ !')
         .required("Số điện thoại cần phải nhập!"),
       email: Yup.string()
-        .email()
+        .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Email không hợp lệ !')
         .required("Email cần phải nhập !"),
       password: Yup.string()
         .min(8, "Mật khẩu ít nhất 8 ký tự !")
