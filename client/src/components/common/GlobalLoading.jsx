@@ -50,8 +50,6 @@ const GlobalLoading = () => {
                     >
                          <Logo />
                     </Box>
-
-
                </Paper>
           </div>
      )

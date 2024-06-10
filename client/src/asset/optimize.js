@@ -1,5 +1,4 @@
 // Throttle
-
 const throttle = (handler, delay) => {
    let timer;
    return function (...args) {

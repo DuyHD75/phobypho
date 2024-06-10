@@ -15,6 +15,7 @@ import { MdOutlinePolicy } from "react-icons/md";
 import { SiAffinityphoto } from "react-icons/si";
 import { MdOutlineLocalLibrary } from "react-icons/md";
 import { RiDiscountPercentLine } from "react-icons/ri";
+
 const main = [
      {
           display: "Trang Chủ",

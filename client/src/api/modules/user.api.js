@@ -19,16 +19,18 @@ const userApi = {
      },
      signup: async ({ username, displayName, phoneNumber, email, password, confirmPassword, role, location }) => {
           try {
-               if(role === "PHOTOGRAPHER") {
+               if (role === "PHOTOGRAPHER") {
                     const response = await publicClient.post(userEndpoints.signup,
                          { username, displayName, phoneNumber, email, password, confirmPassword, role, location })
+
+                         console.log(response)
                     return { response };
-               }else {
+               } else {
                     const response = await publicClient.post(userEndpoints.signup,
                          { username, displayName, phoneNumber, email, password, confirmPassword, role })
                     return { response };
                }
-              
+
           } catch (err) { return { err } }
      },
      passwordUpdate: async ({ password, newPassword, confirmNewPassword }) => {

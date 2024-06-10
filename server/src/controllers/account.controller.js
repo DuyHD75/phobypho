@@ -53,6 +53,7 @@ const signup = async (req, res) => {
     }
 
     const token = createToken(account.id);
+    console.log(token)
 
     account.password = undefined;
     account.salt = undefined;
@@ -64,7 +65,7 @@ const signup = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    responseHandler.error(res);
+    responseHandler.error(res, error.message);
   }
 };
 

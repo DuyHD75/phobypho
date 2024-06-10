@@ -127,14 +127,14 @@ const PhotoReview = ({ bookingId, photo, bookedInfo }) => {
                checkReviewConditions();
           }
      }, [reviewList, bookedInfo]);
-     console.log(bookedInfo)
+     
 
 
      const checkReviewConditions = () => {
 
           if (reviewList.length !== 0) {
                for (let i = 0; i < reviewList.length; i++) {
-                    if (reviewList[i].account.id === user.id && reviewList[i].photo_id === photo.id) {
+                    if (reviewList[i].account.id === user._id && reviewList[i].photo_id === photo.id) {
                          if (bookedId && reviewList[i].booking_id === bookedId) {
                               return setIsReviewed(true);
                          }

@@ -65,7 +65,7 @@ const BookingHistoryPage = () => {
           const getBookings = async () => {
 
                if (user && user.role === "CUSTOMER") {
-                    const { response, err } = await customerApi.getBookings(user.id);
+                    const { response, err } = await customerApi.getBookings(user._id);
                     if (response) setBookings(response);
                     if (err) toast.error(err.message);
                } else {
