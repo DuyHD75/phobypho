@@ -54,7 +54,15 @@ const bookingSchema = new Schema({
      total_price: {
           type: Number,
           require: true
-     }
+     },
+     photographer_rate: {
+          type: Number,
+          require: true
+     },
+     voucher: {
+          type: mongoose.Types.ObjectId,
+          ref: "Voucher"
+     },
 }, modelOptions);
 
 bookingSchema.pre('save', async function (next) {

@@ -26,15 +26,12 @@ const authenticate = async (req, res, next) => {
      const account = await accountModel.findById(tokenDecoded.data);
      if (!account) return responseHandler.unAuthorize(res);
      req.account = account;
-
      next();
 }
 
-const authorize = async (req, res, next, role) => {
+const authorize = async (req, res, next) => {
      try {
           const { account } = req.account;
-
-          console.log(account.role)
           if (account.role == ROLES_LIST.photographer) {
                next();
           } else return responseHandler.unAuthorize(res);
@@ -42,6 +39,16 @@ const authorize = async (req, res, next, role) => {
           responseHandler.error(res);
      }
 }
+const adminAuthorize = async (req, res, next) => {
+     try {
+          const  account  = req.account;
+          if ( account.role == ROLES_LIST.admin) {
+               next();
+          } else return responseHandler.unAuthorize(res);
+     } catch (error) {
+          responseHandler.error(res);
+     }
+}
 
 
-export default { authenticate, tokenDecode, authorize };
+export default { authenticate, tokenDecode, authorize, adminAuthorize };

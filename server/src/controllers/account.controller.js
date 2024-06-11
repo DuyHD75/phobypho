@@ -97,7 +97,7 @@ const login = async (req, res, next) => {
     if (!account.validatePassword(password)) return responseHandler.badRequest(res, "Sai mật khẩu !");
 
     const token = createToken(account.id);
-
+    
     account.password = undefined;
     account.salt = undefined;
     userData.token = token;
@@ -110,7 +110,9 @@ const login = async (req, res, next) => {
     });
     req.account = account;
     next();
-  } catch {
+  } catch (error) {
+    console.log(error); 
+    console.error("Error in account.controller.login");
     responseHandler.error(res);
   }
 };
