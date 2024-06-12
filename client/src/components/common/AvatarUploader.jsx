@@ -31,7 +31,7 @@ const AvatarUploader = ({ handleUpload, avatar }) => {
 
 
    const { getRootProps, getInputProps } = useDropzone({
-      accept: 'image/jpeg, image/png',
+      accept: 'image/jpeg, image/png, image/jpg', 
       multiple: 'false',
       onDrop
    });

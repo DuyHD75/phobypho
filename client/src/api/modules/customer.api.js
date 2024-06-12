@@ -12,6 +12,8 @@ const customerEndpoints = {
    cancelBooking: (bookingId) => `customers/bookings/${bookingId}/status`
 };
 
+
+
 const customerApi = {
    createBooking: async (bookingData) => {
       try {

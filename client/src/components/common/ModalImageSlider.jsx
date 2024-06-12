@@ -86,10 +86,9 @@ const ModalImageSlider = ({ album, isOpen, onClose }) => {
                                         width: 'max-content',
                                         p: 4,
                                         zIndex: 10000,
-                                        bgcolor: 'rgba(0, 0, 0, 0.6)',
                                         alignItems: 'center',
                                         justifyContent: 'center',
-                                        color: '#FFF',
+                                        color: '#ffff',
                                         fontSize: '1.2rem',
                                         fontWeight: '600',
                                     }}
@@ -112,8 +111,23 @@ const ModalImageSlider = ({ album, isOpen, onClose }) => {
                                     className="mySwiper"
                                 >
                                     {album.images.map((image, index) => (
-                                        <SwiperSlideItem key={index}>
-                                            <Image src={image} alt={`Image ${index + 1}`} />
+                                        <SwiperSlideItem key={index} sx={{
+                                            background: 'transparent',
+                                        }}>
+                                            <Box
+                                                sx={{
+                                                    width: '100%',
+                                                    height: '100%',
+                                                    display: 'flex',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    backgroundImage: `url(${image})`,
+                                                    backgroundSize: 'contain',
+                                                    backgroundPosition: 'center',
+                                                    backgroundRepeat: 'no-repeat',
+                                                    transition: 'all 0.5s ease',
+                                                }}
+                                            ></Box>
                                         </SwiperSlideItem>
                                     ))}
                                 </Swiper>

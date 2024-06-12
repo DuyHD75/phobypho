@@ -21,7 +21,6 @@ const ServicePackageItem = ({
     if (handleCardAction) {
       let servicePackages = [...addedServices];
       if (servicePackages.includes(service._id)) {
-        console.log('remove')
         servicePackages = servicePackages.filter((id) => id !== service._id);
       } else {
         servicePackages.push(service._id);

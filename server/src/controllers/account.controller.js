@@ -12,7 +12,6 @@ const signup = async (req, res) => {
     const { username, displayName, password, role, phoneNumber, email } =
       req.body;
 
-    console.log(req.body);
 
     const isExisted = await accountModel.findOne({ username });
 
@@ -140,9 +139,7 @@ const login = async (req, res, next) => {
         photographer.type_of_account = "";
         await photographer.save();
       } 
-
-      // console.log(account._id)
-      // await customerController.checkRankingOfPhotographer(account._id)
+   
     }
   } catch (error) {
     console.log(error);
