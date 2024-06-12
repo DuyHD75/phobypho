@@ -1,6 +1,7 @@
 const ROLES_LIST = {
      customer: "CUSTOMER",
-     photographer: "PHOTOGRAPHER"
+     photographer: "PHOTOGRAPHER",
+     admin: "ADMIN"
 }
 
 const ORDER_STATUS = {
