@@ -47,7 +47,8 @@ const Voucher = () => {
             position: "relative",
             backgroundPosition: "top",
             backgroundSize: "cover",
-            backgroundImage: `url(https://firebasestorage.googleapis.com/v0/b/phobypho-2dbae.appspot.com/o/banner%2Fvoucher_banner.jpg?alt=media&token=2c0ef898-0b9e-405e-8a64-5e73f4ff6c53)`,
+            backgroundRepeat: "no-repeat",
+            backgroundImage: `url(https://firebasestorage.googleapis.com/v0/b/phobypho-2dbae.appspot.com/o/banner%2FScreenshot%202024-06-12%20134211.png?alt=media&token=45a4bb49-3118-42cb-bc89-b5925d7de2cf)`,
             ':before': user && {
               content: '""',
               position: 'absolute',

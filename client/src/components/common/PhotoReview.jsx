@@ -13,6 +13,9 @@ import moment from 'moment'
 
 const PhotoReviewItem = ({ review, onRemoved }) => {
 
+
+     console.log(review);
+
      const { user } = useSelector((state) => state.user);
      const [onRequest, setOnRequest] = useState(false);
 
@@ -113,6 +116,8 @@ const PhotoReview = ({ bookingId, photo, bookedInfo }) => {
      const [bookedId, setBookedId] = useState(bookingId ? bookingId : undefined);
      const [bookingPoint, setBookingPoint] = useState(0);
 
+  
+
 
      const skip = 4;
 
@@ -131,16 +136,18 @@ const PhotoReview = ({ bookingId, photo, bookedInfo }) => {
 
 
      const checkReviewConditions = () => {
-
-          if (reviewList.length !== 0) {
+     
+      
+          if (reviewList.length !== 0 ) {
                for (let i = 0; i < reviewList.length; i++) {
-                    if (reviewList[i].account.id === user._id && reviewList[i].photo_id === photo.id) {
+                    if (reviewList[i].account === user._id && reviewList[i].photo_id === photo.id) {
                          if (bookedId && reviewList[i].booking_id === bookedId) {
                               return setIsReviewed(true);
                          }
                     }
                }
           }
+          
           bookedInfo.length !== 0 && bookedInfo.forEach(e => {
                if (e.photo === photo.id && e.status === "COMPLETED") {
 

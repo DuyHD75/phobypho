@@ -129,22 +129,24 @@ const PostPhoto = () => {
         }
 
 
-        let response;
+        let postResult;
         if (photoState.isDataRetrieved) {
-          response = await photoApi.updatePhotoByAuth(values);
+          postResult = await photoApi.updatePhotoByAuth(values);
           toast.success("Bài viết được cập nhật thành công!");
+
         } else {
-          response = await photoApi.createPhoto(values);
+          postResult = await photoApi.createPhoto(values);
           toast.success("Bài viết được tạo thành công!");
         }
 
+
         setPhotoState(prevState => ({ ...prevState, isPostRequest: false }));
 
-        if (response) {
+        if (postResult) {
           postPhotoForm.resetForm();
           setPhotoState(prevState => ({ ...prevState, addedPhotos: [] }));
           setPhotoState(prevState => ({ ...prevState, addedServices: [] }));
-          navigate(`/photos/${photoState.postId}`);
+          navigate(`/photos/${postResult.response._id}`);
 
         } else {
           toast.error("Failed to create/update post.");
@@ -155,7 +157,6 @@ const PostPhoto = () => {
       }
     },
   });
-
 
   const validateData = (values) => {
     const undefinedFields = Object.keys(values).filter((key) => {

@@ -462,8 +462,6 @@ const PhotoDetailPage = () => {
               <PhotoReview bookingId={locationHook.state?.bookingId} photo={photo} bookedInfo={bookedInfo} />
             </Box>
           </Box >
-
-
         </Fragment>
 
 

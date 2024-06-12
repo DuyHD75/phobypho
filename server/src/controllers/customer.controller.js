@@ -201,6 +201,7 @@ const checkRankingOfPhotographer = async (photographerId) => {
           const photographer = await photographerModel.findOne({
                account: photographerId,
           });
+
           photographer.bookingCount = 0;
           photographer.type_of_account = "";
           await photographer.save();
@@ -218,8 +219,6 @@ const createNewBooking = async (req, res) => {
 
 
           const { photo, service_package, total_price, location, photo_session, voucher_code, } = req.body;
-
-
 
           const booking = new bookingModel({
                photo: photo.id,

@@ -13,23 +13,29 @@ const getAllPhotoInfo = async (req, res) => {
       .find({})
       .populate("account")
       .exec();
-    
+
+
     photos = photos.map((photo) => {
       const photographer = photographers.find((photographer) =>
         photographer.account.equals(photo.author)
       );
+
       return {
         photo: photo,
         photographer: photographer,
       };
     });
 
-    if (!photos)
-      return responseHandler.error(res, "Error retrieve photo list !");
 
-    responseHandler.ok(res, photos);
-  } catch {
-    responseHandler.error(res);
+
+    if (!photos)
+      return responseHandler.error(res, "Lỗi truy vấn danh sách photo !");
+
+
+    return responseHandler.ok(res, photos);
+  } catch (error) {
+    console.log("Error in get all photo info: ", error.message);
+    responseHandler.error(res, error.message);
   }
 };
 
@@ -68,7 +74,7 @@ const getPhotoDetail = async (req, res) => {
 
 const getPhotosByAuthor = async (req, res) => {
   try {
-    
+
     const { authorId } = req.params;
     const photos = await photoModel.find({ author: authorId }).populate('author').exec();
     return responseHandler.ok(res, photos);
@@ -96,7 +102,7 @@ const searchPhotoByMultiFactor = async (req, res) => {
 const createNewPost = async (req, res) => {
   try {
     const photographerId = req.account.id;
-  
+
 
     const photo = new photoModel({
       author: photographerId,
@@ -133,7 +139,6 @@ const updatePost = async (req, res) => {
   }
 };
 
-
 const updatePostByAuth = async (req, res) => {
   try {
     const response = await photoModel.findOneAndUpdate(
@@ -144,11 +149,14 @@ const updatePostByAuth = async (req, res) => {
       { new: true }
     );
 
+    console.log(response);
+
     if (!response) return responseHandler.error(res, "Update post error !");
 
-    return responseHandler.ok(res, ...response._doc);
-  } catch {
-    responseHandler.error(res);
+    return responseHandler.ok(res, ...response);
+  } catch(err) {
+    console.log(err.message)
+    responseHandler.error(res, err.message);
   }
 };
 
