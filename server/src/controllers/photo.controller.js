@@ -103,7 +103,6 @@ const createNewPost = async (req, res) => {
   try {
     const photographerId = req.account.id;
 
-
     const photo = new photoModel({
       author: photographerId,
       ...req.body,
@@ -111,10 +110,10 @@ const createNewPost = async (req, res) => {
 
     await photo.save();
 
-    responseHandler.created(res, { ...photo._doc });
+    return responseHandler.created(res, { ...photo._doc });
   } catch (error) {
     console.log("Error in create photo: ", error.message);
-    responseHandler.error(res);
+    responseHandler.error(res, error.message);
   }
 };
 
@@ -154,7 +153,7 @@ const updatePostByAuth = async (req, res) => {
     if (!response) return responseHandler.error(res, "Update post error !");
 
     return responseHandler.ok(res, ...response);
-  } catch(err) {
+  } catch (err) {
     console.log(err.message)
     responseHandler.error(res, err.message);
   }

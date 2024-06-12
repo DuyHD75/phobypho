@@ -133,12 +133,12 @@ const PostPhoto = () => {
         if (photoState.isDataRetrieved) {
           postResult = await photoApi.updatePhotoByAuth(values);
           toast.success("Bài viết được cập nhật thành công!");
-
         } else {
           postResult = await photoApi.createPhoto(values);
           toast.success("Bài viết được tạo thành công!");
         }
 
+        console.log(postResult);
 
         setPhotoState(prevState => ({ ...prevState, isPostRequest: false }));
 
