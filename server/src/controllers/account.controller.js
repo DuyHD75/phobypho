@@ -5,13 +5,14 @@ import customerModel from "../models/customer.model.js";
 import photographerModel from "../models/photographer.model.js";
 import { createToken } from "../utils/token.util.js";
 import customerController from "../controllers/customer.controller.js";
+import bookingModel from "../models/booking.model.js";
 
 const signup = async (req, res) => {
   try {
     const { username, displayName, password, role, phoneNumber, email } =
       req.body;
 
-      console.log(req.body)
+    console.log(req.body);
 
     const isExisted = await accountModel.findOne({ username });
 
@@ -53,7 +54,7 @@ const signup = async (req, res) => {
     }
 
     const token = createToken(account.id);
-    console.log(token)
+    console.log(token);
 
     account.password = undefined;
     account.salt = undefined;
@@ -69,19 +70,23 @@ const signup = async (req, res) => {
   }
 };
 
-
 const login = async (req, res, next) => {
   try {
     const { username, password } = req.body;
     const userData = {};
 
-    const account = await accountModel.findOne({ username })
-      .select("id username displayName password salt phoneNumber email role avatar");
-
+    const account = await accountModel
+      .findOne({ username })
+      .select(
+        "id username displayName password salt phoneNumber email role avatar"
+      );
 
     if (account.role === ROLES_LIST.photographer) {
-      const photographer = await photographerModel.findOne({ account: account.id })
-        .select("location status gender age description experienceYears bookingCount type_of_account");
+      const photographer = await photographerModel
+        .findOne({ account: account.id })
+        .select(
+          "location status gender age description experienceYears bookingCount type_of_account"
+        );
       userData.location = photographer.location;
       userData.status = photographer.status;
       userData.gender = photographer.gender;
@@ -92,12 +97,14 @@ const login = async (req, res, next) => {
       userData.type_of_account = photographer.type_of_account;
     }
 
-    if (account == null) return responseHandler.notfound(res, "Tài khoản không tìm thấy !");
+    if (account == null)
+      return responseHandler.notfound(res, "Tài khoản không tìm thấy !");
 
-    if (!account.validatePassword(password)) return responseHandler.badRequest(res, "Sai mật khẩu !");
+    if (!account.validatePassword(password))
+      return responseHandler.badRequest(res, "Sai mật khẩu !");
 
     const token = createToken(account.id);
-    
+
     account.password = undefined;
     account.salt = undefined;
     userData.token = token;
@@ -109,9 +116,36 @@ const login = async (req, res, next) => {
       userData,
     });
     req.account = account;
-    next();
+
+    // Call isNewQuarterPhotographer here without sending a response
+    if (account.role === ROLES_LIST.photographer) {
+      const currentDate = new Date();
+      const currentQuarter = Math.floor(currentDate.getMonth() / 3) + 1;
+
+      const lastBooking = await bookingModel
+        .findOne({ photographer: account._id })
+        .sort({ createdAt: -1 });
+
+      if (!lastBooking) {
+        console.log("Bạn chưa có lượt book nào!");
+        return;
+      }
+      const lastBookingDate = new Date(lastBooking.createdAt);
+      const lastBookingQuarter = Math.floor(lastBookingDate.getMonth() / 3) + 1;
+      if (currentQuarter > lastBookingQuarter) {
+        const photographer = await photographerModel.findOne({
+          account: account._id,
+        });
+        photographer.bookingCount = 0;
+        photographer.type_of_account = "";
+        await photographer.save();
+      } 
+
+      // console.log(account._id)
+      // await customerController.checkRankingOfPhotographer(account._id)
+    }
   } catch (error) {
-    console.log(error); 
+    console.log(error);
     console.error("Error in account.controller.login");
     responseHandler.error(res);
   }
@@ -121,10 +155,11 @@ const isNewQuarterPhotographer = async (req, res) => {
   try {
     const { account } = req;
     if (account.role === ROLES_LIST.photographer) {
-      await customerController.checkRankingOfPhotographer(account._id)
+      console.log(account._id);
+      await customerController.checkRankingOfPhotographer(account._id);
     }
   } catch (error) {
-    console.error(error.message);
+    console.error(error);
     responseHandler.error(res, res.message);
   }
 };

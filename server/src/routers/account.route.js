@@ -61,8 +61,7 @@ router.post(
           .exists().withMessage("Password is required !")
           .isLength({ min: 8 }).withMessage("Password must be at least 8 characters !"),
      requestHandler.validate,
-     accountController.login,
-     accountController.isNewQuarterPhotographer,
+     accountController.login
 );
 
 
