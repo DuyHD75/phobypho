@@ -63,7 +63,6 @@ const getBookingsByPhotographer = async (req, res) => {
         const bookings = await bookingModel.find({ photographer: photographerId });
         responseHandler.ok(res, bookings);
     } catch (error){
-        console.log(error);
         console.error("Error in admin.controller.getBookingsByPhotographer");
         responseHandler.error(res);
     }
@@ -74,7 +73,6 @@ const searchBookingsByStatus = async (req, res) => {
         const bookings = await bookingModel.find({ status });
         responseHandler.ok(res, bookings);
     } catch (error){
-        console.log(error);
         console.error("Error in admin.controller.searchBookingsByStatus");
         responseHandler.error(res);
     }

@@ -117,8 +117,6 @@ const createNewPost = async (req, res) => {
   }
 };
 
-
-
 const updatePost = async (req, res) => {
   try {
     const response = await photoModel.findOneAndUpdate(
@@ -140,6 +138,7 @@ const updatePost = async (req, res) => {
 
 const updatePostByAuth = async (req, res) => {
   try {
+
     const response = await photoModel.findOneAndUpdate(
       {
         author: req.account.id,
@@ -148,14 +147,15 @@ const updatePostByAuth = async (req, res) => {
       { new: true }
     );
 
-    console.log(response);
+    console.log(response)
+    
 
     if (!response) return responseHandler.error(res, "Update post error !");
 
-    return responseHandler.ok(res, ...response);
+
+    return responseHandler.ok(res, response);
   } catch (err) {
-    console.log(err.message)
-    responseHandler.error(res, err.message);
+    return responseHandler.error(res, err.message);
   }
 };
 

@@ -53,7 +53,6 @@ const signup = async (req, res) => {
     }
 
     const token = createToken(account.id);
-    console.log(token);
 
     account.password = undefined;
     account.salt = undefined;
@@ -126,7 +125,6 @@ const login = async (req, res, next) => {
         .sort({ createdAt: -1 });
 
       if (!lastBooking) {
-        console.log("Bạn chưa có lượt book nào!");
         return;
       }
       const lastBookingDate = new Date(lastBooking.createdAt);
@@ -142,7 +140,6 @@ const login = async (req, res, next) => {
    
     }
   } catch (error) {
-    console.log(error);
     console.error("Error in account.controller.login");
     responseHandler.error(res);
   }

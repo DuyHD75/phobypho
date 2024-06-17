@@ -1,12 +1,11 @@
 import React from 'react'
-import { Box, Paper, Stack, Button, Typography, Divider } from '@mui/material';
+import { Box, Paper, Stack, Button, Typography, Divider, TextField } from '@mui/material';
 import uiConfigs from '../../configs/ui.config';
 import Logo from './Logo';
 import menuConfigs from '../../configs/menu.config';
 import { Link } from 'react-router-dom';
 import Container from './Container';
-
-
+import { BiMailSend } from "react-icons/bi";
 
 const Footer = () => {
      return (
@@ -17,16 +16,17 @@ const Footer = () => {
                          backgroundColor: "secondary.main",
                          padding: "2rem",
                          paddingX: "4rem",
+                         height: "340px",
                     }}
                >
                     <Stack
-                         alignItems="center"
-                         justifyContent="space-between"
+                         justifyContent="space-around"
                          direction={{
                               sx: "column", md: "row"
                          }}
                          sx={{ height: "100%" }}
                     >
+
                          <Logo isHeader={true}></Logo>
                          <Box
                               sx={{
@@ -47,20 +47,66 @@ const Footer = () => {
                                         {item.display}
                                    </Button>
                               ))}
+
+
+
+                              <Box sx={{
+                                   marginTop: '2rem',
+                                   display: 'flex',
+                                   flexDirection: 'column',
+
+                              }}>
+                                   <Box>
+                                        <Typography sx={{
+                                             ...uiConfigs.style.typoLines(1, 'center'),
+                                             fontSize: '1.2rem',
+                                             fontWeight: '700',
+                                             padding: '1rem',
+                                             textTransform: 'uppercase',
+                                             color: '#000'
+                                        }}>Liên Hệ Với Chúng Tôi</Typography>
+
+                                        <Typography sx={{
+                                             ...uiConfigs.style.typoLines(1, 'center'),
+                                             fontSize: '0.9rem',
+                                             color: '#fff'
+                                        }}>Để có thể giải đáp thắc mắc hoặc tư vấn bạn có gửi mail về cho chúng tôi để có thể hỗ trợ bạn nhanh nhất nhé !</Typography>
+                                   </Box>
+                                   <Box sx={{
+                                        display: 'flex',
+                                        marginTop: '1rem',
+                                        width: '100%',
+                                        margin: '1rem',
+                                        alignItems: 'center',
+                                        justifyContent: 'center'
+
+                                   }}>
+                                        <TextField placeholder="Nhập email của bạn nhé ..." sx={{
+                                             width: '70%',
+                                             marginRight: '1rem',
+                                             padding: 0
+                                        }}></TextField>
+
+                                   </Box>
+
+                              </Box>
+
                          </Box>
+
 
 
                     </Stack>
 
+
                     <Typography
                          sx={{
+                              borderTop: '1px sloid #000',
                               color: 'secondary.contrastText',
                               fontFamily: '"Nunito", sans-serif',
                               fontSize: '0.9rem',
                               position: 'relative',
                               ...uiConfigs.style.typoLines(1, 'center')
                          }}
-
                     >© Design By DHD - 2024</Typography>
                </Paper>
 

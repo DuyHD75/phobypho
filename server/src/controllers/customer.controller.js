@@ -147,6 +147,7 @@ const emailCancelBookingSender = async (req, res) => {
 };
 
 const checkVoucherAndUpdateCustomer = async (account, voucher_code) => {
+
      const voucher = await voucherModel.findOne({ code: voucher_code });
      if (!voucher) {
           throw new Error("Mã voucher không hợp lệ");
@@ -216,8 +217,6 @@ const checkRankingOfPhotographer = async (photographerId) => {
 const createNewBooking = async (req, res) => {
      try {
           const { account } = req;
-
-
           const { photo, service_package, total_price, location, photo_session, voucher_code, } = req.body;
 
           const booking = new bookingModel({

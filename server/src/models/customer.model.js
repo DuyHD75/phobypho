@@ -15,7 +15,6 @@ const customerSchema = Schema({
      vouchers: [{
           type: mongoose.Schema.Types.ObjectId,
           ref: 'Voucher', 
-          unique: true
      }],
 }, modelOptions);
 

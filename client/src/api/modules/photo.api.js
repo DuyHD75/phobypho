@@ -62,9 +62,7 @@ const photoApi = {
   },
   createPhoto: async (photoData) => {
     try {
-      console.log(photoData)
       const response = await privateClient.post(photoEndpoints.add, photoData);
-    
       return { response };
     } catch (err) {
       return { err };

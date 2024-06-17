@@ -309,13 +309,7 @@ const PhotoDetailPage = () => {
                 }}
 
               >
-                <Box
-                  sx={{
-                    paddingTop: "50%",
-                    ...uiConfigs.style.backgroundImage(photo.poster),
-                    boxShadow: ' rgba(0, 0, 0, 0.24) 0px 3px 8px'
-                  }}
-                />
+                
 
                 <Box sx={{ marginTop: '2rem' }}>
                   <Typography
@@ -430,7 +424,7 @@ const PhotoDetailPage = () => {
             <Box>
               <Typography
                 sx={{
-                  ...uiConfigs.style.typoLines(80, "center"),
+                  ...uiConfigs.style.typoLines(80, "justify"),
                   padding: { xs: "1rem 0", md: "1.6rem 0" },
                   position: "relative",
                   color: 'secondary.colorText',

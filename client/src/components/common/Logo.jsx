@@ -11,11 +11,10 @@ const Logo = ({ isHeader }) => {
                     display: 'flex',
                     alignItems: "center",
                     justifyContent: 'space-between'
-
                }}
           >
                <CameraIcon sx={{
-                    color: 'inherit', fontSize: '2.4rem',
+                    color: 'inherit', fontSize: '2rem',
                     textShadow: '1px 2px 2px #000',
                     border: '1px dashed #000',
                     borderRadius: '50%'
@@ -39,7 +38,7 @@ const Logo = ({ isHeader }) => {
                          color: 'secondary.colorText',
                     }}
                >
-                    <CameraIcon sx={{ color: 'secondary.colorText', fontSize: { xs: '1rem', md: '2.4rem' } }} />
+                    <CameraIcon sx={{ color: 'secondary.colorText', fontSize: { xs: '1rem', md: '2rem' } }} />
 
                     <span style={{
                          color: 'secondary.colorText',

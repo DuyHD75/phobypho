@@ -48,7 +48,7 @@ const Checkout = () => {
                }
           }
           getCustomerVouchers();
-     }, [])
+     }, []);
 
      const [totalPrice, setTotalPrice] = useState(currentPrice);
 
@@ -237,7 +237,7 @@ const Checkout = () => {
                                                        textTransform: 'capitalize'
                                                   }}
                                              >
-                                                  {bookingData.photo.account.username}
+                                                  {bookingData.photo.account.displayName}
                                              </Link>
 
                                         </Box>
@@ -312,7 +312,6 @@ const Checkout = () => {
                                         <Typography sx={{
                                              ...uiConfigs.style.typoLines(1, 'left'),
                                              fontSize: '1rem',
-
                                         }}>Ngày hẹn: </Typography>
                                         <Typography
                                              style={{
@@ -438,7 +437,6 @@ const Checkout = () => {
                                              >
                                                   {
                                                        totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
-
                                                   }
 
                                              </Link>

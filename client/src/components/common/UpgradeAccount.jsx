@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import UserSidebar from './UserSidebar'
 import { Box, Typography, Stack } from '@mui/material'
 import Grid from '@mui/material/Grid';
@@ -7,30 +7,48 @@ import { SiTicktick } from "react-icons/si";
 import { upgradeAccountPolicy } from '../../asset/data';
 import { useSelector } from 'react-redux';
 import LinearProgress from "@mui/material/LinearProgress";
+import { formatDate, getQuarterDates } from '../../utils/account.utils';
 
 const UpgradeAccount = () => {
 
 
   const { user } = useSelector(state => state.user);
 
-  const bookingCount = user && user.userData ? user.userData.bookingCount : 0;
+  const [bookingCountState, setBookingCountState] = useState(0);
 
-  let nextRankAccount = undefined, typeOfAccount = undefined;
-  if (user && user.userData) {
-    if (user.userData.typeOfAccount) {
-      typeOfAccount = user.userData.type_of_account.toUpperCase();
-      const findAccountRank = user.userData.type_of_account && upgradeAccountPolicy.features.findIndex(item => item.title.toLowerCase().includes(user.userData.type_of_account.toLowerCase()));
-      nextRankAccount = findAccountRank !== -1 ? upgradeAccountPolicy.features[findAccountRank + 1] : undefined;
-    }else {
-      nextRankAccount = upgradeAccountPolicy.features[0];
+  const [typeOfAccount, setTypeOfAccount] = useState();
+  const [nextRankAccount, setNextRankAccount] = useState();
+
+
+
+  useEffect(() => {
+
+    if (user && user.userData) {
+      console.log(user.userData.bookingCount)
+
+      setBookingCountState(user.userData.bookingCount);
+
+      if (user.userData.type_of_account) {
+
+        setTypeOfAccount(user.userData.type_of_account);
+
+        console.log('user.userData.type_of_account', user.userData.type_of_account)
+
+        const findAccountRank = user.userData.type_of_account && upgradeAccountPolicy.features.findIndex(item => item.title.toLowerCase().includes(user.userData.type_of_account.toLowerCase()));
+
+        setNextRankAccount(upgradeAccountPolicy.features[findAccountRank + 1]);
+      } else {
+        setNextRankAccount(upgradeAccountPolicy.features[0]);
+      }
     }
-  }
+  }, []);
+
 
   const currentDate = new Date();
-  const currentMonth = currentDate.getMonth();
-  const timeLimit = new Date(currentDate.getFullYear(), Math.floor(currentMonth / 3) * 3, 0).toLocaleDateString('vi-VN', { year: "numeric", month: "short", day: "numeric" });
 
+  const { startDate, endDate } = getQuarterDates(currentDate);
 
+  const timeLimit = formatDate(endDate);
 
   return (
     <UserSidebar>
@@ -96,8 +114,9 @@ const UpgradeAccount = () => {
           color: 'secondary.colorText',
           marginTop: '1rem',
         }}>
-          {`Lượt booking của bạn: ${bookingCount} / ${nextRankAccount?.description}`}
-          <LinearProgress variant="determinate" value={(bookingCount / parseInt(nextRankAccount?.description.split(" ")[0])) * 100}
+          {`Số lần đặt lịch cần thiết để nâng cấp:${bookingCountState} / ${nextRankAccount && nextRankAccount.description}`}
+          <LinearProgress variant="determinate"
+            value={(bookingCountState / parseInt(nextRankAccount?.description.split(" ")[0])) * 100}
             sx={{
               width: '70%'
             }} />

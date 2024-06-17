@@ -128,7 +128,6 @@ const PostPhoto = () => {
           return;
         }
 
-
         let postResult;
         if (photoState.isDataRetrieved) {
           postResult = await photoApi.updatePhotoByAuth(values);
@@ -138,7 +137,6 @@ const PostPhoto = () => {
           toast.success("Bài viết được tạo thành công!");
         }
 
-        console.log(postResult);
 
         setPhotoState(prevState => ({ ...prevState, isPostRequest: false }));
 
@@ -146,7 +144,7 @@ const PostPhoto = () => {
           postPhotoForm.resetForm();
           setPhotoState(prevState => ({ ...prevState, addedPhotos: [] }));
           setPhotoState(prevState => ({ ...prevState, addedServices: [] }));
-          navigate(`/photos/${postResult.response._id}`);
+          navigate(`/photos/${postResult.response.id}`);
 
         } else {
           toast.error("Failed to create/update post.");

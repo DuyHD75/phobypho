@@ -3,7 +3,6 @@ import favoriteModel from "../models/favorite.model.js";
 
 const addFavorite = async (req, res) => {
    try {
-      console.log(req.body.photoId)
       const isFavorite = await favoriteModel.findOne({
          account: req.account.id,
          photo: req.body.photoId
