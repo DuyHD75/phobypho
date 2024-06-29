@@ -62,4 +62,21 @@ router.get(
   tokenMiddleware.adminAuthorize,
   adminController.getAllBookingsByMonth
 )
+
+router.get(
+  "/dashboard",
+  tokenMiddleware.authenticate,
+  tokenMiddleware.adminAuthorize,
+  adminController.getExtractDashboardInfo
+)
+
+router.post(
+  "/update-status-booking",
+  tokenMiddleware.authenticate,
+  tokenMiddleware.adminAuthorize,
+  adminController.completeBooking
+)
+
+
+
 export default router;
