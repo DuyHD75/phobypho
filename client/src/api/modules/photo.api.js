@@ -18,7 +18,6 @@ const photoApi = {
       const response = await publicClient.get(
         photoEndpoints.list
       );
-      console.log(response)
       return { response };
     } catch (err) {
       return { err };

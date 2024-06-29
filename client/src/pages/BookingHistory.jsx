@@ -47,7 +47,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 
 
-
 const BookingHistoryPage = () => {
      const { user } = useSelector(state => state.user);
 
@@ -76,7 +75,7 @@ const BookingHistoryPage = () => {
 
           }
           getBookings();
-     }, []);
+     }, [user]);
 
      const handleCancelBooking = async (bookingId, bookingDate, total_price, createdAt) => {
           const currentTime = moment();

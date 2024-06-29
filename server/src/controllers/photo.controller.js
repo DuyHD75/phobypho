@@ -103,7 +103,6 @@ const createNewPost = async (req, res) => {
   try {
     const photographerId = req.account.id;
 
-
     const photo = new photoModel({
       author: photographerId,
       ...req.body,
@@ -111,14 +110,12 @@ const createNewPost = async (req, res) => {
 
     await photo.save();
 
-    responseHandler.created(res, { ...photo._doc });
+    return responseHandler.created(res, { ...photo._doc });
   } catch (error) {
     console.log("Error in create photo: ", error.message);
-    responseHandler.error(res);
+    responseHandler.error(res, error.message);
   }
 };
-
-
 
 const updatePost = async (req, res) => {
   try {
@@ -141,6 +138,7 @@ const updatePost = async (req, res) => {
 
 const updatePostByAuth = async (req, res) => {
   try {
+
     const response = await photoModel.findOneAndUpdate(
       {
         author: req.account.id,
@@ -149,14 +147,15 @@ const updatePostByAuth = async (req, res) => {
       { new: true }
     );
 
-    console.log(response);
+    console.log(response)
+    
 
     if (!response) return responseHandler.error(res, "Update post error !");
 
-    return responseHandler.ok(res, ...response);
-  } catch(err) {
-    console.log(err.message)
-    responseHandler.error(res, err.message);
+
+    return responseHandler.ok(res, response);
+  } catch (err) {
+    return responseHandler.error(res, err.message);
   }
 };
 

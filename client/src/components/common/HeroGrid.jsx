@@ -46,6 +46,8 @@ const HeroGrid = () => {
 
   }, []);
 
+  console.log(photoList)
+
 
   const handleImageLoad = (imageId) => {
     const updatedImageData = photoList.map((img) => {
@@ -112,8 +114,8 @@ const HeroGrid = () => {
                 }}
               >
                 <img
-                  srcSet={`${item.photo.poster}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                  src={`${item.photo.poster}?w=248&fit=crop&auto=format`}
+                  srcSet={`${item.photographer.account.avatar}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                  src={`${item.photographer.account.avatar}?w=248&fit=crop&auto=format`}
                   alt={item.photo.title}
                   loading="lazy"
                   style={{
@@ -169,7 +171,7 @@ const HeroGrid = () => {
                       variant="body1"
                       fontWeight="700"
                       sx={{
-                        ...uiConfigs.style.typoLines(1, "left"),
+                        ...uiConfigs.style.typoLines(2, "left"),
                         color: 'rgba(255, 255, 255, 0.9)'
                       }}
                     >

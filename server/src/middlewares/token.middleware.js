@@ -31,14 +31,15 @@ const authenticate = async (req, res, next) => {
 
 const authorize = async (req, res, next) => {
      try {
-          const { account } = req.account;
+          const { account } = req;
           if (account.role == ROLES_LIST.photographer) {
                next();
           } else return responseHandler.unAuthorize(res);
-     } catch {
-          responseHandler.error(res);
+     } catch(error) {
+          responseHandler.error(res, error.message);
      }
 }
+
 const adminAuthorize = async (req, res, next) => {
      try {
           const  account  = req.account;

@@ -2,11 +2,8 @@ import React, { Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
-  Button,
-  Typography,
 } from "@mui/material";
-import uiConfigs from "../configs/ui.config";
-import { setAuthModalOpen } from "../redux/features/authModalSlice";
+// import { setAuthModalOpen } from "../redux/features/authModalSlice";
 import VoucherFeatures from "../components/common/VoucherFeatures";
 import VoucherRewards from "../components/common/VoucherRewards";
 import VoucherPointExchange from "../components/common/VoucherPointExchange";
@@ -45,10 +42,10 @@ const Voucher = () => {
               lg: "40%",
             },
             position: "relative",
-            backgroundPosition: "top",
+            backgroundPosition: "center",
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
-            backgroundImage: `url(https://firebasestorage.googleapis.com/v0/b/phobypho-2dbae.appspot.com/o/banner%2FScreenshot%202024-06-12%20134211.png?alt=media&token=45a4bb49-3118-42cb-bc89-b5925d7de2cf)`,
+            backgroundImage: `url(https://firebasestorage.googleapis.com/v0/b/phobypho-2dbae.appspot.com/o/banner%2FScreenshot%202024-06-13%20134800.png?alt=media&token=a12dcdfc-382e-45f3-9223-44de2dbd1428)`,
             ':before': user && {
               content: '""',
               position: 'absolute',

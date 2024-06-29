@@ -105,13 +105,15 @@ const PostItem = ({ photo }) => {
           }
      };
 
+
      return (
           <Fragment>
                {photo.photographer ? (
                     <Card sx={{
                          boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
                          position: 'relative',
-                         bgcolor: 'transparent'
+                         bgcolor: 'transparent',
+                         paddingBottom: '2rem'
                     }} >
                          <Link style={{ textDecoration: 'none' }} to={routesGen.photoDetail(photo.photo.id)}>
                               <CardMedia
@@ -119,12 +121,10 @@ const PostItem = ({ photo }) => {
                                    component="img"
                                    ojectFit="cover"
                                    height="220"
-                                   image={photo.photo.poster}
+                                   image={photo.photographer.account.avatar ? photo.photographer.account.avatar : photo.photo.poster}
                                    alt="Paella dish"
                               />
                          </Link>
-
-
 
                          <LoadingButton
                               variant="text"
@@ -186,9 +186,8 @@ const PostItem = ({ photo }) => {
 
                               <Stack direction={'row'} alignItems={'center'} justifyContent={'space-around'}>
                                    <GradeIcon sx={{ fontSize: '1.2rem', color: 'primary.headerColor', mr: '5px' }} />
-                                   <Typography color='secondary.colorText' sx={{ ...uiConfigs.style.typoLines(1, 'center') }}>4.5</Typography>
+                                   <Typography color='secondary.colorText' sx={{ ...uiConfigs.style.typoLines(1, 'center') }}>{Math.round(Math.random() * 5)}</Typography>
                               </Stack>
-
                          </Stack>
 
                          <CardContent>
@@ -201,7 +200,7 @@ const PostItem = ({ photo }) => {
                                    }}
                               >
                                    <ExploreIcon sx={{ fontSize: '1.2rem', color: "secondary.main", mt: '2px' }} />
-                                   <Typography sx={{ ...uiConfigs.style.typoLines(3, "left"), ml: '4px', fontSize: '0.9rem' }}> {photo.photographer.location}</Typography>
+                                   <Typography sx={{ ...uiConfigs.style.typoLines(1, "left"), ml: '4px', fontSize: '0.9rem' }}> {photo.photographer.location}</Typography>
                               </Box>
                          </CardContent>
 
@@ -211,23 +210,46 @@ const PostItem = ({ photo }) => {
                          position: 'relative',
                          bgcolor: 'transparent'
                     }} >
-                         <Link style={{ textDecoration: 'none' }} to={routesGen.photoDetail(photo.photo.id)}>
-                              <CardMedia
-                                   borderRadius={"10px"}
-                                   component="img"
-                                   ojectFit="cover"
-                                   height="220"
-                                   image={photo.photo.poster}
-                                   alt="Paella dish"
-                              />
+                         <Link style={{ textDecoration: 'none' }}
+                              to={routesGen.photoDetail(photo.photo.id)}>
+
+                              <div className="card-image" style={{
+                                   height: '300px', 
+                                   boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px", 
+                                   bgcolor: 'transparent',
+                              
+                              }}>
+                                   <img src={photo.photo.poster} alt="" style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover',
+                                        borderRadius: '10px'
+                                   }} />
+                              </div>
                          </Link>
 
-                         <CardHeader
-                              title={photo.photo.title}
-                              subheader={moment(photo.photo.createdAt).format('dddd, MMMM YYYY')}
-                              titleTypographyProps={textConfigs.style.headerText}
-                              subheaderTypographyProps={textConfigs.style.subText}
-                         />
+                         <Box
+                              sx={{
+                                   padding: '1rem'
+                              }}
+                         >
+                              <Typography sx={{
+                                   ...uiConfigs.style.typoLines(1, 'left'),
+                                   fontWeight: '600',
+                                   display: 'flex',
+                                   textTransform: 'capitalize',
+                              }}>{photo.photo.title}</Typography>
+
+                              <Typography sx={{
+                                   ...uiConfigs.style.typoLines(1, 'left'),
+                                   fontSize: '0.9rem',
+                                   fontWeight: '700',
+                                   marginTop: '1rem',
+                                   color: 'primary.main',
+                              }}>{moment(photo.photo.createdAt).format('dddd, MMMM YYYY')}</Typography>
+
+                         </Box>
+
 
 
                     </Card >)}

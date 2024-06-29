@@ -72,6 +72,7 @@ const getBookingsByPhotographer = async (req, res) => {
     responseHandler.error(res);
   }
 };
+
 const searchBookingsByStatus = async (req, res) => {
   try {
     const { status } = req.query;
@@ -82,6 +83,7 @@ const searchBookingsByStatus = async (req, res) => {
     responseHandler.error(res);
   }
 };
+
 
 const getAllBookingsByDate = async (req, res) => {
   try {

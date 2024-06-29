@@ -10,7 +10,7 @@ import {
   useTheme,
 } from "@mui/material";
 import uiConfigs from "../../configs/ui.config";
-import { phobyphoDeals } from "../../asset/data";
+import { phobyphoDeals } from "../../assets/data";
 
 
 function VoucherFeaturesItems() {

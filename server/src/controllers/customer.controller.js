@@ -1,11 +1,14 @@
 import { ORDER_STATUS, ROLES_LIST } from "../configs/enum.config.js";
-import { getRankByBookingCount } from "../utils/rankOfAccount.util.js";
+import { getRankByBookingCount, getRateByRanking } from "../utils/rankOfAccount.util.js";
 import responseHandler from "../handlers/response.handler.js";
 import nodemailer from "nodemailer";
 import voucherModel from "../models/voucher.model.js";
 import customerModel from "../models/customer.model.js";
 import bookingModel from "../models/booking.model.js";
 import photographerModel from "../models/photographer.model.js";
+
+
+
 import * as dotenv from "dotenv";
 dotenv.config();
 
@@ -147,6 +150,7 @@ const emailCancelBookingSender = async (req, res) => {
 };
 
 const checkVoucherAndUpdateCustomer = async (account, voucher_code) => {
+
      const voucher = await voucherModel.findOne({ code: voucher_code });
      if (!voucher) {
           throw new Error("Mã voucher không hợp lệ");
@@ -216,9 +220,15 @@ const checkRankingOfPhotographer = async (photographerId) => {
 const createNewBooking = async (req, res) => {
      try {
           const { account } = req;
-
-
           const { photo, service_package, total_price, location, photo_session, voucher_code, } = req.body;
+
+
+          let rateByRank = 0;
+          if(photo.type_of_account) {
+               rateByRank = getRateByRanking(photo.type_of_account);
+          }
+          let profit_rate = parseInt(service_package.profit) / 100;
+
 
           const booking = new bookingModel({
                photo: photo.id,
@@ -232,6 +242,7 @@ const createNewBooking = async (req, res) => {
                servicePackageName: service_package.name,
                booking_date: photo_session,
                status: ORDER_STATUS.pending,
+               photographer_rate: profit_rate - rateByRank, // rate mình ăn hoa hồng 
                total_price: total_price,
           });
 
@@ -369,4 +380,3 @@ export default {
      getCustomerBookingByPhotoId, updateBookingStatus,
      updateCustomerPoints, checkRankingOfPhotographer
 };
-

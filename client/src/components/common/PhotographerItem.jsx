@@ -7,7 +7,7 @@ import { routesGen } from '../../routers/routes';
 
 const PhotographerItem = ({ photo }) => {
      return (
-          <Link to={routesGen.photoDetail(photo.id)} style={{ textDecoration: 'none' }} >
+          <Link style={{ textDecoration: 'none' }} >
                <Box sx={{
                     ...uiConfigs.style.backgroundImage(photo.img),
                     paddingTop: "70%",
@@ -52,11 +52,13 @@ const PhotographerItem = ({ photo }) => {
                                         fontWeight="600"
 
                                         sx={{
-                                             fontSize: "1rem",
-                                             ...uiConfigs.style.typoLines(1, "center")
+                                             ...uiConfigs.style.typoLines(1, "center"), 
+                                             fontWeight: '700', 
+                                             fontSize: { xs: '1rem', md: '1.5rem' }, 
+                                             textTransform: 'uppercase'
                                         }}
                                    >
-                                        {"LIFESTYLE SESSION"}
+                                        {"Combo Cá Nhân"}
                                    </Typography>
                                    <Typography
                                         variant="body1"
@@ -66,22 +68,8 @@ const PhotographerItem = ({ photo }) => {
                                              ...uiConfigs.style.typoLines(1, "center")
                                         }}
                                    >
-                                        {'$69'}
+                                        {'200K'}
                                    </Typography>
-                                   <Button
-                                        sx={{
-                                             bgcolor: 'primary.main',
-                                             width: "max-content",
-                                             height: 'max-content',
-                                             fontSize: '0.8rem',
-                                             color: '#fff',
-                                             padding: "4px 1rem",
-                                             ...uiConfigs.style.typoLines(1, "center"),
-                                             zIndex: 10
-                                        }}
-                                   >
-                                        PURCHASE
-                                   </Button>
                               </Stack>
                          </Box>
 
@@ -119,7 +107,7 @@ const PhotographerItem = ({ photo }) => {
                                                   transform: 'translate(-50%, -50%)'
                                              }
                                         }}
-                                   >Session Parameters:</Typography>
+                                   >Lợi ích nhận được:</Typography>
 
 
                                    <Typography
@@ -140,29 +128,7 @@ const PhotographerItem = ({ photo }) => {
                                                   transform: 'translate(-50%, -50%)'
                                              }
                                         }}
-                                   >One Classic Certified Photographer</Typography>
-
-
-                                   <Typography
-                                        sx={{
-                                             fontSize: '1rem',
-                                             fontWeight: '400',
-                                             ...uiConfigs.style.typoLines(1, 'center'),
-                                             position: 'relative',
-                                             padding: '0.6rem',
-                                             "&::before": {
-                                                  content: '""',
-                                                  position: 'absolute',
-                                                  width: '2rem',
-                                                  height: '3px',
-                                                  bgcolor: 'rgba(255, 255, 255, 0.7)',
-                                                  bottom: 0,
-                                                  borderRadius: '5px',
-                                                  left: '50%',
-                                                  transform: 'translate(-50%, -50%)'
-                                             }
-                                        }}
-                                   >5 Hours of Photography Coverage</Typography>
+                                   >20 ảnh đã chỉnh sửa theo ý khách hàng</Typography>
 
 
                                    <Typography
@@ -184,7 +150,8 @@ const PhotographerItem = ({ photo }) => {
                                                   transform: 'translate(-50%, -50%)'
                                              }
                                         }}
-                                   >High Resolution Images</Typography>
+                                   >Địa điểm và concept linh hoạt. </Typography>
+
 
                                    <Typography
                                         sx={{
@@ -205,7 +172,28 @@ const PhotographerItem = ({ photo }) => {
                                                   transform: 'translate(-50%, -50%)'
                                              }
                                         }}
-                                   >Interest Free, Low Monthly Payment Plan</Typography>
+                                   >Nhận tất cả file ảnh gốc. Chăm sóc chu đáo, gợi ý dáng chụp</Typography>
+
+                                   <Typography
+                                        sx={{
+                                             fontSize: '1rem',
+                                             fontWeight: '400',
+                                             ...uiConfigs.style.typoLines(1, 'center'),
+                                             position: 'relative',
+                                             padding: '0.6rem',
+                                             "&::before": {
+                                                  content: '""',
+                                                  position: 'absolute',
+                                                  width: '2rem',
+                                                  height: '3px',
+                                                  bgcolor: 'rgba(255, 255, 255, 0.7)',
+                                                  bottom: 0,
+                                                  borderRadius: '5px',
+                                                  left: '50%',
+                                                  transform: 'translate(-50%, -50%)'
+                                             }
+                                        }}
+                                   >Thời gian chụp 2-3 giờ</Typography>
                               </Stack>
                          </Box>
                     </Fragment>
@@ -216,3 +204,4 @@ const PhotographerItem = ({ photo }) => {
 }
 
 export default PhotographerItem;
+
