@@ -286,15 +286,9 @@ const PhotoDetailPage = () => {
                         Đặt Ngay
                       </AnimatedButton>
                     </Box>
-
-
                   </Box>
-
                 </Stack>
               </Box>
-
-
-
             </Box>
             {/*End header photo detail */}
 

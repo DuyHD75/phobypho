@@ -13,8 +13,8 @@ import { keyframes } from "@mui/system";
 import Container from "../components/common/Container";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
-import { members } from "../asset/data";
-import { eventImages } from "../asset/data";
+import { members } from "../assets/data";
+import { eventImages } from "../assets/data";
 import { setGlobalLoading } from "../redux/features/globalLoading";
 import { useDispatch } from "react-redux";
 

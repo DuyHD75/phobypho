@@ -42,7 +42,7 @@ const ServicePackageItem = ({
             color: "secondary.main",
             textShadow: '0.5px 0.5px 0.5px #000',
             marginBottom: '4px',
-          }}>{service.profit}</Typography>
+          }}>{`Chúng tôi sẽ lấy ${service.profit}% hoa hồng cho gói dịch vụ này!`}</Typography>
           <Card
             key={index}
             sx={{

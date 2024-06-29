@@ -13,7 +13,7 @@ import photoApi from "../api/modules/photo.api";
 import { setGlobalLoading } from "../redux/features/globalLoading";
 import { toast } from "react-toastify";
 import usePrevious from "../hooks/usePrevious";
-import { categories } from "../asset/data";
+import { categories } from "../assets/data";
 import { GiMagnifyingGlass } from "react-icons/gi";
 import InputAdornment from '@mui/material/InputAdornment';
 
