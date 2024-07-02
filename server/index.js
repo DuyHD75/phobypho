@@ -12,7 +12,6 @@ const corsOptions = {
     origin: 'https://phobypho.vercel.app',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
-    optionsSuccessStatus: 204
 };
 
 app.use(cors(corsOptions));
