@@ -229,7 +229,6 @@ const createNewBooking = async (req, res) => {
           }
           let profit_rate = parseInt(service_package.profit) / 100;
 
-
           const booking = new bookingModel({
                photo: photo.id,
                poster: photo.poster,
