@@ -8,22 +8,13 @@ import routes from './src/routers/index.route.js'
 
 
 const app = express();
-const corsOptions = {
-     origin: process.env.CLIENT_URL, 
-     credentials: true,
-     optionsSuccessStatus: 200,
-     allowedHeaders: ['Content-Type', 'Authorization'], 
-     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'] 
-}
 
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use("/api/v1", routes);
-
-
 
 const port = process.env.PORT || 5000;
 
