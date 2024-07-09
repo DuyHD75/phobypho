@@ -12,6 +12,7 @@ import ChangePassword from '../components/common/ChangePassword';
 import BookingHistory from '../pages/BookingHistory';
 import UpgradeAccount from '../components/common/UpgradeAccount';
 
+
 export const routesGen = {
      home: "/",
      photoList: "/photos",

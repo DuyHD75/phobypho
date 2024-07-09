@@ -4,7 +4,7 @@ import { Box, Typography, Stack } from '@mui/material'
 import Grid from '@mui/material/Grid';
 import uiConfigs from '../../configs/ui.config';
 import { SiTicktick } from "react-icons/si";
-import { upgradeAccountPolicy } from '../../asset/data';
+import { upgradeAccountPolicy } from '../../assets/data';
 import { useSelector } from 'react-redux';
 import LinearProgress from "@mui/material/LinearProgress";
 import { formatDate, getQuarterDates } from '../../utils/account.utils';
@@ -24,16 +24,12 @@ const UpgradeAccount = () => {
   useEffect(() => {
 
     if (user && user.userData) {
-      console.log(user.userData.bookingCount)
 
       setBookingCountState(user.userData.bookingCount);
 
       if (user.userData.type_of_account) {
 
         setTypeOfAccount(user.userData.type_of_account);
-
-        console.log('user.userData.type_of_account', user.userData.type_of_account)
-
         const findAccountRank = user.userData.type_of_account && upgradeAccountPolicy.features.findIndex(item => item.title.toLowerCase().includes(user.userData.type_of_account.toLowerCase()));
 
         setNextRankAccount(upgradeAccountPolicy.features[findAccountRank + 1]);

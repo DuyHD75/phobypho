@@ -30,4 +30,3 @@ const throttle2 = (handler, delay) => {
    };
 };
 
-

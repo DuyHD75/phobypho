@@ -21,4 +21,3 @@ router.delete("/", uploadImageController.removeFileByUrl);
 
 
 export default router;
-

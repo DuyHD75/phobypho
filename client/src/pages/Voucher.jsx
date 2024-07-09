@@ -2,11 +2,8 @@ import React, { Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
-  Button,
-  Typography,
 } from "@mui/material";
-import uiConfigs from "../configs/ui.config";
-import { setAuthModalOpen } from "../redux/features/authModalSlice";
+// import { setAuthModalOpen } from "../redux/features/authModalSlice";
 import VoucherFeatures from "../components/common/VoucherFeatures";
 import VoucherRewards from "../components/common/VoucherRewards";
 import VoucherPointExchange from "../components/common/VoucherPointExchange";

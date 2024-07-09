@@ -1,16 +1,16 @@
 import React from 'react'
 import { Box } from '@mui/material';
 import { Outlet } from "react-router-dom";
-import GlobalLoading from '../common/GlobalLoading';
-import Footer from '../common/Footer';
-import Topbar from '../common/Topbar';
-import AuthModal from '../common/AuthModal';
-import ReceiveVouchersModal from '../common/ReceiveVouchersModal';
+import GlobalLoading from '../components/common/GlobalLoading';
+import Footer from '../components/common/Footer';
+import Topbar from '../components/common/Topbar';
+import AuthModal from '../components/common/AuthModal';
+import ReceiveVouchersModal from '../components/common/ReceiveVouchersModal';
 import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { setUser } from '../../redux/features/userSlice';
-import userApi from '../../api/modules/user.api';
+import { setUser } from '../redux/features/userSlice';
+import userApi from '../api/modules/user.api';
 
 const MainLayout = () => {
 
