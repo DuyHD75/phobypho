@@ -9,7 +9,7 @@ import routes from './src/routers/index.route.js';
 const app = express();
 
 const corsOptions = {
-    origin: 'https://phobypho.vercel.app',
+    origin: 'http://localhost:3000',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
 };
