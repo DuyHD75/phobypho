@@ -11,7 +11,7 @@ const jsonPath = path.resolve('./api/swagger_output.json');
 const swaggerFile = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
 
 const corsOptions = {
-    origin: 'https://phobypho.vercel.app',
+    origin: 'http://localhost:3000',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
 };

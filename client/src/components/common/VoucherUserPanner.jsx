@@ -52,11 +52,13 @@ const VouchersModal = ({ isOpenVoucherModal, handleCloseModal, vouchers }) => {
             <Box sx={{ width: '25%', display: 'flex', justifyContent: 'center' }}  >
               <BiSolidDiscount style={{ fontSize: '3rem', color: '#2D89E5' }} />
             </Box>
+
             <Stack flexDirection={'row'} alignItems={"center"} justifyContent={'space-between'} flex={1} flexGrow={1}>
               <Typography sx={{ ...uiConfigs.style.typoLines(1, "center"), borderLeft: '1px solid #000', padding: '0 10px' }}>{voucher.name}</Typography>
               <Typography sx={{ ...uiConfigs.style.typoLines(1, "center"), borderLeft: '1px solid #000', padding: '0 10px' }}>{`${voucher.value}%`}</Typography>
               <Typography sx={{ ...uiConfigs.style.typoLines(1, "center"), borderLeft: '1px solid #000', padding: '0 10px' }}>{voucher.code}</Typography>
             </Stack>
+            
           </Stack>
         )) : (
           <Typography sx={{

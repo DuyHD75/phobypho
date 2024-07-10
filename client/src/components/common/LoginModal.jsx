@@ -6,10 +6,11 @@ import userApi from '../../api/modules/user.api';
 import { setUser } from '../../redux/features/userSlice';
 import { setAuthModalOpen } from '../../redux/features/authModalSlice';
 import { toast } from 'react-toastify';
-import { Alert, Box, Button, Stack, TextField } from '@mui/material';
+import { Alert, Box, Button, Stack, TextField, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { FaArrowRightFromBracket } from "react-icons/fa6";
-
+import uiConfigs from '../../configs/ui.config';
+import { FcGoogle } from "react-icons/fc";
 const LoginModal = ({ switchAuthState }) => {
 
      const dispatch = useDispatch();
@@ -48,6 +49,74 @@ const LoginModal = ({ switchAuthState }) => {
 
      return (
           <Box component='form' onSubmit={loginForm.handleSubmit} >
+
+               <Typography
+                    sx={{
+                         fontSize: '1.2rem',
+                         fontWeight: 800,
+                         textAlign: 'center',
+                         marginBottom: '10px', 
+                         ...uiConfigs.style.typoLines(1, "left")
+                    }}
+               >
+                    Đăng Nhập
+                    <Typography
+                    sx={{
+                         fontSize: '0.9rem',
+                         fontWeight: 400,
+                         textAlign: 'center',
+                         marginBottom: '10px', 
+                         ...uiConfigs.style.typoLines(1, "left")
+                    }}
+                    >Nhập username và password để đăng nhập!</Typography>
+               </Typography>
+
+
+               <Button
+                    fullWidth
+                    sx={{
+                         display: 'flex',
+                         justifyContent: 'center',
+                         alignItems: 'center',
+                         flexDirection: 'row',
+                         fontFamily: '"Nunito", sans-serif',
+                         fontSize: '0.9rem',
+                         textTransform: 'none',
+                         marginBottom: '10px'
+                    }}
+                    onClick={() => alert('Đăng nhập với Google ở đây !')}
+               >
+                    <FcGoogle style={{ fontSize: '1.6rem', marginRight: '10px' }} />
+                    Đăng nhập với Google
+               </Button>
+
+               <Box>
+                    <Typography
+                         sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              fontSize: '0.9rem',
+                              margin: '1rem 0 0.5rem 0',
+                              '::before': {
+                                   content: '""',
+                                   flex: 1,
+                                   borderBottom: '1px solid #888',
+                                   marginRight: '0.5rem'
+                              },
+                              '::after': {
+                                   content: '""',
+                                   flex: 1,
+                                   borderBottom: '1px solid #888',
+                                   marginLeft: '0.5rem'
+                              }
+                         }}
+                    >
+                         hoặc
+                    </Typography>
+
+               </Box>
+
+
                <Stack spacing={2}>
                     <TextField
                          type='text' placeholder='Nhập username của bạn ...' name='username'
@@ -64,6 +133,22 @@ const LoginModal = ({ switchAuthState }) => {
                          error={loginForm.touched.password && loginForm.errors.password}
                          helperText={loginForm.touched.password && loginForm.errors.password}
                     ></TextField>
+
+                    <Button
+                         sx={{
+                              width: 'max-content',
+                              fontSize: '0.9rem',
+                              position: 'relative',
+                              left: '50%',
+                              transform: 'translateX(-50%)',
+                              textTransform: 'none',
+                              ...uiConfigs.style.typoLines(1, "center")
+                         }}
+                         onClick={() => switchAuthState("forgotPassword")}
+                    >
+                         Bạn quên mật khẩu ?
+                    </Button>
+
                </Stack>
                <LoadingButton
                     loadingPosition='start'
@@ -71,9 +156,10 @@ const LoginModal = ({ switchAuthState }) => {
                     fullWidth
                     size='small'
                     sx={{
-                         marginTop: 4,
+                         marginTop: 2,
                          fontFamily: '"Nunito", sans-serif',
-                         fontSize: '0.9rem'
+                         fontSize: '1rem', 
+                         textTransform: 'none',
                     }}
                     loading={isLoginRequest}
                     startIcon={<FaArrowRightFromBracket />}
@@ -81,13 +167,23 @@ const LoginModal = ({ switchAuthState }) => {
                     Đăng nhập
                </LoadingButton>
 
-               <Button
-                    fullWidth
-                    sx={{ marginTop: 1, fontFamily: '"Nunito", sans-serif', fontSize: '0.9rem' }}
-                    onClick={() => switchAuthState()}
-               >
-                    Đăng ký
-               </Button>
+
+               <Stack justifyContent={"center"} alignItems={"center"} direction={"row"}>
+                    <Typography sx={{
+                         fontSize: '0.9rem',
+                         ...uiConfigs.style.typoLines(1, "left"),
+                    }}>
+                         Bạn chưa có tài khoản?
+                    </Typography>
+                    <Button
+                         sx={{ fontFamily: '"Nunito", sans-serif', fontSize: '0.9rem', textTransform: 'none' }}
+                         onClick={() => switchAuthState("signup")}
+                    >
+                         Đăng ký ngay
+                    </Button>
+
+               </Stack>
+
 
                {errorMessage && (
                     <Box sx={{ marginTop: 2 }}>
