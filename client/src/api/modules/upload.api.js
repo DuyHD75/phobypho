@@ -35,7 +35,7 @@ const uploadImageApi = {
       );
       return response;
     } catch (err) {
-      console.error("Error uploading image:", err.message);
+      console.error("Error uploading image:", err);
       return { err };
     }
   },

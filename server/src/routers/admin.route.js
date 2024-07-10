@@ -3,25 +3,17 @@ import tokenMiddleware from "../middlewares/token.middleware.js";
 import adminController from "../controllers/admin.controller.js";
 
 const router = express.Router({ mergeParams: true });
-// /admins/....
-
-router.put(
-  "/order",
-  tokenMiddleware.authenticate,
-  tokenMiddleware.adminAuthorize,
-  adminController.updateBookingStatus
-);
 
 router.get(
   "/customers",
-  tokenMiddleware.authenticate,
-  tokenMiddleware.adminAuthorize,
+  // tokenMiddleware.authenticate,
+  // tokenMiddleware.adminAuthorize,
   adminController.getAllCustomers
 );
 router.get(
   "/photographers",
-  tokenMiddleware.authenticate,
-  tokenMiddleware.adminAuthorize,
+  // tokenMiddleware.authenticate,
+  // tokenMiddleware.adminAuthorize,
   adminController.getAllPhotographers
 );
 
@@ -29,8 +21,8 @@ router.get(
 //ex: http://localhost:5000/api/v1/admins/bookings/search?status=PENDING
 router.get(
   "/bookings/search",
-  tokenMiddleware.authenticate,
-  tokenMiddleware.adminAuthorize,
+  // tokenMiddleware.authenticate,
+  // tokenMiddleware.adminAuthorize,
   adminController.searchBookingsByStatus
 );
 
@@ -42,10 +34,11 @@ router.get(
 );
 // view all or view by limit bookings
 // ex: http://localhost:5000/api/v1/admins/bookings/limit?limit=1&skip=0
+
 router.get(
   "/bookings/limit",
-  tokenMiddleware.authenticate,
-  tokenMiddleware.adminAuthorize,
+  // tokenMiddleware.authenticate,
+  // tokenMiddleware.adminAuthorize,
   adminController.getBookings
 );
 // ex: http://localhost:5000/api/v1/admins/bookings/2024-05-27
@@ -65,18 +58,25 @@ router.get(
 
 router.get(
   "/dashboard",
-  tokenMiddleware.authenticate,
-  tokenMiddleware.adminAuthorize,
+  // tokenMiddleware.authenticate,
+  // tokenMiddleware.adminAuthorize,
   adminController.getExtractDashboardInfo
 )
 
-router.post(
+router.put(
   "/update-status-booking",
-  tokenMiddleware.authenticate,
-  tokenMiddleware.adminAuthorize,
+  // tokenMiddleware.authenticate,
+  // tokenMiddleware.adminAuthorize,
   adminController.completeBooking
 )
 
+
+router.put(
+  "/update-status-photographer",
+  // tokenMiddleware.authenticate,
+  // tokenMiddleware.adminAuthorize,
+  adminController.updatePhotographerStatus
+)
 
 
 export default router;

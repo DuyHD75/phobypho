@@ -152,14 +152,21 @@ const emailCancelBookingSender = async (req, res) => {
 const checkVoucherAndUpdateCustomer = async (account, voucher_code) => {
 
      const voucher = await voucherModel.findOne({ code: voucher_code });
+
      if (!voucher) {
           throw new Error("Mã voucher không hợp lệ");
      }
 
      const customer = await customerModel.findOne({ account: account._id });
+
+     console.log("The number of voucher of customer: ", customer.vouchers.length);
+
+     
      if (!customer.vouchers.includes(voucher._id)) {
           throw new Error("Bạn không có quyền sử dụng mã voucher này !");
      }
+
+     
 
      customer.vouchers = customer.vouchers.filter(
           (v) => v.toString() !== voucher._id.toString()
@@ -228,7 +235,6 @@ const createNewBooking = async (req, res) => {
                rateByRank = getRateByRanking(photo.type_of_account);
           }
           let profit_rate = parseInt(service_package.profit) / 100;
-
 
           const booking = new bookingModel({
                photo: photo.id,

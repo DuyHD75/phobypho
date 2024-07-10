@@ -26,8 +26,6 @@ const getAllPhotoInfo = async (req, res) => {
       };
     });
 
-
-
     if (!photos)
       return responseHandler.error(res, "Lỗi truy vấn danh sách photo !");
 
