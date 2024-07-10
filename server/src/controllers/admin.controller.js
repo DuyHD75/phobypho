@@ -74,30 +74,47 @@ const updatePhotographerStatus = async (req, res) => {
 };
 
 const getBookings = async (req, res) => {
+  try {
   const limit = parseInt(req.query.limit);
   const skip = parseInt(req.query.skip);
   let bookings;
   if (limit) {
     bookings = await bookingModel
       .find()
-      .sort({ date: -1 })
+      .sort({ date: -1 }) 
       .skip(skip)
       .limit(limit);
   } else {
     bookings = await bookingModel.find();
   }
   const bookingCount = bookings.length;
-  res.json({
-    bookings,
-    bookingCount,
-  });
+  const transformedBookings = await transformBookingData(bookings);
+  responseHandler.ok(res, { bookings: transformedBookings, bookingCount });
+} catch (error) {
+  console.log(error);
+  console.error("Error in admin.controller.getBookings");
+  responseHandler.error(res);
+};
+}
+
+const transformBookingData = async (bookings) => {
+  const transformedBookings = await Promise.all(bookings.map(async (booking) => {
+    const customer = await accountModel.findById(booking.customer);
+    const updatedCustomer = { ...customer.toObject(), customer_name: customer.username };
+    delete updatedCustomer.username; 
+    return { ...booking.toObject(), customer: updatedCustomer }; 
+  }));
+  return transformedBookings;
 };
 
 const getBookingsByPhotographer = async (req, res) => {
   try {
     const { photographerId } = req.params;
     const bookings = await bookingModel.find({ photographer: photographerId });
-    responseHandler.ok(res, bookings);
+    const totalPrice = bookings.reduce((acc, booking) => acc + booking.total_price, 0);
+    const transformedBookings = await transformBookingData(bookings);
+    responseHandler.ok(res, { bookings: transformedBookings, totalPrice });
+    // responseHandler.ok(res, bookings);
   } catch (error) {
     console.error("Error in admin.controller.getBookingsByPhotographer");
     responseHandler.error(res);
@@ -108,7 +125,8 @@ const searchBookingsByStatus = async (req, res) => {
   try {
     const { status } = req.query;
     const bookings = await bookingModel.find({ status });
-    responseHandler.ok(res, bookings);
+    const transformedBookings = await transformBookingData(bookings);
+    responseHandler.ok(res, transformedBookings);
   } catch (error) {
     console.error("Error in admin.controller.searchBookingsByStatus");
     responseHandler.error(res);
@@ -131,7 +149,9 @@ const getAllBookingsByDate = async (req, res) => {
       .sort({ createdAt: -1 });
 
     const bookingCount = bookings.length;
-    responseHandler.ok(res, { bookingCount, bookings });
+    const transformedBookings = await transformBookingData(bookings);
+    responseHandler.ok(res, {bookingCount, bookings: transformedBookings});
+   
 
   } catch (error) {
     console.error("Error in admin.controller.getAllBookingsByDate");
@@ -155,7 +175,8 @@ const getAllBookingsByMonth = async (req, res) => {
       .populate("voucher")
       .sort({ createdAt: -1 });
     const bookingCount = bookings.length;
-    responseHandler.ok(res, { bookingCount, bookings });
+    const transformedBookings = await transformBookingData(bookings);
+    responseHandler.ok(res, {bookingCount, bookings: transformedBookings});
   } catch (error) {
     console.error("Error in admin.controller.getAllBookingsByMonth");
     responseHandler.error(res);
