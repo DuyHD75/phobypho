@@ -56,7 +56,7 @@ const updatePhotographerStatus = async (req, res) => {
     }
 
     const updatePromises = photographerIds.map(async (account) => {
-      const result = await photographerModel.findOneAndUpdate({account}, { status }, { new: true });
+      const result = await photographerModel.findOneAndUpdate({ account }, { status }, { new: true });
       return result;
     });
 
@@ -75,34 +75,32 @@ const updatePhotographerStatus = async (req, res) => {
 
 const getBookings = async (req, res) => {
   try {
-  const limit = parseInt(req.query.limit);
-  const skip = parseInt(req.query.skip);
-  let bookings;
-  if (limit) {
-    bookings = await bookingModel
-      .find()
-      .sort({ date: -1 }) 
-      .skip(skip)
-      .limit(limit);
-  } else {
-    bookings = await bookingModel.find();
-  }
-  const bookingCount = bookings.length;
-  const transformedBookings = await transformBookingData(bookings);
-  responseHandler.ok(res, { bookings: transformedBookings, bookingCount });
-} catch (error) {
-  console.log(error);
-  console.error("Error in admin.controller.getBookings");
-  responseHandler.error(res);
-};
+    const limit = parseInt(req.query.limit);
+    const skip = parseInt(req.query.skip);
+    let bookings;
+    if (limit) {
+      bookings = await bookingModel
+        .find()
+        .sort({ date: -1 })
+        .skip(skip)
+        .limit(limit);
+    } else {
+      bookings = await bookingModel.find();
+    }
+    const bookingCount = bookings.length;
+    const transformedBookings = await transformBookingData(bookings);
+    responseHandler.ok(res, { bookings: transformedBookings, bookingCount });
+  } catch (error) {
+    responseHandler.error(res);
+  };
 }
 
 const transformBookingData = async (bookings) => {
   const transformedBookings = await Promise.all(bookings.map(async (booking) => {
     const customer = await accountModel.findById(booking.customer);
-    const updatedCustomer = { ...customer.toObject(), customer_name: customer.username };
-    delete updatedCustomer.username; 
-    return { ...booking.toObject(), customer: updatedCustomer }; 
+    const updatedCustomer = { ...customer.toObject() };
+    delete updatedCustomer.username;
+    return { ...booking.toObject(), customer: updatedCustomer };
   }));
   return transformedBookings;
 };
@@ -150,8 +148,8 @@ const getAllBookingsByDate = async (req, res) => {
 
     const bookingCount = bookings.length;
     const transformedBookings = await transformBookingData(bookings);
-    responseHandler.ok(res, {bookingCount, bookings: transformedBookings});
-   
+    responseHandler.ok(res, { bookingCount, bookings: transformedBookings });
+
 
   } catch (error) {
     console.error("Error in admin.controller.getAllBookingsByDate");
@@ -176,7 +174,7 @@ const getAllBookingsByMonth = async (req, res) => {
       .sort({ createdAt: -1 });
     const bookingCount = bookings.length;
     const transformedBookings = await transformBookingData(bookings);
-    responseHandler.ok(res, {bookingCount, bookings: transformedBookings});
+    responseHandler.ok(res, { bookingCount, bookings: transformedBookings });
   } catch (error) {
     console.error("Error in admin.controller.getAllBookingsByMonth");
     responseHandler.error(res);
