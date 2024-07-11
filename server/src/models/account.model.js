@@ -18,7 +18,7 @@ const accountSchema = new mongoose.Schema({
      },
      password: {
           type: String,
-          required: true,
+          required: false,
           select: false
      },
      email: {
@@ -32,11 +32,11 @@ const accountSchema = new mongoose.Schema({
      },
      phoneNumber: {
           type: String,
-          required: true
+          required: false
      },
      salt: {
           type: String,
-          required: true,
+          required: false,
           select: false
      },
      role: {
@@ -44,6 +44,12 @@ const accountSchema = new mongoose.Schema({
           required: true,
           default: ROLES_LIST.customer,
           enum: ROLES_LIST
+     },
+     passwordResetToken: {
+          type: String,
+     }, 
+     passwordResetExpires: {
+          type: Date
      }
 }, modelOptions);
 
