@@ -7,6 +7,10 @@ import { useDispatch } from 'react-redux'
 import uiConfigs from '../../configs/ui.config';
 import { TbCubeSend } from "react-icons/tb";
 import * as Yup from 'yup';
+import userApi from '../../api/modules/user.api';
+import { setUser } from '../../redux/features/userSlice';
+import { setAuthModalOpen } from '../../redux/features/authModalSlice';
+import { toast } from 'react-toastify';
 
 
 const ForgotPasswordModal = ({ switchAuthState }) => {
@@ -30,16 +34,16 @@ const ForgotPasswordModal = ({ switchAuthState }) => {
          console.log(values);
          setErrorMessage(undefined);
          setIsResetRequest(true);
-         // const { response, err } = await userApi.forgotPassword(values);
+         const { response, err } = await userApi.forgotPassword(values);
          setIsResetRequest(false);
 
-         // if (response) {
-         //    forgotPasswordForm.resetForm();
-         //    dispatch(setUser(response));
-         //    dispatch(setAuthModalOpen(false));
-         //    toast.success("Đăng nhập thành công !");
-         // }
-         // if (err) setErrorMessage(err.message);
+         if (response) {
+            forgotPasswordForm.resetForm();
+            // dispatch(setUser(response));
+            dispatch(setAuthModalOpen(false));
+            toast.success("Gửi email thành công !");
+         }
+         if (err) setErrorMessage(err.message);
       }
    })
 

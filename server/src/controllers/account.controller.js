@@ -6,12 +6,13 @@ import photographerModel from "../models/photographer.model.js";
 import { createToken } from "../utils/token.util.js";
 import customerController from "../controllers/customer.controller.js";
 import bookingModel from "../models/booking.model.js";
+import nodemailer from "nodemailer";
+import jwt from "jsonwebtoken";
 
 const signup = async (req, res) => {
   try {
     const { username, displayName, password, role, phoneNumber, email } =
       req.body;
-
 
     const isExisted = await accountModel.findOne({ username });
 
@@ -136,10 +137,10 @@ const login = async (req, res, next) => {
         photographer.bookingCount = 0;
         photographer.type_of_account = "";
         await photographer.save();
-      } 
-   
+      }
     }
   } catch (error) {
+    console.error(error);
     console.error("Error in account.controller.login");
     responseHandler.error(res);
   }
@@ -149,7 +150,7 @@ const isNewQuarterPhotographer = async (req, res) => {
   try {
     const { account } = req;
     if (account.role === ROLES_LIST.photographer) {
-      console.log(account._id);
+      // console.log(account._id);
       await customerController.checkRankingOfPhotographer(account._id);
     }
   } catch (error) {
@@ -235,6 +236,141 @@ const updateInfo = async (req, res) => {
     responseHandler.error(res);
   }
 };
+const gglogin = async (req, res) => {
+  try {
+    // console.log(req.user);
+    const user = req.user;
+    const account = await accountModel.findOne({ email: user.email }).select(
+      "id username displayName password salt phoneNumber email role avatar"
+    );
+
+    if (account) {
+    const userData = {};
+
+    const token = createToken(account.id);
+
+    account.password = undefined;
+    account.salt = undefined;
+    userData.token = token; 
+
+    // responseHandler.created(res, {
+    //   token,
+    //   id: account.id,
+    //   ...account._doc,
+    //   userData,
+    // });
+    req.account = account;
+    } else {
+      const account = new accountModel({
+        username: user.email,
+        displayName: user.displayName,
+        email: user.email,
+        avatar: user.picture,
+        role: ROLES_LIST.customer,
+      });
+      await account.save();
+      const customer = new customerModel({
+        account: account.id,
+      });
+      await customer.save();
+     
+    }
+     res.redirect(process.env.CLIENT_URL || "http://localhost:3000");
+  } catch (error) {
+    console.error(error);
+    responseHandler.error(res); // Assuming this is a function to handle errors
+  }
+};
+// You need to implement `findUserByEmail`, `loginUser`, and `createUser` based on your database and application logic.
+const transporter = nodemailer.createTransport({
+  service: process.env.EMAIL_SERVICE,
+  auth: {
+    user: process.env.EMAIL_ADDRESS,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
+
+const forgotPassword = async (req, res) => {
+  try {
+    const user = await accountModel.findOne({ email: req.body.email });
+    if (!user) {
+      return responseHandler.notfound(res, "Email không tồn tại !");
+    }
+    const token = jwt.sign({ id: user._id }, process.env.TOKEN_SECRET_KEY, {
+      expiresIn: "1h",
+    });
+    user.passwordResetToken = token;
+    user.passwordResetExpires = Date.now() + 3600000; // 1 hour
+    await user.save();
+
+    const resetUrl = `${process.env.CLIENT_URL || 'http://localhost:3000'}/reset-password?token=${token}`;
+    const mailOptions = {
+      from: process.env.EMAIL_ADDRESS,
+      to: user.email,
+      subject: "Password Reset Request",
+      html: `
+        <p>You requested a password reset. Click the link below to reset your password:</p>
+        <a href="${resetUrl}">${resetUrl}</a>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+    res.json({ message: "Password reset email sent" });
+  } catch (err) {
+    console.error("Failed to send password reset email:", err);
+    responseHandler.error(res);
+  }
+};
+const resetPassword = async (req, res) => {
+  try {
+    const token = req.body.token;
+    // console.log(token);
+    const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET_KEY);
+
+    const user = await accountModel.findOne({
+      _id: decodedToken.id,
+      passwordResetToken: token,
+      passwordResetExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return responseHandler.unAuthorize(
+        res,
+        "Token không hợp lệ hoặc đã hết hạn !"
+      );
+    }
+    user.setPassword(req.body.password);
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save();
+
+    const mailOptions = {
+      from: process.env.EMAIL_ADDRESS,
+      to: user.email,
+      subject: "Password Reset Confirmation",
+      html: `
+      <p>Your password has been successfully reset. If you did not initiate this request, please contact us immediately.</p>
+    `,
+    };
+
+    await transporter.sendMail(mailOptions);
+    res.json({ message: "Password reset successful" });
+  } catch (err) {
+    console.error("Failed to reset password:", err);
+    responseHandler.error(res);
+  }
+};
+const getResetPasswordPage = async (req, res) => {
+  try {
+    res.json({
+      message: "Please enter a new password",
+      token: req.query.token,
+    });
+  } catch (error) {
+    console.error("Error in account.controller.getResetPasswordPage", error);
+    responseHandler.error(res);
+  }
+};
 
 export default {
   signup,
@@ -243,4 +379,8 @@ export default {
   getInfo,
   updateInfo,
   isNewQuarterPhotographer,
+  gglogin,
+  forgotPassword,
+  resetPassword,
+  getResetPasswordPage,
 };

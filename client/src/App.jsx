@@ -52,6 +52,7 @@ function App() {
                     <PageWrapper state={route.state}>{route.element}</PageWrapper>
                   ) : route.element}
                 />
+
               )
             ))}
             <Route path="/reset-password" element={<ResetPassword />} />

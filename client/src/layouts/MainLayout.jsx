@@ -22,7 +22,8 @@ const MainLayout = () => {
      useEffect(() => {
           const authUser = async () => {
                const { response, err } = await userApi.getInfo();
-
+               console.log(response, err
+               );
                if (response) dispatch(setUser(response));
                if (err) dispatch(setUser(null));
           };
@@ -31,8 +32,7 @@ const MainLayout = () => {
 
      }, [dispatch]);
 
-
-
+    
 
      return (
           <div>

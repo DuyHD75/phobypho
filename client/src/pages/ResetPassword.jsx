@@ -7,19 +7,32 @@ import { FaArrowRightFromBracket } from "react-icons/fa6";
 import { useDispatch } from 'react-redux'
 import { TbCubeSend } from "react-icons/tb";
 import * as Yup from 'yup';
-
+import userApi from '../api/modules/user.api';
+import { setUser } from '../redux/features/userSlice';
+import { setAuthModalOpen } from '../redux/features/authModalSlice';
+import { toast } from 'react-toastify';
+import { useLocation } from 'react-router-dom';
+function useQuery() {
+   return new URLSearchParams(useLocation().search);
+ }
 const ResetPassword = () => {
 
    const [isResetRequest, setIsResetRequest] = useState(false)
 
    const [errorMessage, setErrorMessage] = useState();
    const dispatch = useDispatch();
+   const query = useQuery();
+  const token = query.get('token');
+   console.log(token);
 
    const resetPasswordForm = useFormik({
 
+      
+
       initialValues: {
          password: '',
-         confirmPassword: ''
+         confirmPassword: '',
+         token: token
       },
       validationSchema: Yup.object({
          password: Yup.string()
@@ -34,16 +47,16 @@ const ResetPassword = () => {
          console.log(values);
          setErrorMessage(undefined);
          setIsResetRequest(true);
-         // const { response, err } = await userApi.forgotPassword(values);
+         const { response, err } = await userApi.resetPassword(values);
          setIsResetRequest(false);
 
-         // if (response) {
-         //    resetPasswordForm.resetForm();
-         //    dispatch(setUser(response));
-         //    dispatch(setAuthModalOpen(false));
-         //    toast.success("Đăng nhập thành công !");
-         // }
-         // if (err) setErrorMessage(err.message);
+         if (response) {
+            resetPasswordForm.resetForm();
+            // dispatch(setUser(response));
+            dispatch(setAuthModalOpen(true));
+            toast.success("Đổi mật khẩu thành công !");
+         }
+         if (err) setErrorMessage(err.message);
       }
    })
 
