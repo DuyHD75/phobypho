@@ -37,7 +37,6 @@ const generatePaymentLink = async (req, res) => {
 
      try {
           const { total_price } = req.body;
-          bookingDataStorage = {...req.body};
           const orderCode = Number(String(Date.now()).slice(-6));
           const booking = {
                orderCode: orderCode,
