@@ -20,6 +20,7 @@ const payos = new PayOS(
 );
 
 const DOMAIN = process.env.CLIENT_URL;
+// const DOMAIN = 'http://localhost:3000';
 
 const transporter = nodemailer.createTransport({
      host: process.env.EMAIL_HOST,
@@ -35,15 +36,15 @@ const transporter = nodemailer.createTransport({
 const generatePaymentLink = async (req, res) => {
 
      try {
-          const { account } = req;
-          const { photo, service_package, total_price, location, photo_session, voucher_code, } = req.body;
+          const { total_price } = req.body;
+          bookingDataStorage = {...req.body};
           const orderCode = Number(String(Date.now()).slice(-6));
           const booking = {
                orderCode: orderCode,
                amount: 10000,
                description: `PHOBYPHO: ${orderCode}`,
-               returnUrl: `${DOMAIN}`,
-               cancelUrl: `${DOMAIN}`,
+               returnUrl: `${DOMAIN}/checkout`,
+               cancelUrl: `${DOMAIN}/checkout`,
           };
 
           const paymentLinkResponse = await payos.createPaymentLink(booking);
@@ -58,22 +59,28 @@ const generatePaymentLink = async (req, res) => {
 
 const receiveHookPayment = async (req, res) => {
      try {
+          const { account } = req;
+          console.log(account)
           console.log("receive hook payment: ", req.body);
-          res.status(200).json({
-               message: "Oke bay rồi",
-               data: req.body
-          })
+
+          if (req.body.code === "00")
+               responseHandler.ok(res, { message: "Thanh toán thành công !", data: req.body });
+          else {
+               const booking = await bookingModel.findOneAndDelete({ account: account._id });
+               responseHandler.ok(res, { message: "Thanh toán thất bại !", data: req.body });
+          }
      } catch (error) {
           console.error("receive hook payment: ", error);
           responseHandler.error(res, error.message);
      }
-}
+};
 
 
 const createNewBooking = async (req, res) => {
      try {
           const { account } = req;
-          const { photo, service_package, total_price, location, photo_session, voucher_code, } = req.body;
+          const { photo, service_package, total_price, location, photo_session, voucher_code } = req.body;
+
           let rateByRank = 0;
           if (photo.type_of_account) {
                rateByRank = getRateByRanking(photo.type_of_account);
@@ -104,7 +111,7 @@ const createNewBooking = async (req, res) => {
           await emailCheckoutSender(req, res);
 
           await updatePhotographerInfo(photo.author);
-          return responseHandler.created(res, booking);
+          responseHandler.ok(res, booking);
      } catch (error) {
           console.log("Error creating new booking: ", error);
           responseHandler.error(res, error.message);

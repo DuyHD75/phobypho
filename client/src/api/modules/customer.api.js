@@ -10,8 +10,9 @@ const customerEndpoints = {
    updatePoints: (customerId) => `customers/${customerId}/points`,
    customerVouchers: `customers/vouchers`,
    getBookingByPhotoId: (photoId) => `customers/${photoId}/booking`,
-   cancelBooking: (bookingId) => `customers/bookings/${bookingId}/status`, 
-   createPaymentLink: "customers/create-payment-link"
+   cancelBooking: (bookingId) => `customers/bookings/${bookingId}/status`,
+   createPaymentLink: "customers/create-payment-link",
+   receiveHookPayment: "customers/receive-hook"
 };
 
 
@@ -88,7 +89,15 @@ const customerApi = {
       } catch (err) {
          return { err };
       }
-   }, 
+   },
+   receiveHookPayment: async () => {
+      try {
+         const response = await privateClient.post(customerEndpoints.receiveHookPayment);
+         return { response };
+      } catch (err) {
+         return { err };
+      }
+   }
 
 };
 

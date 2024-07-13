@@ -8,12 +8,17 @@ import uiConfigs from '../configs/ui.config';
 import customerApi from '../api/modules/customer.api';
 import { toast } from 'react-toastify';
 import moment from 'moment';
-
-
+import { useDispatch, useSelector } from 'react-redux';
+import { setBookingData } from '../redux/features/bookingSlice';
 const Checkout = () => {
 
      const locationHook = useLocation();
-     const [bookingData, setBookingData] = useState(locationHook.state);
+     const dispatch = useDispatch();
+     if (locationHook.state)
+          dispatch(setBookingData(locationHook.state));
+
+     const bookingData = useSelector(state => state.bookingReducer.bookingData);
+
      const [errorMessage, setErrorMessage] = useState(null);
      const [vouchers, setVouchers] = useState([]);
      const [isProcessing, setIsProcessing] = useState(false);
@@ -27,15 +32,20 @@ const Checkout = () => {
      useEffect(() => {
           const getCustomerVouchers = async () => {
                const { response, err } = await customerApi.getCustomerVouchers();
-
-               if (response) {
-                    setVouchers(response.vouchers);
-               }
-               if (err) {
-                    return toast.error('Lỗi khi lấy thông tin voucher !');
-               }
+               if (response) setVouchers(response.vouchers);
+               if (err) return toast.error('Lỗi khi lấy thông tin voucher !');
           }
+
+          const receiveHookPayment = async () => {
+               const { response, err } = await customerApi.receiveHookPayment();
+               if (response.data.code === '00') {
+                    setIsPayment(true);
+                    // create booking
+               }
+          };
           getCustomerVouchers();
+          receiveHookPayment();
+
      }, []);
 
      const [totalPrice, setTotalPrice] = useState(currentPrice);
@@ -61,31 +71,27 @@ const Checkout = () => {
           }, 1000);
      };
 
+
      const handleCheckoutProcess = async () => {
-          const updatedBookingData = { ...bookingData, voucher_code: voucherCode, total_price: totalPrice, };
+          const updatedBookingData = { ...bookingData, voucher_code: voucherCode, total_price: totalPrice };
 
           setBookingData(updatedBookingData);
           setIsProcessing(true);
 
           if (isPayment) {
-               const { response, err } = await customerApi.createBooking(updatedBookingData);
-               setIsProcessing(false);
+               const { response, err } = await customerApi.createBooking(bookingData);
                if (response) {
-                    navigate(`/booking_history`);
                     toast.success('Thanh toán thành công !');
+                    navigate("/booking_history");
                }
-               if (err) {
-                    toast.error(err.message);
-               }
+               if (err) toast.error(err.message);
+               setIsProcessing(false);
+               return;
           } else {
                const { response, err } = await customerApi.createPaymentLink(updatedBookingData);
-               if (response) {
-                    window.open(response.url, '_self');
-                    setIsProcessing(false);
-               }
-               if (err) {
-                    toast.error(err.message);
-               }
+               if (response) window.open(response.url, '_self');
+               if (err) toast.error(err.message);
+               setIsProcessing(false);
           }
      }
 
@@ -127,43 +133,7 @@ const Checkout = () => {
                               sx={{ marginTop: '2rem ' }}
                               justifyContent={"space-around"}
                          >
-                              <Box
-                                   sx={{
-                                        position: 'relative',
-                                        width: { xs: '100%', md: '50%' },
-                                        height: 'max-content'
-                                   }}
 
-                              >
-
-                                   <Stack
-                                        direction={'column'}
-                                        alignItems={"center"}
-
-                                        sx={{
-                                             zIndex: 99,
-                                        }}
-                                   >
-                                        <Box
-                                             sx={{
-                                                  borderRadius: '10rem 20rem',
-                                                  overflow: 'hidden',
-                                                  boxShadow: '1px 10px 10px rgba(255, 255, 255, 0.5)',
-                                                  width: { xs: '20rem', md: '30rem' },
-
-                                             }}
-                                        >
-                                             <img
-                                                  src='https://cdn.tgdd.vn/hoi-dap/1309185/ma-qr-code-la-gi-dung-de-lam-gi-cach-tao-ma-qr-nhanh-chong%20(1).jpg'
-                                                  alt='QR code'
-                                             />
-                                        </Box>
-
-
-                                   </Stack>
-
-
-                              </Box>
 
                               {/* Bill*/}
                               <Stack
