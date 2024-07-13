@@ -36,15 +36,19 @@ const transporter = nodemailer.createTransport({
 const generatePaymentLink = async (req, res) => {
 
      try {
+          const { account } = req;
+          console.log(account)
           const { total_price } = req.body;
           const orderCode = Number(String(Date.now()).slice(-6));
           const booking = {
                orderCode: orderCode,
                amount: 10000,
                description: `PHOBYPHO: ${orderCode}`,
-               returnUrl: `${DOMAIN}/checkout`,
-               cancelUrl: `${DOMAIN}/checkout`,
+               returnUrl: `${DOMAIN}/booking_history`,
+               cancelUrl: `${DOMAIN}/photos`,
           };
+
+          await createNewBooking(req, res);
 
           const paymentLinkResponse = await payos.createPaymentLink(booking);
           responseHandler.ok(res, { url: paymentLinkResponse.checkoutUrl });
@@ -59,13 +63,17 @@ const generatePaymentLink = async (req, res) => {
 const receiveHookPayment = async (req, res) => {
      try {
           const { account } = req;
-          console.log(account)
-          console.log("receive hook payment: ", req.body);
-
+       
           if (req.body.code === "00")
                responseHandler.ok(res, { message: "Thanh toán thành công !", data: req.body });
           else {
-               const booking = await bookingModel.findOneAndDelete({ account: account._id });
+               const booking = await bookingModel.findOne({ customer: account.id }).sort({ createdAt: -1 });
+               if (booking) {
+                    await bookingModel.deleteOne({ _id: booking._id });
+                    console.log("Most recent booking deleted:", booking);
+               } else {
+                    console.log("No bookings found for this account.");
+               }
                responseHandler.ok(res, { message: "Thanh toán thất bại !", data: req.body });
           }
      } catch (error) {
@@ -110,10 +118,9 @@ const createNewBooking = async (req, res) => {
           await emailCheckoutSender(req, res);
 
           await updatePhotographerInfo(photo.author);
-          responseHandler.ok(res, booking);
      } catch (error) {
           console.log("Error creating new booking: ", error);
-          responseHandler.error(res, error.message);
+
      }
 };
 

@@ -18,7 +18,7 @@ const Checkout = () => {
           dispatch(setBookingData(locationHook.state));
 
      const bookingData = useSelector(state => state.bookingReducer.bookingData);
-
+     const { user } = useSelector(state => state.user);
      const [errorMessage, setErrorMessage] = useState(null);
      const [vouchers, setVouchers] = useState([]);
      const [isProcessing, setIsProcessing] = useState(false);
@@ -36,15 +36,7 @@ const Checkout = () => {
                if (err) return toast.error('Lỗi khi lấy thông tin voucher !');
           }
 
-          const receiveHookPayment = async () => {
-               const { response, err } = await customerApi.receiveHookPayment();
-               if (response.data.code === '00') {
-                    setIsPayment(true);
-                    // create booking
-               }
-          };
           getCustomerVouchers();
-          receiveHookPayment();
 
      }, []);
 
@@ -73,26 +65,29 @@ const Checkout = () => {
 
 
      const handleCheckoutProcess = async () => {
+          // Check for pending bookings
+          const { response: bookingsResponse, err: bookingsErr } = await customerApi.getBookings(user.userData.account.id);
+          if (bookingsErr) {
+               toast.error(bookingsErr.message);
+               return;
+          }
+
+          // Check if there are any pending bookings
+          const pendingBooking = bookingsResponse.find(booking => booking.status === 'PENDING');
+          if (pendingBooking) {
+               toast.error('You have a pending booking. Please complete or cancel it before making a new payment.');
+               return;
+          }
+
           const updatedBookingData = { ...bookingData, voucher_code: voucherCode, total_price: totalPrice };
 
-          setBookingData(updatedBookingData);
+          dispatch(setBookingData(updatedBookingData));
           setIsProcessing(true);
 
-          if (isPayment) {
-               const { response, err } = await customerApi.createBooking(bookingData);
-               if (response) {
-                    toast.success('Thanh toán thành công !');
-                    navigate("/booking_history");
-               }
-               if (err) toast.error(err.message);
-               setIsProcessing(false);
-               return;
-          } else {
-               const { response, err } = await customerApi.createPaymentLink(updatedBookingData);
-               if (response) window.open(response.url, '_self');
-               if (err) toast.error(err.message);
-               setIsProcessing(false);
-          }
+          const { response, err } = await customerApi.createPaymentLink(updatedBookingData);
+          if (response) window.open(response.url, '_self');
+          if (err) toast.error(err.message);
+          setIsProcessing(false);
      }
 
      return (
