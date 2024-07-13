@@ -14,9 +14,16 @@ const app = express();
 const jsonPath = path.resolve('./api/swagger_output.json');
 const swaggerFile = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
 
+// Detailed CORS configuration
+const corsOptions = {
+    origin: ['https://phobypho.vercel.app'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed methods
+    allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
+    credentials: true, // Enable credentials
+    optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
+};
 
-
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -27,7 +34,6 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
 }));
-
 
 app.use("/api/v1", routes);
 
