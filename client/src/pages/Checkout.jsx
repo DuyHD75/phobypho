@@ -75,7 +75,7 @@ const Checkout = () => {
           // Check if there are any pending bookings
           const pendingBooking = bookingsResponse.find(booking => booking.status === 'PENDING');
           if (pendingBooking) {
-               toast.error('You have a pending booking. Please complete or cancel it before making a new payment.');
+               toast.error('Bạn có một lịch hẹn đang chờ xử lý, vui lòng chờ cho đến khi lịch hẹn được xác nhận !');
                return;
           }
 
