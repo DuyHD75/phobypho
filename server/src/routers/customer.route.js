@@ -19,4 +19,8 @@ router.get('/:photoId/booking', tokenMiddleware.authenticate, customerController
 
 router.put('/bookings/:bookingId/status', tokenMiddleware.authenticate, customerController.updateBookingStatus);
 
+router.post('/create-payment-link', tokenMiddleware.authenticate, customerController.generatePaymentLink);
+
+
+router.post("/receive-hook", customerController.receiveHookPayment);
 export default router;

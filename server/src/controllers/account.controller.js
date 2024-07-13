@@ -203,6 +203,8 @@ const updateInfo = async (req, res) => {
       { new: true }
     );
 
+ 
+
     if (!updatedAccount) {
       return responseHandler.error(res, "Update information account error !");
     }
@@ -223,24 +225,19 @@ const updateInfo = async (req, res) => {
           },
         },
         { new: true }
-      );
+      ).select("-account -createdAt -updatedAt -__v");
 
       if (updatedPhotographer) {
         photographerData = updatedPhotographer.toObject();
       }
     }
 
-
-    const response = {
+    return responseHandler.ok(res, {
       userData: {
-        account: {
-          ...updatedAccount._doc
-        },
+        account: updatedAccount._doc,
         ...photographerData,
-      },
-    };
-
-    return responseHandler.ok(res, response);
+      }
+    });
   } catch (error) {
     console.error(error);
     return responseHandler.error(res);

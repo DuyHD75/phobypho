@@ -4,8 +4,6 @@ import userReducer from './features/userSlice';
 import authModalReducer from './features/authModalSlice';
 import globalLoadingReducer from './features/globalLoading';
 
-
-
 const store = configureStore({
      reducer: {
           appState: appStateReducer,

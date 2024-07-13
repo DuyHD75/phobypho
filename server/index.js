@@ -16,7 +16,7 @@ const swaggerFile = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
 
 // Detailed CORS configuration
 const corsOptions = {
-    origin: ['https://phobypho.vercel.app'],
+    origin: ['https://phobypho.vercel.app', 'http://localhost:3000'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed methods
     allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
     credentials: true, // Enable credentials

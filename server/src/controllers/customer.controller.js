@@ -32,7 +32,8 @@ const transporter = nodemailer.createTransport({
 });
 
 
-const createNewBooking = async (req, res) => {
+const generatePaymentLink = async (req, res) => {
+
      try {
           const { account } = req;
           const { photo, service_package, total_price, location, photo_session, voucher_code, } = req.body;
@@ -40,54 +41,67 @@ const createNewBooking = async (req, res) => {
           const booking = {
                orderCode: orderCode,
                amount: 10000,
-               description: `${orderCode}`,
-               returnUrl: `${DOMAIN}`,
-               cancelUrl: `${DOMAIN}`
+               description: `PHOBYPHO: ${orderCode}`,
+               returnUrl: `${DOMAIN}/checkout`,
+               cancelUrl: `${DOMAIN}/checkout`,
           };
 
-          try {
-               const paymentLinkResponse = await payos.createPaymentLink(booking);
-               res.redirect(paymentLinkResponse.checkoutUrl);
-               // console.log(paymentLinkResponse.checkoutUrl);
-               // res.status(200).json({
-               //      url: paymentLinkResponse.checkoutUrl
-               // })
-          } catch (error) {
-               console.error(error);
-               res.send('Something went error');
+          const paymentLinkResponse = await payos.createPaymentLink(booking);
+          responseHandler.ok(res, { url: paymentLinkResponse.checkoutUrl });
+
+     } catch (error) {
+          console.error("create payment link: ", error);
+          responseHandler.error(res, error.message);
+     }
+};
+
+
+const receiveHookPayment = async (req, res) => {
+     try {
+         console.log("receive hook payment: ", req.body);
+         // createNewBooking
+     }catch (error) {
+          console.error("receive hook payment: ", error);
+          responseHandler.error(res, error.message);
+     }
+}
+
+
+const createNewBooking = async (req, res) => {
+     try {
+          const { account } = req;
+          const { photo, service_package, total_price, location, photo_session, voucher_code, } = req.body;
+          let rateByRank = 0;
+          if (photo.type_of_account) {
+               rateByRank = getRateByRanking(photo.type_of_account);
           }
+          let profit_rate = parseInt(service_package.profit) / 100;
 
-          // let rateByRank = 0;
-          // if (photo.type_of_account) {
-          //      rateByRank = getRateByRanking(photo.type_of_account);
-          // }
-          // let profit_rate = parseInt(service_package.profit) / 100;
+          const booking = new bookingModel({
+               photo: photo.id,
+               poster: photo.poster,
+               photographer: photo.author,
+               photographerName: photo.account.displayName,
+               photographerEmail: photo.account.email,
+               customer: account._id,
+               location: location,
+               servicePackageId: service_package._id,
+               servicePackageName: service_package.name,
+               booking_date: photo_session,
+               status: ORDER_STATUS.pending,
+               photographer_rate: profit_rate - rateByRank,
+               total_price: total_price,
+          });
 
-          // const booking = new bookingModel({
-          //      photo: photo.id,
-          //      poster: photo.poster,
-          //      photographer: photo.author,
-          //      photographerName: photo.account.displayName,
-          //      photographerEmail: photo.account.email,
-          //      customer: account._id,
-          //      location: location,
-          //      servicePackageId: service_package._id,
-          //      servicePackageName: service_package.name,
-          //      booking_date: photo_session,
-          //      status: ORDER_STATUS.pending,
-          //      photographer_rate: profit_rate - rateByRank,
-          //      total_price: total_price,
-          // });
+          await booking.save();
 
-          // await booking.save();
+          if (voucher_code) {
+               await checkVoucherAndUpdateCustomer(account._id, voucher_code);
+          }
+          await emailCheckoutSender(req, res);
 
-          // if (voucher_code) {
-          //      await checkVoucherAndUpdateCustomer(account._id, voucher_code);
-          // }
-          // await emailCheckoutSender(req, res);
-
-          // await updatePhotographerInfo(photo.author);
-          // return responseHandler.created(res, booking);
+          await updatePhotographerInfo(photo.author);
+          return responseHandler.created(res, booking);
      } catch (error) {
           console.log("Error creating new booking: ", error);
           responseHandler.error(res, error.message);
@@ -414,5 +428,6 @@ export default {
      getCustomerByAccountId, updatePoints,
      getCustomerVouchers, emailCheckoutSender,
      getCustomerBookingByPhotoId, updateBookingStatus,
-     updateCustomerPoints, checkRankingOfPhotographer
+     updateCustomerPoints, checkRankingOfPhotographer, 
+     generatePaymentLink, receiveHookPayment
 };

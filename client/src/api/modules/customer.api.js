@@ -1,3 +1,4 @@
+import { create } from "@mui/material/styles/createTransitions";
 import privateClient from "../client/private.client";
 
 const customerEndpoints = {
@@ -9,7 +10,8 @@ const customerEndpoints = {
    updatePoints: (customerId) => `customers/${customerId}/points`,
    customerVouchers: `customers/vouchers`,
    getBookingByPhotoId: (photoId) => `customers/${photoId}/booking`,
-   cancelBooking: (bookingId) => `customers/bookings/${bookingId}/status`
+   cancelBooking: (bookingId) => `customers/bookings/${bookingId}/status`, 
+   createPaymentLink: "customers/create-payment-link"
 };
 
 
@@ -79,14 +81,15 @@ const customerApi = {
          return { err };
       }
    },
-   cancelBooking: async (bookingId, status, cancelFee) => {
+   createPaymentLink: async (bookingData) => {
       try {
-         const response = await privateClient.put(customerEndpoints.cancelBooking(bookingId), { status, cancelFee });
+         const response = await privateClient.post(customerEndpoints.createPaymentLink, bookingData);
          return { response };
       } catch (err) {
          return { err };
       }
-   }
+   }, 
+
 };
 
 export default customerApi;
