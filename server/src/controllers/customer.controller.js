@@ -42,8 +42,8 @@ const generatePaymentLink = async (req, res) => {
                orderCode: orderCode,
                amount: 10000,
                description: `PHOBYPHO: ${orderCode}`,
-               returnUrl: `${DOMAIN}/checkout`,
-               cancelUrl: `${DOMAIN}/checkout`,
+               returnUrl: `${DOMAIN}`,
+               cancelUrl: `${DOMAIN}`,
           };
 
           const paymentLinkResponse = await payos.createPaymentLink(booking);
@@ -58,9 +58,12 @@ const generatePaymentLink = async (req, res) => {
 
 const receiveHookPayment = async (req, res) => {
      try {
-         console.log("receive hook payment: ", req.body);
-         // createNewBooking
-     }catch (error) {
+          console.log("receive hook payment: ", req.body);
+          res.status(200).json({
+               message: "Oke bay rồi",
+               data: req.body
+          })
+     } catch (error) {
           console.error("receive hook payment: ", error);
           responseHandler.error(res, error.message);
      }
@@ -428,6 +431,6 @@ export default {
      getCustomerByAccountId, updatePoints,
      getCustomerVouchers, emailCheckoutSender,
      getCustomerBookingByPhotoId, updateBookingStatus,
-     updateCustomerPoints, checkRankingOfPhotographer, 
+     updateCustomerPoints, checkRankingOfPhotographer,
      generatePaymentLink, receiveHookPayment
 };
