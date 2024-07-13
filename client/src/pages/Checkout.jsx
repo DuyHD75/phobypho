@@ -62,7 +62,6 @@ const Checkout = () => {
                const voucher = vouchers.find(voucher => voucher.code === userEntryCode);
 
                if (voucher) {
-
                     setVoucherCode(voucher.code);
                     setTotalPrice(currentPrice * (1 - voucher.value / 100));
                     setErrorMessage(undefined);
@@ -80,16 +79,16 @@ const Checkout = () => {
           setBookingData(updatedBookingData);
 
           setIsProcessing(true);
-          const { response, err } = await customerApi.createBooking(updatedBookingData);
+         await customerApi.createBooking(updatedBookingData);
           setIsProcessing(false);
-          if (response) {
-               navigate(`/booking_history`);
-               return toast.success('Thanh toán thành công !');
-          }
-          if (err) {
-               return toast.error(err.message);
-          }
-     };
+          // if (response) {
+          //      navigate(`/booking_history`);
+          //      return toast.success('Thanh toán thành công !');
+          // }
+          // if (err) {
+          //      return toast.error(err.message);
+          // }
+     }; 
 
      return (
           <Fragment>
@@ -295,7 +294,7 @@ const Checkout = () => {
                                                   ...uiConfigs.style.typoLines(3, 'right')
                                              }}
                                         >
-                                             {moment(new Date().getTime()).format('dddd, MMMM YYYY  HH:mm')}
+                                             {moment(new Date().getTime()).format('DD-MM-YYYY  HH:mm')}
                                         </Typography>
 
 
@@ -322,7 +321,7 @@ const Checkout = () => {
                                                   ...uiConfigs.style.typoLines(3, 'right')
                                              }}
                                         >
-                                             {moment(bookingData.photo_session).format('dddd, MMMM YYYY  HH:mm')}
+                                             {moment(bookingData.photo_session).format('DD-MM-YYYY  HH:mm')}
                                         </Typography>
 
 

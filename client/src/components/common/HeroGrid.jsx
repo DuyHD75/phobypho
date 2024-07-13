@@ -46,7 +46,6 @@ const HeroGrid = () => {
 
   }, []);
 
-  console.log(photoList)
 
 
   const handleImageLoad = (imageId) => {

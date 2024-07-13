@@ -11,8 +11,8 @@ import jwt from "jsonwebtoken";
 
 const signup = async (req, res) => {
   try {
-    const { username, displayName, password, role, phoneNumber, email } =
-      req.body;
+    const { username, displayName, password, role, phoneNumber, email } = req.body;
+
 
     const isExisted = await accountModel.findOne({ username });
 
@@ -30,7 +30,9 @@ const signup = async (req, res) => {
           : ROLES_LIST.customer,
     });
     account.setPassword(password);
+
     await account.save();
+
     let photographer = null;
 
     if (role === ROLES_LIST.photographer) {
@@ -61,7 +63,12 @@ const signup = async (req, res) => {
     responseHandler.created(res, {
       token,
       ...account._doc,
-      userData: photographer ? photographer : {},
+      userData: {
+        account: {
+          ...account._doc,
+        },
+        ...photographer,
+      }
     });
   } catch (error) {
     console.error(error);
@@ -72,29 +79,12 @@ const signup = async (req, res) => {
 const login = async (req, res, next) => {
   try {
     const { username, password } = req.body;
-    const userData = {};
-
+    let userData = {};
     const account = await accountModel
       .findOne({ username })
       .select(
         "id username displayName password salt phoneNumber email role avatar"
       );
-
-    if (account.role === ROLES_LIST.photographer) {
-      const photographer = await photographerModel
-        .findOne({ account: account.id })
-        .select(
-          "location status gender age description experienceYears bookingCount type_of_account"
-        );
-      userData.location = photographer.location;
-      userData.status = photographer.status;
-      userData.gender = photographer.gender;
-      userData.age = photographer.age;
-      userData.description = photographer.description;
-      userData.experienceYears = photographer.experienceYears;
-      userData.bookingCount = photographer.bookingCount;
-      userData.type_of_account = photographer.type_of_account;
-    }
 
     if (account == null)
       return responseHandler.notfound(res, "Tài khoản không tìm thấy !");
@@ -102,21 +92,26 @@ const login = async (req, res, next) => {
     if (!account.validatePassword(password))
       return responseHandler.badRequest(res, "Sai mật khẩu !");
 
-    const token = createToken(account.id);
+    if (account.role === ROLES_LIST.photographer) {
+      userData = await photographerModel
+        .findOne({ account: account.id })
+        .populate("account", "-password -salt");
+    } else {
+      userData = await customerModel
+        .findOne({ account: account.id })
+        .populate("account", "-password -salt");
+    }
 
-    account.password = undefined;
-    account.salt = undefined;
-    userData.token = token;
+    const token = createToken(account.id);
+    req.account = account;
 
     responseHandler.created(res, {
       token,
       id: account.id,
-      ...account._doc,
       userData,
     });
-    req.account = account;
 
-    // Call isNewQuarterPhotographer here without sending a response
+
     if (account.role === ROLES_LIST.photographer) {
       const currentDate = new Date();
       const currentQuarter = Math.floor(currentDate.getMonth() / 3) + 1;
@@ -150,7 +145,6 @@ const isNewQuarterPhotographer = async (req, res) => {
   try {
     const { account } = req;
     if (account.role === ROLES_LIST.photographer) {
-      // console.log(account._id);
       await customerController.checkRankingOfPhotographer(account._id);
     }
   } catch (error) {
@@ -182,39 +176,42 @@ const updatePassword = async (req, res) => {
 
 const getInfo = async (req, res) => {
   try {
-    let userInfo = {};
+    let userData = {};
     if (req.account.role === ROLES_LIST.customer) {
-      userInfo = await customerModel
+      userData = await customerModel
         .findOne({ account: req.account.id })
         .populate("account");
     } else {
-      userInfo = await photographerModel
+      userData = await photographerModel
         .findOne({ account: req.account.id })
         .populate("account");
     }
-    return responseHandler.ok(res, userInfo);
+    return responseHandler.ok(res, { userData });
   } catch {
     responseHandler.error(res);
   }
 };
 
+
 const updateInfo = async (req, res) => {
   try {
-    let userData = {};
+    let photographerData = {};
+
     const updatedAccount = await accountModel.findOneAndUpdate(
       { _id: req.account.id },
       { $set: req.body },
       { new: true }
     );
 
-    if (!updatedAccount)
+    if (!updatedAccount) {
       return responseHandler.error(res, "Update information account error !");
+    }
 
     if (
       req.account.role === ROLES_LIST.photographer &&
       req.body.location != null
     ) {
-      userData = await photographerModel.findOneAndUpdate(
+      const updatedPhotographer = await photographerModel.findOneAndUpdate(
         { account: req.account.id },
         {
           $set: {
@@ -227,39 +224,40 @@ const updateInfo = async (req, res) => {
         },
         { new: true }
       );
-      if (!userData)
-        return responseHandler.error(res, "Update information account error !");
+
+      if (updatedPhotographer) {
+        photographerData = updatedPhotographer.toObject();
+      }
     }
 
-    return responseHandler.ok(res, { ...updatedAccount.toObject(), userData });
-  } catch {
-    responseHandler.error(res);
+
+    const response = {
+      userData: {
+        account: {
+          ...updatedAccount._doc
+        },
+        ...photographerData,
+      },
+    };
+
+    return responseHandler.ok(res, response);
+  } catch (error) {
+    console.error(error);
+    return responseHandler.error(res);
   }
 };
+
+
 const gglogin = async (req, res) => {
   try {
-    // console.log(req.user);
     const user = req.user;
     const account = await accountModel.findOne({ email: user.email }).select(
       "id username displayName password salt phoneNumber email role avatar"
     );
 
     if (account) {
-    const userData = {};
-
-    const token = createToken(account.id);
-
-    account.password = undefined;
-    account.salt = undefined;
-    userData.token = token; 
-
-    // responseHandler.created(res, {
-    //   token,
-    //   id: account.id,
-    //   ...account._doc,
-    //   userData,
-    // });
-    req.account = account;
+      account.password = undefined;
+      account.salt = undefined;
     } else {
       const account = new accountModel({
         username: user.email,
@@ -273,15 +271,25 @@ const gglogin = async (req, res) => {
         account: account.id,
       });
       await customer.save();
-     
     }
-     res.redirect(process.env.CLIENT_URL || "http://localhost:3000");
+    const token = createToken(account.id);
+    const expirationDate = new Date(Date.now() + 6 * 60 * 60 * 1000); // 6 hours
+
+    console.log("Generated Token:", token);
+
+    res.cookie('accessToken', token, {
+      httpOnly: true,
+      expires: expirationDate,
+    });
+
+    return res.status(200).redirect("http://localhost:3000/");
   } catch (error) {
     console.error(error);
-    responseHandler.error(res); // Assuming this is a function to handle errors
+    responseHandler.error(res);
   }
 };
-// You need to implement `findUserByEmail`, `loginUser`, and `createUser` based on your database and application logic.
+
+
 const transporter = nodemailer.createTransport({
   service: process.env.EMAIL_SERVICE,
   auth: {
@@ -303,7 +311,7 @@ const forgotPassword = async (req, res) => {
     user.passwordResetExpires = Date.now() + 3600000; // 1 hour
     await user.save();
 
-    const resetUrl = `${process.env.CLIENT_URL || 'http://localhost:3000'}/reset-password?token=${token}`;
+    const resetUrl = `${'http://localhost:3000' || process.env.CLIENT_URL}/reset-password?token=${token}`;
     const mailOptions = {
       from: process.env.EMAIL_ADDRESS,
       to: user.email,

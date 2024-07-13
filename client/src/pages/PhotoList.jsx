@@ -60,8 +60,9 @@ const PhotoListPage = () => {
         if (err) {
           toast.error(err.message);
         } else if (response) {
-          setPhotos([...response]);
-          setFilteredList([...response].slice(0, 8));
+          const filtered = response.filter(item => item.photographer.status !== "BAN");
+          setPhotos([...filtered]);
+          setFilteredList([...filtered].slice(0, 8));
         }
       } catch (error) {
         console.error("Error in getListPhotos:", error);

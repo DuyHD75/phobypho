@@ -25,16 +25,10 @@ router.use("/upload-image", uploadRouter);
 
 router.use("/services", serviceRouter);
 
-router.use("/vouchers", voucherRouter); 
+router.use("/vouchers", voucherRouter);
 
 router.use("/admins", adminRouter);
 
-
-
-
-
-
-// router.use("/checkout", )
 
 
 

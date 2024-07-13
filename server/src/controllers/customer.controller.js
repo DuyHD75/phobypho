@@ -6,13 +6,20 @@ import voucherModel from "../models/voucher.model.js";
 import customerModel from "../models/customer.model.js";
 import bookingModel from "../models/booking.model.js";
 import photographerModel from "../models/photographer.model.js";
-
-
+import PayOS from "@payos/node";
 
 import * as dotenv from "dotenv";
 dotenv.config();
 
 import EmailUtils from "../utils/email.util.js";
+
+const payos = new PayOS(
+     process.env.PAYOS_CLIENT_ID,
+     process.env.PAYOS_API_KEY,
+     process.env.PAYOS_CHECKSUM_KEY
+);
+
+const DOMAIN = process.env.CLIENT_URL;
 
 const transporter = nodemailer.createTransport({
      host: process.env.EMAIL_HOST,
@@ -23,6 +30,69 @@ const transporter = nodemailer.createTransport({
           pass: process.env.EMAIL_PASSWORD,
      },
 });
+
+
+const createNewBooking = async (req, res) => {
+     try {
+          const { account } = req;
+          const { photo, service_package, total_price, location, photo_session, voucher_code, } = req.body;
+          const orderCode = Number(String(Date.now()).slice(-6));
+          const booking = {
+               orderCode: orderCode,
+               amount: 10000,
+               description: `${orderCode}`,
+               returnUrl: `${DOMAIN}`,
+               cancelUrl: `${DOMAIN}`
+          };
+
+          try {
+               const paymentLinkResponse = await payos.createPaymentLink(booking);
+               res.redirect(paymentLinkResponse.checkoutUrl);
+               // console.log(paymentLinkResponse.checkoutUrl);
+               // res.status(200).json({
+               //      url: paymentLinkResponse.checkoutUrl
+               // })
+          } catch (error) {
+               console.error(error);
+               res.send('Something went error');
+          }
+
+          // let rateByRank = 0;
+          // if (photo.type_of_account) {
+          //      rateByRank = getRateByRanking(photo.type_of_account);
+          // }
+          // let profit_rate = parseInt(service_package.profit) / 100;
+
+          // const booking = new bookingModel({
+          //      photo: photo.id,
+          //      poster: photo.poster,
+          //      photographer: photo.author,
+          //      photographerName: photo.account.displayName,
+          //      photographerEmail: photo.account.email,
+          //      customer: account._id,
+          //      location: location,
+          //      servicePackageId: service_package._id,
+          //      servicePackageName: service_package.name,
+          //      booking_date: photo_session,
+          //      status: ORDER_STATUS.pending,
+          //      photographer_rate: profit_rate - rateByRank,
+          //      total_price: total_price,
+          // });
+
+          // await booking.save();
+
+          // if (voucher_code) {
+          //      await checkVoucherAndUpdateCustomer(account._id, voucher_code);
+          // }
+          // await emailCheckoutSender(req, res);
+
+          // await updatePhotographerInfo(photo.author);
+          // return responseHandler.created(res, booking);
+     } catch (error) {
+          console.log("Error creating new booking: ", error);
+          responseHandler.error(res, error.message);
+     }
+};
 
 const emailCheckoutSender = async (req, res) => {
      try {
@@ -161,12 +231,12 @@ const checkVoucherAndUpdateCustomer = async (account, voucher_code) => {
 
      console.log("The number of voucher of customer: ", customer.vouchers.length);
 
-     
+
      if (!customer.vouchers.includes(voucher._id)) {
           throw new Error("Bạn không có quyền sử dụng mã voucher này !");
      }
 
-     
+
 
      customer.vouchers = customer.vouchers.filter(
           (v) => v.toString() !== voucher._id.toString()
@@ -224,47 +294,7 @@ const checkRankingOfPhotographer = async (photographerId) => {
 
 
 
-const createNewBooking = async (req, res) => {
-     try {
-          const { account } = req;
-          const { photo, service_package, total_price, location, photo_session, voucher_code, } = req.body;
 
-
-          let rateByRank = 0;
-          if(photo.type_of_account) {
-               rateByRank = getRateByRanking(photo.type_of_account);
-          }
-          let profit_rate = parseInt(service_package.profit) / 100;
-
-          const booking = new bookingModel({
-               photo: photo.id,
-               poster: photo.poster,
-               photographer: photo.author,
-               photographerName: photo.account.displayName,
-               photographerEmail: photo.account.email,
-               customer: account._id,
-               location: location,
-               servicePackageId: service_package._id,
-               servicePackageName: service_package.name,
-               booking_date: photo_session,
-               status: ORDER_STATUS.pending,
-               photographer_rate: profit_rate - rateByRank, // rate mình ăn hoa hồng 
-               total_price: total_price,
-          });
-
-          await booking.save();
-
-          if (voucher_code) {
-               await checkVoucherAndUpdateCustomer(account._id, voucher_code);
-          }
-          await emailCheckoutSender(req, res);
-
-          await updatePhotographerInfo(photo.author);
-          return responseHandler.created(res, booking);
-     } catch (error) {
-          responseHandler.error(res, error.message);
-     }
-};
 
 const updateCustomerPoints = async (req, res) => {
      try {

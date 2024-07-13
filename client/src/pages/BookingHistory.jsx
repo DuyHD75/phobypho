@@ -63,19 +63,19 @@ const BookingHistoryPage = () => {
      useEffect(() => {
           const getBookings = async () => {
 
-               if (user && user.role === "CUSTOMER") {
-                    const { response, err } = await customerApi.getBookings(user._id);
+               if (user && user.userData.account.role === "CUSTOMER") {
+                    const { response, err } = await customerApi.getBookings(user.userData.account.id);
                     if (response) setBookings(response);
                     if (err) toast.error(err.message);
                } else {
-                    const { response, err } = await photographerApi.getBookingOfPhotographer(user.id);
+                    const { response, err } = await photographerApi.getBookingOfPhotographer(user.userData.account.id);
                     if (response) setBookings(response);
                     if (err) toast.error(err.message);
                }
 
           }
           getBookings();
-     }, [user]);
+     }, []);
 
      const handleCancelBooking = async (bookingId, bookingDate, total_price, createdAt) => {
           const currentTime = moment();
@@ -275,8 +275,8 @@ const BookingHistoryPage = () => {
                                              <StyledTableCell align="left">Combo</StyledTableCell>
                                              <StyledTableCell align="left">Trạng Thái</StyledTableCell>
                                              <StyledTableCell align="left">Tổng Tiền</StyledTableCell>
-                                             {user.role === "CUSTOMER" && <StyledTableCell align="left">Hủy</StyledTableCell>}
-                                             {user.role === "CUSTOMER" && <StyledTableCell align="left">Đánh giá</StyledTableCell>}
+                                             {user.userData.account.role === "CUSTOMER" && <StyledTableCell align="left">Hủy</StyledTableCell>}
+                                             {user.userData.account.role === "CUSTOMER" && <StyledTableCell align="left">Đánh giá</StyledTableCell>}
                                         </TableRow>
                                    </TableHead>
                                    <TableBody>
@@ -313,7 +313,7 @@ const BookingHistoryPage = () => {
                                                             row.total_price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
                                                        }</StyledTableCell>
 
-                                                       {user.role === "CUSTOMER" && (<StyledTableCell align="left">{
+                                                       {user.userData.account.role === "CUSTOMER" && (<StyledTableCell align="left">{
                                                             <Button
                                                                  variant="outlined"
                                                                  onClick={() => handleCancelBooking(row.id, row.booking_date, row.total_price, row.createdAt)}
@@ -324,7 +324,7 @@ const BookingHistoryPage = () => {
                                                             </Button>
                                                        }</StyledTableCell>)}
 
-                                                       {user.role === "CUSTOMER" && (<StyledTableCell align="left">{
+                                                       {user.userData.account.role === "CUSTOMER" && (<StyledTableCell align="left">{
                                                             <Button
                                                                  variant="outlined"
                                                                  onClick={() => {
