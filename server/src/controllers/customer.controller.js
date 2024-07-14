@@ -63,6 +63,7 @@ const generatePaymentLink = async (req, res) => {
 const receiveHookPayment = async (req, res) => {
      try {
           const { account } = req;
+          console.log(req.body);
        
           if (req.body.code === "00")
                responseHandler.ok(res, { message: "Thanh toán thành công !", data: req.body });

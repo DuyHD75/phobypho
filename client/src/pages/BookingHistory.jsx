@@ -68,7 +68,7 @@ const BookingHistoryPage = () => {
                     if (response) setBookings(response);
                     if (err) toast.error(err.message);
                } else {
-                    const { response, err } = await photographerApi.getBookingOfPhotographer(user.userData.account._id);
+                    const { response, err } = await photographerApi.getBookingOfPhotographer(user.userData.account.id);
                     if (response) setBookings(response);
                     if (err) toast.error(err.message);
                }
