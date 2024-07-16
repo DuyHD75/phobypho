@@ -25,9 +25,8 @@ import NotFound from '../components/common/NotFound';
 import moment from 'moment';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-
-
-
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -282,7 +281,7 @@ const BookingHistoryPage = () => {
                                             <StyledTableCell align="left">{row.location}</StyledTableCell>
                                             <StyledTableCell align="left">{dayjs(row.createdAt).format("DD-MM-YYYY HH:mm")}</StyledTableCell>
                                             <StyledTableCell align="left">
-                                                {row.booking_date}
+                                                {dayjs.utc(row.booking_date).format("DD-MM-YYYY HH:mm")}
                                             </StyledTableCell>
                                             <StyledTableCell align="left">{row.servicePackageName}</StyledTableCell>
                                             <StyledTableCell
