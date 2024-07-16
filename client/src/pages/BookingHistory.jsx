@@ -26,8 +26,7 @@ import moment from 'moment';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 
-dayjs.extend(utc);
-dayjs.extend(timezone);
+
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
