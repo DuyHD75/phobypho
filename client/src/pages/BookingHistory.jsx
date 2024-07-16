@@ -22,6 +22,13 @@ import { toast } from 'react-toastify';
 import ORDER_STATUS from '../api/configs/OrderStatus.Config';
 import photographerApi from '../api/modules/photographer.api';
 import NotFound from '../components/common/NotFound';
+import moment from 'moment';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
