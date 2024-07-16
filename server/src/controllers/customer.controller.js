@@ -42,7 +42,7 @@ const generatePaymentLink = async (req, res) => {
           const orderCode = Number(String(Date.now()).slice(-6));
           const booking = {
                orderCode: orderCode,
-               amount: 10000,
+               amount: total_price,
                description: `PHOBYPHO: ${orderCode}`,
                returnUrl: `${DOMAIN}/booking_history`,
                cancelUrl: `${DOMAIN}/photos`,
