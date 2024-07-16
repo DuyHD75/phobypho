@@ -97,6 +97,13 @@ const customerApi = {
       } catch (err) {
          return { err };
       }
+   }, cancelBooking: async (bookingId, status, cancelFee) => {
+      try {
+         const response = await privateClient.put(customerEndpoints.cancelBooking(bookingId), { status, cancelFee });
+         return { response };
+      } catch (err) {
+         return { err };
+      }
    }
 
 };
