@@ -282,7 +282,7 @@ const BookingHistoryPage = () => {
                                             <StyledTableCell align="left">{row.location}</StyledTableCell>
                                             <StyledTableCell align="left">{dayjs(row.createdAt).format("DD-MM-YYYY HH:mm")}</StyledTableCell>
                                             <StyledTableCell align="left">
-                                                {dayjs(row.booking_date).format("DD-MM-YYYY HH:mm")}
+                                                {moment(row.booking_date.format('YYYY-MM-DD HH:mm'))}
                                             </StyledTableCell>
                                             <StyledTableCell align="left">{row.servicePackageName}</StyledTableCell>
                                             <StyledTableCell
