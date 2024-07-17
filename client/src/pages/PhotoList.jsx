@@ -39,12 +39,12 @@ const PhotoListPage = () => {
     window.scrollTo(0, 0);
   }, [dispatch]);
 
-  const onLoadMore = () => {
-    const newPage = currPage + 1;
-    setCurrPage(newPage);
-    const newFilteredList = filterPhotos(currCategory, findIndex).slice(0, newPage * 8);
-    setFilteredList(newFilteredList);
-  };
+  // const onLoadMore = () => {
+  //   const newPage = currPage + 1;
+  //   setCurrPage(newPage);
+  //   const newFilteredList = filterPhotos(currCategory, findIndex).slice(0, newPage * 8);
+  //   setFilteredList(newFilteredList);
+  // };
 
 
   useEffect(() => {
@@ -76,7 +76,7 @@ const PhotoListPage = () => {
     };
 
     getListPhotos();
-  }, [currCategory, currPage, dispatch]);
+  }, []);
 
 
 
