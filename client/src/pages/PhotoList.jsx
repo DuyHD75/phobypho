@@ -100,7 +100,7 @@ const PhotoListPage = () => {
     if (currCategory === categoryIndex) return;
     setCurrCategory(categoryIndex);
     const filtered = filterPhotos(categoryIndex);
-    setFilteredList(filtered.slice(0, 8));
+    setFilteredList(filtered);
     setCurrPage(1);
   };
 
