@@ -34,12 +34,17 @@ const PhotoListPage = () => {
 
 
 
-  const onLoadMore = () => setCurrPage(currPage + 1);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [dispatch]);
 
+  const onLoadMore = () => {
+    const newPage = currPage + 1;
+    setCurrPage(newPage);
+    const newFilteredList = filterPhotos(currCategory, findIndex).slice(0, newPage * 8);
+    setFilteredList(newFilteredList);
+  };
 
 
   useEffect(() => {
@@ -62,7 +67,7 @@ const PhotoListPage = () => {
         } else if (response) {
           const filtered = response.filter(item => item.photographer.status !== "BAN");
           setPhotos([...filtered]);
-          setFilteredList([...filtered].slice(0, 8));
+          setFilteredList(filtered);
         }
       } catch (error) {
         console.error("Error in getListPhotos:", error);
@@ -71,7 +76,10 @@ const PhotoListPage = () => {
     };
 
     getListPhotos();
-  }, []);
+  }, [currCategory, currPage, dispatch]);
+
+
+
 
   const filterPhotos = useCallback((categoryIndex = 0, userInputText = '') => {
     const selectedCategory = categoriesMemo[categoryIndex];
@@ -180,27 +188,30 @@ const PhotoListPage = () => {
 
         <PostGrid photos={filteredList} />
 
-        {photos.length > 10 && (<LoadingButton
-          variant="contained"
-          sx={{
-            marginTop: 8,
-            width: "10rem",
-            color: "secondary.colorText",
-            position: "relative",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            border: "1px solid primary.main",
-            ...uiConfigs.style.typoLines(1, "center"),
-            "&:hover": { bgcolor: "primary.main" },
-          }}
-          loading={photoLoading}
-          onClick={onLoadMore}
-        >
-          load more
-        </LoadingButton>)}
+       
       </Box>
     </Fragment>
   );
 };
 
 export default PhotoListPage;
+
+
+// {photos.length > 10 && (<LoadingButton
+//   variant="contained"
+//   sx={{
+//     marginTop: 8,
+//     width: "10rem",
+//     color: "secondary.colorText",
+//     position: "relative",
+//     left: "50%",
+//     transform: "translate(-50%, -50%)",
+//     border: "1px solid primary.main",
+//     ...uiConfigs.style.typoLines(1, "center"),
+//     "&:hover": { bgcolor: "primary.main" },
+//   }}
+//   loading={photoLoading}
+//   onClick={onLoadMore}
+// >
+//   load more
+// </LoadingButton>)}

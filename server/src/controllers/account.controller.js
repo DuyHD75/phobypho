@@ -270,11 +270,11 @@ const gglogin = async (req, res) => {
       await customer.save();
     }
     const token = createToken(account.id);
-    const expirationDate = new Date(Date.now() + 6 * 60 * 60 * 1000); // 6 hours
+    const expirationDate = new Date(Date.now() + 6 * 60 * 60 * 1000);
 
     console.log("Generated Token:", token);
 
-    res.cookie('accessToken', token, {
+    res.cookie('jwtToken', token, {
       httpOnly: true,
       expires: expirationDate,
     });
