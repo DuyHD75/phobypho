@@ -86,6 +86,22 @@ const login = async (req, res, next) => {
         "id username displayName password salt phoneNumber email role avatar"
       );
 
+    if (account.role === ROLES_LIST.photographer) {
+      const photographer = await photographerModel
+        .findOne({ account: account.id })
+        .select(
+          "location status gender age description experienceYears bookingCount type_of_account bankName serialNumber"
+        );
+      userData.location = photographer.location;
+      userData.status = photographer.status;
+      userData.gender = photographer.gender;
+      userData.age = photographer.age;
+      userData.description = photographer.description; 
+      userData.experienceYears = photographer.experienceYears;
+      userData.bookingCount = photographer.bookingCount;
+      userData.type_of_account = photographer.type_of_account;
+    }
+
     if (account == null)
       return responseHandler.notfound(res, "Tài khoản không tìm thấy !");
 
@@ -222,6 +238,8 @@ const updateInfo = async (req, res) => {
             age: req.body.age,
             description: req.body.description,
             experienceYears: req.body.experienceYears,
+            bankName: req.body.bankName,
+            serialNumber: req.body.serialNumber,
           },
         },
         { new: true }
