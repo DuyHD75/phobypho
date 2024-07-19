@@ -65,30 +65,25 @@ const Footer = () => {
                                              textTransform: 'uppercase',
                                              color: '#000'
                                         }}>Liên Hệ Với Chúng Tôi</Typography>
+                                        <Typography
+                                             sx={{
+                                                  color: "#fff",
+                                                  textTransform: 'uppercase',
+                                                  fontWeight: '800',
+                                                  fontSize: '1.4rem',
+                                                  textAlign: 'center', 
+                                                  marginBottom: '1rem' ,
+                                                  textShadow: '1px 1px 1px #000'
+                                             }}
+                                        >PHOBYPHO.Service@gmail.com</Typography>
 
                                         <Typography sx={{
                                              ...uiConfigs.style.typoLines(1, 'center'),
                                              fontSize: '0.9rem',
                                              color: '#fff'
-                                        }}>Để có thể giải đáp thắc mắc hoặc tư vấn bạn có gửi mail về cho chúng tôi để có thể hỗ trợ bạn nhanh nhất nhé !</Typography>
+                                        }}>Để có thể giải đáp thắc mắc hoặc tư vấn bạn có thể gửi mail về cho chúng tôi để có thể hỗ trợ bạn nhanh nhất nhé !</Typography>
                                    </Box>
-                                   <Box sx={{
-                                        display: 'flex',
-                                        marginTop: '1rem',
-                                        width: '100%',
-                                        margin: '1rem',
-                                        alignItems: 'center',
-                                        justifyContent: 'center'
-
-                                   }}>
-                                        <TextField placeholder="Nhập email của bạn nhé ..." sx={{
-                                             width: '70%',
-                                             marginRight: '1rem',
-                                             padding: 0
-                                        }}></TextField>
-
-                                   </Box>
-
+                                  
                               </Box>
 
                          </Box>

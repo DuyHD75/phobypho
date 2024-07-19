@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -11,11 +11,17 @@ import { LoadingButton } from '@mui/lab';
 import { FaArrowRightFromBracket } from "react-icons/fa6";
 import uiConfigs from '../../configs/ui.config';
 import { FcGoogle } from "react-icons/fc";
+import privateClient from '../../api/client/private.client';
+import { getSessionData } from '../../api/client/private.client';
+
 const LoginModal = ({ switchAuthState }) => {
      const dispatch = useDispatch();
      const [isLoginRequest, setIsLoginRequest] = useState(false);
      const [errorMessage, setErrorMessage] = useState();
 
+     const handleLoginWithGoogle = async () => {
+          window.open("http://localhost:5000/api/v1/accounts/google", "_self");
+     }
      const loginForm = useFormik({
           initialValues: {
                username: "",
@@ -53,19 +59,19 @@ const LoginModal = ({ switchAuthState }) => {
                          fontSize: '1.2rem',
                          fontWeight: 800,
                          textAlign: 'center',
-                         marginBottom: '10px', 
+                         marginBottom: '10px',
                          ...uiConfigs.style.typoLines(1, "left")
                     }}
                >
                     Đăng Nhập
                     <Typography
-                    sx={{
-                         fontSize: '0.9rem',
-                         fontWeight: 400,
-                         textAlign: 'center',
-                         marginBottom: '10px', 
-                         ...uiConfigs.style.typoLines(1, "left")
-                    }}
+                         sx={{
+                              fontSize: '0.9rem',
+                              fontWeight: 400,
+                              textAlign: 'center',
+                              marginBottom: '10px',
+                              ...uiConfigs.style.typoLines(1, "left")
+                         }}
                     >Nhập username và password để đăng nhập!</Typography>
                </Typography>
 
@@ -82,7 +88,7 @@ const LoginModal = ({ switchAuthState }) => {
                          textTransform: 'none',
                          marginBottom: '10px'
                     }}
-                    onClick={() => window.open("http://localhost:5000/api/v1/accounts/google", "_self")}
+                    onClick={handleLoginWithGoogle}
                >
                     <FcGoogle style={{ fontSize: '1.6rem', marginRight: '10px' }} />
                     Đăng nhập với Google
@@ -164,7 +170,7 @@ const LoginModal = ({ switchAuthState }) => {
                     sx={{
                          marginTop: 2,
                          fontFamily: '"Nunito", sans-serif',
-                         fontSize: '1rem', 
+                         fontSize: '1rem',
                          textTransform: 'none',
                     }}
                     loading={isLoginRequest}

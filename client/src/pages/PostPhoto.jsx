@@ -40,7 +40,7 @@ const PostPhoto = () => {
   });
 
   const getPostPhoto = useCallback(async () => {
-    const { response, err } = await photoApi.getPostByAuth(user.id);
+    const { response, err } = await photoApi.getPostByAuth(user.userData.account.id);
 
     if (response && response.length > 0) {
       const { id, title, descriptions, poster, attachments, servicePackages } = response[0];
@@ -64,7 +64,7 @@ const PostPhoto = () => {
     if (err) {
       toast.error(err);
     }
-  }, [user.id]);
+  }, [user]);
 
   const getServices = useCallback(async () => {
     const { response, err } = await servicesApi.getList();

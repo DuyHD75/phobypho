@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import UserSidebar from "../components/common/UserSidebar";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import uiConfigs from "../configs/ui.config";
-
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -14,20 +13,21 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import customerApi from "../api/modules/customer.api";
 import { useSelector } from "react-redux";
-import moment from "moment";
+import dayjs from "dayjs";
 import { Link } from "react-router-dom";
-import { MdOutlineFreeCancellation } from "react-icons/md";
-import { MdOutlineRateReview } from "react-icons/md";
+import { MdOutlineFreeCancellation, MdOutlineRateReview } from "react-icons/md";
 import { IoCheckmarkDone } from "react-icons/io5";
-
 import CommonModal from "../components/common/CommonModal";
 import { LoadingButton } from "@mui/lab";
 import { toast } from "react-toastify";
 import ORDER_STATUS from "../api/configs/OrderStatus.Config";
-
 import photographerApi from "../api/modules/photographer.api";
 import NotFound from "../components/common/NotFound";
-// import { set } from "mongoose";
+import moment from "moment";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -50,33 +50,36 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 const BookingHistoryPage = () => {
   const { user } = useSelector((state) => state.user);
-
   const [bookings, setBookings] = useState([]);
   const [openModal, setOpenModal] = useState(false);
-  const [openModalConfirm, setOpenModalConfirm] = useState(false);
   const [bookingDate, setBookingDate] = useState();
   const [duration, setDuration] = useState();
   const [bookingId, setBookingId] = useState();
   const [isProcessing, setIsProcessing] = useState(false);
   const [cancelFee, setCancelFee] = useState();
   const [createdAt, setCreatedAt] = useState();
+  const [openModalConfirm, setOpenModalConfirm] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const getBookings = async () => {
-      if (user && user.role === "CUSTOMER") {
-        const { response, err } = await customerApi.getBookings(user._id);
+      if (user && user.userData.account.role === "CUSTOMER") {
+        const { response, err } = await customerApi.getBookings(
+          user.userData.account.id || user.userData.account._id
+        );
         if (response) setBookings(response);
         if (err) toast.error(err.message);
       } else {
         const { response, err } =
-          await photographerApi.getBookingOfPhotographer(user.id);
+          await photographerApi.getBookingOfPhotographer(
+            user.userData.account.id || user.userData.account._id
+          );
         if (response) setBookings(response);
         if (err) toast.error(err.message);
       }
     };
     getBookings();
-  }, [user]);
+  }, []);
 
   const handleCancelBooking = async (
     bookingId,
@@ -84,47 +87,24 @@ const BookingHistoryPage = () => {
     total_price,
     createdAt
   ) => {
-    const currentTime = moment();
-    const bookingTime = moment(bookingDate);
+    const currentTime = dayjs();
+    const bookingTime = dayjs(bookingDate);
 
     setCreatedAt(createdAt);
-
     setOpenModal(true);
     setBookingDate(bookingDate);
-    const remainingTime = moment.duration(bookingTime.diff(currentTime));
+
+    const remainingTime = bookingTime.diff(currentTime);
     setDuration(remainingTime);
+
     const percent = calculateCancellationFee(bookingDate, new Date());
     setCancelFee(total_price * percent);
     setBookingId(bookingId);
   };
-  const handleConfirmCompleted = async (bookingId) => {
-    setOpenModalConfirm(true);
-    setBookingId(bookingId);
-  };
-  const processConfirmCompleted = async (bookingId) => {
-    setIsProcessing(true);
-    const { response, err } = await customerApi.confirmCompleted(bookingId);
-    setIsProcessing(false);
-    if (response) {
-      setOpenModalConfirm(false);
-      setBookings(
-        bookings.map((booking) =>
-          booking.id === bookingId
-            ? { ...booking, status:response.status, customerCompleted: response.customerCompleted, photographerCompleted: response.photographerCompleted }
-            : booking
-        )
-      );
-      toast.success("Xác nhận hoàn thành lịch hẹn thành công!");
-    }
-    if (err) {
-      toast.error(err.message);
-    }
-  };
 
   const calculateCancellationFee = (bookingDate, cancelDate) => {
-    const remainingTime = moment.duration(moment(bookingDate).diff(cancelDate));
-    const daysDifference = remainingTime.asDays().toFixed(1);
-    console.log(daysDifference);
+    const remainingTime = dayjs(bookingDate).diff(dayjs(cancelDate));
+    const daysDifference = remainingTime / (1000 * 60 * 60 * 24);
     if (daysDifference >= 3) {
       return 0;
     } else if (daysDifference >= 2 && daysDifference < 3) {
@@ -162,6 +142,57 @@ const BookingHistoryPage = () => {
       toast.error(err.message);
     }
   };
+
+  const handleConfirmCompleted = async (bookingId,bookingDate,    createdAt) => {
+    setOpenModalConfirm(true);
+    setBookingId(bookingId);
+    setBookingDate(bookingDate);
+    setCreatedAt(createdAt);
+  };
+  const processConfirmCompleted = async (bookingId) => {
+    setIsProcessing(true);
+    const { response, err } = await customerApi.confirmCompleted(bookingId);
+    setIsProcessing(false);
+    if (response) {
+      setOpenModalConfirm(false);
+      setBookings(
+        bookings.map((booking) =>
+          booking.id === bookingId
+            ? {
+                ...booking,
+                status: response.status,
+                customerCompleted: response.customerCompleted,
+                photographerCompleted: response.photographerCompleted,
+              }
+            : booking
+        )
+      );
+      toast.success("Xác nhận hoàn thành lịch hẹn thành công!");
+    }
+    if (err) {
+      toast.error(err.message);
+    }
+  };
+
+  const isButtonDisabled = (row, userRole) => {
+    const isCustomer = userRole === "CUSTOMER";
+    const isPhotographer = userRole === "PHOTOGRAPHER";
+    const isPending = row.status === ORDER_STATUS.pending;
+    const isCustomerNotCompleted = !row.customerCompleted;
+    const isPhotographerNotCompleted = !row.photographerCompleted;
+    const bookingDate = dayjs.utc(row.booking_date);
+    const currentDate = dayjs();
+  
+    // Check if the current date is after the booking date
+    const isAfterBookingDate = currentDate.isAfter(bookingDate);
+  
+    if (isPending && isAfterBookingDate && ((isCustomer && isCustomerNotCompleted) || (isPhotographer && isPhotographerNotCompleted))) {
+      return false;
+    }
+  
+    return true;
+  };
+  
 
   return (
     <Fragment>
@@ -207,7 +238,7 @@ const BookingHistoryPage = () => {
                   color: "primary.main",
                 }}
               >
-                {moment(createdAt).format("DD-MM-YYYY HH:mm")}
+                {dayjs(createdAt).format("DD-MM-YYYY HH:mm")}
               </Typography>
             </Stack>
 
@@ -223,7 +254,7 @@ const BookingHistoryPage = () => {
                   color: "primary.main",
                 }}
               >
-                {moment(bookingDate).format("DD-MM-YYYY HH:mm")}
+                {dayjs(bookingDate).format("DD-MM-YYYY HH:mm")}
               </Typography>
             </Stack>
 
@@ -239,9 +270,10 @@ const BookingHistoryPage = () => {
                   color: "primary.main",
                 }}
               >
-                {moment(new Date()).format("DD-MM-YYYY HH:mm")}
+                {dayjs(new Date()).format("DD-MM-YYYY HH:mm")}
               </Typography>
             </Stack>
+
             <Stack
               flexDirection={"row"}
               justifyContent={"space-between"}
@@ -255,14 +287,17 @@ const BookingHistoryPage = () => {
                 }}
               >
                 {duration
-                  ? `${duration
-                      .asDays()
-                      .toFixed(
-                        0
-                      )} ngày ${duration.hours()} giờ ${duration.minutes()} phút`
+                  ? `${Math.floor(
+                      duration / (1000 * 60 * 60 * 24)
+                    )} ngày ${Math.floor(
+                      (duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+                    )} giờ ${Math.floor(
+                      (duration % (1000 * 60 * 60)) / (1000 * 60)
+                    )} phút`
                   : "Calculating duration..."}
               </Typography>
             </Stack>
+
             <Stack
               flexDirection={"row"}
               justifyContent={"space-between"}
@@ -312,6 +347,7 @@ const BookingHistoryPage = () => {
           </Box>
         </Box>
       </CommonModal>
+
       <CommonModal
         open={openModalConfirm}
         onClose={() => setOpenModalConfirm(false)}
@@ -340,7 +376,8 @@ const BookingHistoryPage = () => {
                 fontSize: "1rem",
               }}
             >
-              Đơn hàng sẽ chuyển trạng thái "Hoàn thành" sau khi cả hai bên đã xác nhận hoàn thành buổi chụp hình!
+              Đơn hàng sẽ chuyển trạng thái "Hoàn thành" sau khi cả hai bên đã
+              xác nhận hoàn thành buổi chụp hình!
             </Typography>
 
             <Stack
@@ -355,8 +392,8 @@ const BookingHistoryPage = () => {
                   color: "primary.main",
                 }}
               >
-                {moment(createdAt).format("DD-MM-YYYY HH:mm")}
-              </Typography>
+                {dayjs(createdAt).format("DD-MM-YYYY HH:mm")}
+                </Typography>
             </Stack>
 
             <Stack
@@ -369,13 +406,11 @@ const BookingHistoryPage = () => {
                 sx={{
                   ...uiConfigs.style.typoLines(2, "center"),
                   color: "primary.main",
-                }}
+                }} 
               >
-                {moment(bookingDate).format("DD-MM-YYYY HH:mm")}
-              </Typography>
+                {dayjs.utc(bookingDate).format("DD-MM-YYYY HH:mm")}
+                </Typography>
             </Stack>
-
-            
 
             <Typography
               variant="p"
@@ -443,19 +478,18 @@ const BookingHistoryPage = () => {
                   <StyledTableCell align="left">Combo</StyledTableCell>
                   <StyledTableCell align="left">Trạng Thái</StyledTableCell>
                   <StyledTableCell align="left">Tổng Tiền</StyledTableCell>
-                  {user.role === "CUSTOMER" && (
+                  {user.userData.account.role === "CUSTOMER" && (
                     <StyledTableCell align="left">Hủy</StyledTableCell>
                   )}
-                  {user.role === "CUSTOMER" && (
+                  {user.userData.account.role === "CUSTOMER" && (
                     <StyledTableCell align="left">Đánh giá</StyledTableCell>
                   )}
-                  {(user.role === "CUSTOMER" ||
-                    user.role === "PHOTOGRAPHER") && (
+                  
                     <StyledTableCell align="center">Hoàn thành</StyledTableCell>
-                  )}
+    
                 </TableRow>
               </TableHead>
-              <TableBody>
+              <TableBody> 
                 {bookings.map((row, index) => (
                   <Fragment key={index}>
                     <StyledTableRow key={row.name}>
@@ -474,10 +508,10 @@ const BookingHistoryPage = () => {
                         {row.location}
                       </StyledTableCell>
                       <StyledTableCell align="left">
-                        {moment(row.createdAt).format("DD-MM-YYYY HH:MM")}
+                        {dayjs(row.createdAt).format("DD-MM-YYYY HH:mm")}
                       </StyledTableCell>
                       <StyledTableCell align="left">
-                        {moment(row.booking_date).format("DD-MM-YYYY HH:MM")}
+                        {dayjs.utc(row.booking_date).format("DD-MM-YYYY HH:mm")}
                       </StyledTableCell>
                       <StyledTableCell align="left">
                         {row.servicePackageName}
@@ -504,8 +538,7 @@ const BookingHistoryPage = () => {
                           ? "Hoàn thành"
                           : row.status === ORDER_STATUS.cancelled
                           ? "Đã hủy"
-                          : "Trạng thái không xác định"}{" "}
-                        {/* Or some default message */}
+                          : "Trạng thái không xác định"}
                       </StyledTableCell>
                       <StyledTableCell align="left">
                         {row.total_price.toLocaleString("vi-VN", {
@@ -514,7 +547,7 @@ const BookingHistoryPage = () => {
                         })}
                       </StyledTableCell>
 
-                      {user.role === "CUSTOMER" && (
+                      {user.userData.account.role === "CUSTOMER" && (
                         <StyledTableCell align="left">
                           {
                             <Button
@@ -542,7 +575,7 @@ const BookingHistoryPage = () => {
                         </StyledTableCell>
                       )}
 
-                      {user.role === "CUSTOMER" && (
+                      {user.userData.account.role === "CUSTOMER" && (
                         <StyledTableCell align="left">
                           {
                             <Button
@@ -552,11 +585,7 @@ const BookingHistoryPage = () => {
                                   state: { bookingId: row.id },
                                 });
                               }}
-                              disabled={
-                                row.status !== ORDER_STATUS.completed
-                                  ? true
-                                  : false
-                              }
+                              disabled={row.status !== ORDER_STATUS.completed}
                             >
                               <MdOutlineRateReview
                                 style={{ fontSize: "1.2rem" }}
@@ -565,16 +594,18 @@ const BookingHistoryPage = () => {
                           }
                         </StyledTableCell>
                       )}
-                      {(user.role === "CUSTOMER" ||
-                        user.role === "PHOTOGRAPHER") && (
+                      {(user.userData.account.role === "CUSTOMER" ||
+                        user.userData.account.role === "PHOTOGRAPHER") && (
                         <StyledTableCell align="center">
                           {
                             <Button
                               variant="outlined"
-                              onClick={() => handleConfirmCompleted(row.id)}
+                              onClick={() => handleConfirmCompleted(row.id, row.booking_date,
+                                row.createdAt)}
                               disabled={
-                                   (row.status === ORDER_STATUS.pending && !row.customerCompleted  && user.role==="CUSTOMER")||(row.status === ORDER_STATUS.pending && !row.photographerCompleted  && user.role==="PHOTOGRAPHER")?false:true
-                                 }
+                                isButtonDisabled(row, user.userData.account.role)
+                                
+                              }
                             >
                               <IoCheckmarkDone style={{ fontSize: "1.2rem" }} />
                             </Button>
@@ -588,7 +619,7 @@ const BookingHistoryPage = () => {
             </Table>
           </TableContainer>
         ) : (
-          <NotFound></NotFound>
+          <NotFound />
         )}
       </UserSidebar>
     </Fragment>

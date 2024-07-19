@@ -1,7 +1,7 @@
 const ROLES_LIST = {
      customer: "CUSTOMER",
      photographer: "PHOTOGRAPHER",
-     admin: "ADMIN"
+     admin: "ADMIN", 
 }
 
 const ORDER_STATUS = {
@@ -13,7 +13,7 @@ const ORDER_STATUS = {
 
 const PHOTOGRAPHER_STATUS = {
      available: "AVAILABLE",
-     busy: "BUSY",
+     ban: "BAN",
      inactive: "INACTIVE"
 }
 

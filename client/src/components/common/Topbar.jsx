@@ -1,4 +1,4 @@
-import React, { useState, cloneElement, useEffect } from "react";
+import React, { useState, cloneElement, useEffect, Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
@@ -41,16 +41,15 @@ const ScrollAppBar = ({ children, window }) => {
 
 const Topbar = () => {
   const { user } = useSelector((state) => state.user);
+
+
   const { appState } = useSelector((state) => state.appState);
-
-
-
 
   const [openSideBar, setOpenSideBar] = useState(false);
   const [isActive, setIsActive] = useState(true);
 
   useEffect(() => {
-    if (user && user.role === "PHOTOGRAPHER") {
+    if (user && user.userData.account.role === "PHOTOGRAPHER") {
       setIsActive(user ? user.status === "AVAILABLE" || user.userData.status === "AVAILABLE" : false);
     }
 
@@ -67,7 +66,6 @@ const Topbar = () => {
     setIsActive(event.target.checked);
     const { response, err } = await photographerApi.updateStatus({ status: event.target.checked ? "AVAILABLE" : "INACTIVE" });
     if (response) {
-      console.log(response);
       toast.success("Trang thái tài khoản đã được cập nhật!");
     }
     if (err) {
@@ -76,9 +74,8 @@ const Topbar = () => {
   }
 
   return (
-    <div>
+    <Box>
       <SideBar open={openSideBar} toggleSideBar={toggleSidebar} />
-
       <ScrollAppBar>
         <AppBar elevation={0} sx={{ zIndex: 999 }}>
           <Toolbar
@@ -106,6 +103,7 @@ const Topbar = () => {
                 <MenuIcon></MenuIcon>
               </IconButton>
 
+             
               <Box
                 sx={{
                   display: { xs: "inline-block", md: "none" },
@@ -132,7 +130,7 @@ const Topbar = () => {
             >
               <Box>
                 {menuConfigs.main.map((item, index) => {
-                  if (!item.role || (user && item.role.includes("CUSTOMER") && user.role === "CUSTOMER")) {
+                  if (!item.role || (user && item.role.includes("CUSTOMER") && user.userData.account.role === "CUSTOMER")) {
                     return (
                       <Button
                         component={Link}
@@ -155,7 +153,7 @@ const Topbar = () => {
                         {item.display}
                       </Button>
                     );
-                  } else if (user && item.role === "PHOTOGRAPHER" && user.role === "PHOTOGRAPHER") {
+                  } else if (user && item.role === "PHOTOGRAPHER" && user.userData.account.role === "PHOTOGRAPHER") {
                     return (<Button
                       component={Link}
                       to={item.path}
@@ -178,7 +176,6 @@ const Topbar = () => {
                       {item.display}
                     </Button>);
                   } else if (!user && item.role && !item.role.includes("PHOTOGRAPHER")) {
-                    // Show items that don't require authentication and are not for photographers
                     return (
                       <Button
                         component={Link}
@@ -210,20 +207,39 @@ const Topbar = () => {
 
             {/*main menu */}
 
-            {user && user.role === "PHOTOGRAPHER" &&
+            {user && user.userData.account.role === "PHOTOGRAPHER" &&
               (
                 <Stack direction="row" alignItems="center" >
-                  <Typography sx={{
-                    ...uiConfigs.style.typoLines(1, 'left'),
-                    color: isActive ? 'primary.main' : 'primary.headerColor',
-                    textTransform: 'normal',
-                    textShadow: '1px 1px 1px #222',
-                  }}>{isActive ? "Đang Hoạt Động" : "Không Hoạt Động"}</Typography>
-                  <Switch
-                    checked={isActive}
-                    onChange={handleChangeAccountStatus}
-                    inputProps={{ 'aria-label': 'controlled' }}
-                  />
+
+                  {user.userData.status === "BAN" ? (
+                    <Typography
+                      sx={{
+                        ...uiConfigs.style.typoLines(1, 'right'),
+                        color: 'error.main',
+                        textTransform: 'normal',
+                        textShadow: '1px 1px 1px #222',
+                        marginRight: '1rem'
+                      }}
+                    >
+                      Tài khoản đã bị khóa
+                    </Typography>
+
+                  ) : (
+                    <Fragment>
+                      <Typography sx={{
+                        ...uiConfigs.style.typoLines(1, 'left'),
+                        color: isActive ? 'primary.main' : 'primary.headerColor',
+                        textTransform: 'normal',
+                        textShadow: '1px 1px 1px #222',
+                      }}>{isActive ? "Đang Hoạt Động" : "Không Hoạt Động"}</Typography>
+                      <Switch
+                        checked={isActive}
+                        onChange={handleChangeAccountStatus}
+                        inputProps={{ 'aria-label': 'controlled' }}
+                      />
+                    </Fragment>
+                  )}
+
                 </Stack>
               )
             }
@@ -247,8 +263,8 @@ const Topbar = () => {
             {user && <UserMenu />}
           </Toolbar>
         </AppBar>
-      </ScrollAppBar>
-    </div >
+      </ScrollAppBar >
+    </Box >
   );
 };
 

@@ -1,3 +1,4 @@
+import { create } from "@mui/material/styles/createTransitions";
 import privateClient from "../client/private.client";
 
 const customerEndpoints = {
@@ -10,7 +11,9 @@ const customerEndpoints = {
    customerVouchers: `customers/vouchers`,
    getBookingByPhotoId: (photoId) => `customers/${photoId}/booking`,
    cancelBooking: (bookingId) => `customers/bookings/${bookingId}/status`,
-   confirmCompleted: (bookingId) => `bookings/${bookingId}/confirm-completed`
+   confirmCompleted: (bookingId) => `bookings/${bookingId}/confirm-completed`,
+   createPaymentLink: "customers/create-payment-link",
+   receiveHookPayment: "customers/receive-hook"
 };
 
 
@@ -54,7 +57,7 @@ const customerApi = {
          return { response };
       } catch (err) {
          return { err };
-      }
+      } 
    },
    updatePoints: async (customerId, pointsData) => {
       try {
@@ -80,7 +83,22 @@ const customerApi = {
          return { err };
       }
    },
-   cancelBooking: async (bookingId, status, cancelFee) => {
+   createPaymentLink: async (bookingData) => {
+      try {
+         const response = await privateClient.post(customerEndpoints.createPaymentLink, bookingData);
+         return { response };
+      } catch (err) {
+         return { err };
+      }
+   },
+   receiveHookPayment: async () => {
+      try {
+         const response = await privateClient.post(customerEndpoints.receiveHookPayment);
+         return { response };
+      } catch (err) {
+         return { err };
+      }
+   }, cancelBooking: async (bookingId, status, cancelFee) => {
       try {
          const response = await privateClient.put(customerEndpoints.cancelBooking(bookingId), { status, cancelFee });
          return { response };

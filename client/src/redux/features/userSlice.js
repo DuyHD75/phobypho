@@ -8,6 +8,7 @@ export const userSlice = createSlice({
      },
      reducers: {
           setUser: (state, action) => {
+               
                if (action.payload === null) {
                     localStorage.removeItem("actkn");
                } else {
