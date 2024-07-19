@@ -400,17 +400,7 @@ const Checkout = () => {
                                    >
                                         {isProcessing ? 'Đang xử lý...' : isPayment ? 'Hoàn tất thanh toán' : 'Thanh toán'}
                                    </LoadingButton>
-
-                                   <Typography
-                                        sx={{
-                                             color: 'primary.main',
-                                             ...uiConfigs.style.typoLines(2, 'center')
-                                        }}
-
-
-                                   >
-                                        Chỉ bấm hoàn tất thanh toán sau khi bạn đã chuyển khoảng gói dịch vụ để chúng tôi có thể kiểm tra hóa đơn của bạn
-                                   </Typography>
+                                 
                               </Stack>
                          </Stack>
                     </Box>
