@@ -239,7 +239,7 @@ function AboutUs() {
               </Box>
               <Box sx={{ margin: 0, width: { sx: '100%', md: '20%' }, margin: { sx: '1rem 0' } }}>
                 <Typography variant="h3" sx={{ ...uiConfigs.style.typoLines(1, 'center'), color: "#95c7f9", fontWeight: '800' }}>100%</Typography>
-                <Typography variant="p" sx={{ ...uiConfigs.style.typoLines(1, 'center'), color: '#aebacb' }}>Nguồn lực mọi nơi trên thế giới</Typography>
+                <Typography variant="p" sx={{ ...uiConfigs.style.typoLines(1, 'center'), color: '#aebacb' }}>Vốn đầu tư trong nước</Typography>
               </Box>
               <Box sx={{ margin: 0, width: { sx: '100%', md: '20%' }, margin: { sx: '1rem 0' } }}>
                 <Typography variant="h3" sx={{ ...uiConfigs.style.typoLines(1, 'center'), color: "#95c7f9", fontWeight: '800' }}>1+</Typography>
