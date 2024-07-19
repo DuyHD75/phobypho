@@ -4,11 +4,6 @@ import customerController from '../controllers/customer.controller.js';
 
 const router = express.Router({ mergeParams: true });
 
-router.post("/checkout",
-     tokenMiddleware.authenticate,
-     customerController.createNewBooking
-);
- 
 
 router.post('/bookings', tokenMiddleware.authenticate, customerController.createNewBooking);
 
@@ -23,5 +18,10 @@ router.put('/:customerId/points', customerController.updatePoints);
 router.get('/:photoId/booking', tokenMiddleware.authenticate, customerController.getCustomerBookingByPhotoId);
 
 router.put('/bookings/:bookingId/status', tokenMiddleware.authenticate, customerController.updateBookingStatus);
+
+router.post('/create-payment-link', tokenMiddleware.authenticate, customerController.generatePaymentLink);
+
+router.get("/receive-hook", customerController.receiveHookPayment);
+
 
 export default router;

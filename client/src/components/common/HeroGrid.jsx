@@ -30,7 +30,7 @@ const HeroGrid = () => {
 
 
         if (response) {
-          setPhotoList([...response]);
+          setPhotoList([...response].slice(0, 10));
         }
         if (err) {
           toast.error(err.message);
@@ -46,7 +46,6 @@ const HeroGrid = () => {
 
   }, []);
 
-  console.log(photoList)
 
 
   const handleImageLoad = (imageId) => {

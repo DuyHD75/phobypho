@@ -8,10 +8,6 @@ import favoriteController from "../controllers/favorite.controller.js";
 import passport from "../../passport.js";
 const router = express.Router({ mergeParams: true });
 
-router.use(passport.initialize());
-router.use(passport.session());
-
-
 router.get("/failure", (req, res) => {
   res.send("Login failure");
 });
@@ -19,17 +15,18 @@ router.get("/failure", (req, res) => {
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "/api/v1/accounts/failure",
+    failureRedirect: "/api/v1/accounts/failure", failureMessage: true
   }),
   async function (req, res) {
-         await accountController.gglogin(req, res);
-});
-router.get(
-  "/google",
+    await accountController.gglogin(req, res);
+  });
+
+router.get("/google",
   passport.authenticate("google", {
     scope: ["profile", "email"],
   })
 );
+
 router.get("/logout", (req, res) => {
   req.logout();
   res.redirect(process.env.CLIENT_URL);

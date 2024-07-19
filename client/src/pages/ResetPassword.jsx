@@ -12,23 +12,24 @@ import { setUser } from '../redux/features/userSlice';
 import { setAuthModalOpen } from '../redux/features/authModalSlice';
 import { toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
+
+
 function useQuery() {
    return new URLSearchParams(useLocation().search);
- }
+}
 const ResetPassword = () => {
 
    const [isResetRequest, setIsResetRequest] = useState(false)
-
+   const navigate = useNavigate();
    const [errorMessage, setErrorMessage] = useState();
    const dispatch = useDispatch();
    const query = useQuery();
-  const token = query.get('token');
+   const token = query.get('token');
    console.log(token);
 
    const resetPasswordForm = useFormik({
-
-      
-
       initialValues: {
          password: '',
          confirmPassword: '',
@@ -39,6 +40,7 @@ const ResetPassword = () => {
             .min(8, "Mật khẩu ít nhất 8 ký tự !")
             .required("Mật khẩu cần phải nhập !"),
          confirmPassword: Yup.string()
+            .oneOf([Yup.ref("password")], "Xác nhận mật khẩu không khớp !")
             .min(8, "Xác nhận mật khẩu ít nhất 8 ký tự !")
             .required("Xác nhận mật khẩu cần phải nhập"),
       }),
@@ -55,6 +57,7 @@ const ResetPassword = () => {
             // dispatch(setUser(response));
             dispatch(setAuthModalOpen(true));
             toast.success("Đổi mật khẩu thành công !");
+            navigate('/');
          }
          if (err) setErrorMessage(err.message);
       }
