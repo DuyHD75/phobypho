@@ -5,7 +5,7 @@ const ROLES_LIST = {
 }
 
 const ORDER_STATUS = {
-     pending: "PENDING",
+     pending: "PENDING", 
      confirmed: "CONFIRMED",
      completed: "COMPLETED",
      cancelled: "CANCELLED"

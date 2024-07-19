@@ -84,7 +84,7 @@ const login = async (req, res, next) => {
       const photographer = await photographerModel
         .findOne({ account: account.id })
         .select(
-          "location status gender age description experienceYears bookingCount type_of_account"
+          "location status gender age description experienceYears bookingCount type_of_account bankName serialNumber"
         );
       userData.location = photographer.location;
       userData.status = photographer.status;
@@ -223,6 +223,8 @@ const updateInfo = async (req, res) => {
             age: req.body.age,
             description: req.body.description,
             experienceYears: req.body.experienceYears,
+            bankName: req.body.bankName,
+            serialNumber: req.body.serialNumber,
           },
         },
         { new: true }

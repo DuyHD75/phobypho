@@ -9,7 +9,8 @@ const customerEndpoints = {
    updatePoints: (customerId) => `customers/${customerId}/points`,
    customerVouchers: `customers/vouchers`,
    getBookingByPhotoId: (photoId) => `customers/${photoId}/booking`,
-   cancelBooking: (bookingId) => `customers/bookings/${bookingId}/status`
+   cancelBooking: (bookingId) => `customers/bookings/${bookingId}/status`,
+   confirmCompleted: (bookingId) => `bookings/${bookingId}/confirm-completed`
 };
 
 
@@ -82,6 +83,14 @@ const customerApi = {
    cancelBooking: async (bookingId, status, cancelFee) => {
       try {
          const response = await privateClient.put(customerEndpoints.cancelBooking(bookingId), { status, cancelFee });
+         return { response };
+      } catch (err) {
+         return { err };
+      }
+   },
+   confirmCompleted: async (bookingId) => {
+      try {
+         const response = await privateClient.put(customerEndpoints.confirmCompleted(bookingId));
          return { response };
       } catch (err) {
          return { err };

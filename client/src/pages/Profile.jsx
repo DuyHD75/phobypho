@@ -50,6 +50,9 @@ const Profile = () => {
          age: user.role === 'PHOTOGRAPHER' ? user.userData?.age : '',
          experienceYears: user.role === 'PHOTOGRAPHER' ? user.userData?.experienceYears : '',
          description: user.role === 'PHOTOGRAPHER' ? user.userData?.description : '',
+         serialNumber: user.role === 'PHOTOGRAPHER' ? user.userData?.serialNumber : '',
+         bankName: user.role === 'PHOTOGRAPHER' ? user.userData?.bankName : '',
+         
       },
       validationSchema: Yup.object({
          displayName: Yup.string()
@@ -68,6 +71,9 @@ const Profile = () => {
             Yup.number().positive("Experience years should be a positive number.").required("Experience years is required.") :
             Yup.number(),
          description: user.role === 'PHOTOGRAPHER' ? Yup.string().required("Description is required.") : Yup.string(),
+         serialNumber: user.role === 'PHOTOGRAPHER' ? Yup.string().matches(/^0\d{9}$/, 'Phone number is not valid')
+         .required("Serial number is required.") : Yup.string(),
+         bankName: user.role === 'PHOTOGRAPHER' ? Yup.string().required("Bank name is required.") : Yup.string(),
       }),
       enableReinitialize: true,
       onSubmit: async values => {
@@ -201,6 +207,18 @@ const Profile = () => {
                         helperText={profileForm.touched.description && profileForm.errors.description}
                         minRows={4} multiline fullWidth maxRows={6}
                         label='Mô Tả Về Bạn'
+                     />
+                     <TextField type='text' placeholder='Nhập số tài khoản của bạn' name='serialNumber'
+                        value={profileForm.values.serialNumber} onChange={profileForm.handleChange}
+                        error={profileForm.touched.serialNumber && profileForm.errors.serialNumber !== undefined}
+                        helperText={profileForm.touched.serialNumber && profileForm.errors.serialNumber}
+                        label='Số Tài Khoản Của Bạn'
+                     />
+                     <TextField type='text' placeholder='Nhập tên ngân hàng của bạn' name='bankName'
+                        value={profileForm.values.bankName} onChange={profileForm.handleChange}
+                        error={profileForm.touched.bankName && profileForm.errors.bankName !== undefined}
+                        helperText={profileForm.touched.bankName && profileForm.errors.bankName}
+                        label='Tên Ngân Hàng Của Bạn'
                      />
                   </Fragment>
                )}

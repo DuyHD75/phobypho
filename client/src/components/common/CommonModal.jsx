@@ -17,7 +17,7 @@ const style = {
    boxShadow: 24,
    p: 4,
    maxWidth: '600px',
-   minHeight: '500px',
+   minHeight: '364px',
 };
 
 const CommonModal = ({ children, ...args }) => {
