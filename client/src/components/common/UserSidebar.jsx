@@ -19,6 +19,8 @@ const UserSidebar = ({ children }) => {
 
    const logout = () => {
       dispatch(setUser(null));
+      localStorage.clear();
+
       navigate('/');
    }
 

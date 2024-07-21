@@ -11,6 +11,7 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../redux/features/userSlice';
 import userApi from '../api/modules/user.api';
+import ChatPopup from '../components/common/ChatPopup';
 
 const MainLayout = () => {
 
@@ -47,6 +48,9 @@ const MainLayout = () => {
 
                <ReceiveVouchersModal />
                {/* login modal */}
+
+               {/* ChatPopup */}
+               <ChatPopup />
 
                <Box
                     display="flex"

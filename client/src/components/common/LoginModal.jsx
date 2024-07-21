@@ -6,7 +6,7 @@ import userApi from '../../api/modules/user.api';
 import { setUser } from '../../redux/features/userSlice';
 import { setAuthModalOpen } from '../../redux/features/authModalSlice';
 import { toast } from 'react-toastify';
-import { Alert, Box, Button, Stack, TextField } from '@mui/material';
+import { Alert, Box, Button, Stack, TextField, Typography } from '@mui/material'; 
 import { LoadingButton } from '@mui/lab';
 import { FaArrowRightFromBracket } from "react-icons/fa6";
 
@@ -37,6 +37,8 @@ const LoginModal = ({ switchAuthState }) => {
 
                if (response) {
                     loginForm.resetForm();
+                    localStorage.clear('roomId');
+
                     dispatch(setUser(response));
                     dispatch(setAuthModalOpen(false));
                     toast.success("Đăng nhập thành công !");
