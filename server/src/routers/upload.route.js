@@ -5,10 +5,10 @@ import uploadImageController from '../controllers/uploadImage.controller.js';
 const router = express.Router({ mergeParams: true });
 
 const imageFileFilter = (req, file, cb) => {
-     if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+     if (!file.originalname.match(/\.(jpg|jpeg|png|gif|JPG)$/)) {
           return cb(new Error('You can upload only image files!'), false);
-     }
-     cb(null, true);
+      }
+      cb(null, true);
 };
 const upload = multer({ storage: multer.memoryStorage(), fileFilter: imageFileFilter });
 

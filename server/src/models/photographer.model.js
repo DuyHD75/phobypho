@@ -42,7 +42,15 @@ const PhotographerSchema = new Schema({
      bookingCount: {
           type: Number,
           default: 0
-     }
+     },
+     bankName: {
+          type: String,
+          default: ""
+     },
+     serialNumber: {
+          type: String,
+          default: ""
+     },
 });
 
 const photographerModel = mongoose.model("Photographer", PhotographerSchema);

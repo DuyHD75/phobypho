@@ -61,7 +61,7 @@ const PhotoReviewItem = ({ review, onRemoved }) => {
                                              {review.account.displayName}
                                         </Typography>
 
-                                        {user && user.id === review.account.id && (<LoadingButton
+                                        {/* {user && user.userData.account.id === review.account.id && (<LoadingButton
                                              variant="text"
                                              startIcon={<DeleteIcon />}
                                              loadingPosition="start"
@@ -76,7 +76,7 @@ const PhotoReviewItem = ({ review, onRemoved }) => {
                                              }}
                                         >
                                              remove
-                                        </LoadingButton>)}
+                                        </LoadingButton>)} */}
 
                                    </Stack>
 
@@ -100,7 +100,6 @@ const PhotoReviewItem = ({ review, onRemoved }) => {
 
           </Fragment>
      );
-
 }
 
 const PhotoReview = ({ bookingId, photo, bookedInfo }) => {
@@ -115,9 +114,6 @@ const PhotoReview = ({ bookingId, photo, bookedInfo }) => {
      const [isReviewed, setIsReviewed] = useState(undefined);
      const [bookedId, setBookedId] = useState(bookingId ? bookingId : undefined);
      const [bookingPoint, setBookingPoint] = useState(0);
-
-  
-
 
      const skip = 4;
 
@@ -140,7 +136,7 @@ const PhotoReview = ({ bookingId, photo, bookedInfo }) => {
       
           if (reviewList.length !== 0 ) {
                for (let i = 0; i < reviewList.length; i++) {
-                    if (reviewList[i].account === user._id && reviewList[i].photo_id === photo.id) {
+                    if (reviewList[i].account === user.userData.account.id && reviewList[i].photo_id === photo.id) {
                          if (bookedId && reviewList[i].booking_id === bookedId) {
                               return setIsReviewed(true);
                          }
@@ -173,7 +169,14 @@ const PhotoReview = ({ bookingId, photo, bookedInfo }) => {
                rating: rating, 
                point: bookingPoint
           };
-
+          if (!rating) {
+               setOnRequest(false);
+               return toast.error("Bạn chưa đánh giá sao cho photographer");
+          }
+          if (!content) {
+               setOnRequest(false);
+               return toast.error("Bạn chưa nhập nội dung đánh giá");
+          }  
           setBookedId(undefined);
 
           const { response, err } = await reviewApi.add(body);
@@ -236,11 +239,9 @@ const PhotoReview = ({ bookingId, photo, bookedInfo }) => {
 
                {user && (
                     <Fragment>
-                         {user.role === "CUSTOMER" && !isReviewed && (
+                         {user.userData.account.role === "CUSTOMER" && !isReviewed && (
                               <Container header={'Gửi lại những đánh giá'} size={'1rem'}>
                                    <Box sx={{ padding: '0 1rem', color: "secondary.colorText", }}>
-
-
 
                                         <Stack direction={'row'} alignItems={'center'} padding={'0.5rem 0'} >
                                              <Typography component="legend"

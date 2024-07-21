@@ -7,6 +7,9 @@ const userEndpoints = {
      getInfo: "accounts/info",
      passwordUpdate: "accounts/update-password",
      updateInfo: "accounts/update-info",
+     googleLogin: "accounts/getUser",
+     forgotPassword: "accounts/forgot-password",
+     resetPassword: "accounts/reset-password"
 };
 
 const userApi = {
@@ -49,6 +52,27 @@ const userApi = {
           try {
                console.log(userData);
                const response = await privateClient.put(userEndpoints.updateInfo, userData);
+               return { response };
+          } catch (err) { return { err } }
+     },
+     googleLogin: async () => {
+          try {
+               const response = await publicClient.get(userEndpoints.googleLogin
+                    // {withCredentials : true}
+               );
+               console.log(response);
+               return { response };
+          } catch (err) { return { err } }
+     },
+     forgotPassword: async ({ email }) => {
+          try {
+               const response = await publicClient.post(userEndpoints.forgotPassword, { email });
+               return { response };
+          } catch (err) { return { err } }
+     },
+     resetPassword: async ({ password, confirmPassword, token }) => {
+          try {
+               const response = await publicClient.post(userEndpoints.resetPassword, { password, confirmPassword, token });
                return { response };
           } catch (err) { return { err } }
      }

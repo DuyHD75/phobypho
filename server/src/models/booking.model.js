@@ -63,6 +63,14 @@ const bookingSchema = new Schema({
           type: mongoose.Types.ObjectId,
           ref: "Voucher"
      },
+     customerCompleted: {
+          type: Boolean,
+          default: false
+     },
+     photographerCompleted: {
+          type: Boolean,
+          default: false
+     }
 }, modelOptions);
 
 bookingSchema.pre('save', async function (next) {
