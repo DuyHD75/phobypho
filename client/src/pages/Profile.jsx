@@ -17,7 +17,6 @@ const Profile = () => {
 
    const { user } = useSelector(state => state.user);
 
-
    const dispatch = useDispatch();
    const [errorMessage, setErrorMessage] = useState(undefined);
    const [isUpdateRequest, setIsUpdateRequest] = useState(false);
@@ -28,9 +27,9 @@ const Profile = () => {
 
 
    useEffect(() => {
-      setAvatarUrl(user.avatar);
-      if (user.location) {
-         setLocation(user.location || user.updatedUser.location);
+      setAvatarUrl(user.userData.account.avatar);
+      if (user.userData.location) {
+         setLocation(user.userData.location || user.updatedUser.location);
       }
    }, []);
 
@@ -39,17 +38,21 @@ const Profile = () => {
       setAvatarUrl(avatarLink);
    }
 
+   
    const profileForm = useFormik({
       initialValues: {
-         displayName: user.displayName,
-         phoneNumber: user.phoneNumber,
-         email: user.email,
-         avatar: user.avatar,
-         location: user?.role === 'PHOTOGRAPHER' ? user.userData?.location : '',
-         gender: user.role === 'PHOTOGRAPHER' ? user.userData?.gender : '',
-         age: user.role === 'PHOTOGRAPHER' ? user.userData?.age : '',
-         experienceYears: user.role === 'PHOTOGRAPHER' ? user.userData?.experienceYears : '',
-         description: user.role === 'PHOTOGRAPHER' ? user.userData?.description : '',
+         displayName: user.userData.account.displayName,
+         phoneNumber: user.userData.account.phoneNumber,
+         email: user.userData.account.email,
+         avatar: user.userData.account.avatar,
+         location: user.userData.account.role === 'PHOTOGRAPHER' ? user.userData.location : '',
+         gender: user.userData.account.role === 'PHOTOGRAPHER' ? user.userData.gender : '',
+         age: user.userData.account.role === 'PHOTOGRAPHER' ? user.userData.age : '',
+         experienceYears: user.userData.account.role === 'PHOTOGRAPHER' ? user.userData.experienceYears : '',
+         description: user.userData.account.role === 'PHOTOGRAPHER' ? user.userData.description : '',
+         serialNumber: user.userData.account.role === 'PHOTOGRAPHER' ? user.userData?.serialNumber : '',
+         bankName: user.userData.account.role === 'PHOTOGRAPHER' ? user.userData?.bankName : '',
+         
       },
       validationSchema: Yup.object({
          displayName: Yup.string()
@@ -61,13 +64,16 @@ const Profile = () => {
          email: Yup.string()
             .email()
             .required("Email is required !"),
-         location: user.role === 'PHOTOGRAPHER' ? Yup.string().required("Location is required.") : Yup.string(),
-         gender: user.role === 'PHOTOGRAPHER' ? Yup.string().required("Gender is required.") : Yup.string(),
-         age: user.role === 'PHOTOGRAPHER' ? Yup.number().positive("Age should be a positive number.").required("Age is required.") : Yup.number(),
-         experienceYears: user.role === 'PHOTOGRAPHER' ?
+         location: user.userData.account.role === 'PHOTOGRAPHER' ? Yup.string().required("Location is required.") : Yup.string(),
+         gender: user.userData.account.role === 'PHOTOGRAPHER' ? Yup.string().required("Gender is required.") : Yup.string(),
+         age: user.userData.account.role === 'PHOTOGRAPHER' ? Yup.number().positive("Age should be a positive number.").required("Age is required.") : Yup.number(),
+         experienceYears: user.userData.account.role === 'PHOTOGRAPHER' ?
             Yup.number().positive("Experience years should be a positive number.").required("Experience years is required.") :
             Yup.number(),
          description: user.role === 'PHOTOGRAPHER' ? Yup.string().required("Description is required.") : Yup.string(),
+         serialNumber: user.role === 'PHOTOGRAPHER' ? Yup.string().matches(/^0\d{9}$/, 'Phone number is not valid')
+         .required("Serial number is required.") : Yup.string(),
+         bankName: user.role === 'PHOTOGRAPHER' ? Yup.string().required("Bank name is required.") : Yup.string(),
       }),
       enableReinitialize: true,
       onSubmit: async values => {
@@ -106,7 +112,7 @@ const Profile = () => {
          }}>Cập nhật thông tin </Typography>
 
          {/* Avatar uploader */}
-         <AvatarUploader handleUpload={handleAvatarUpload} avatar={user.avatar} />
+         <AvatarUploader handleUpload={handleAvatarUpload} avatar={user.userData.account.avatar} />
          {/* Avatar uploader */}
 
 
@@ -126,7 +132,7 @@ const Profile = () => {
                   error={profileForm.touched.displayName && profileForm.errors.displayName !== undefined}
                   helperText={profileForm.touched.displayName && profileForm.errors.displayName}
                   label='Tên Đại Diện'
-               
+
                >
                </TextField>
 
@@ -146,7 +152,7 @@ const Profile = () => {
                >
                </TextField>
 
-               {user.role === 'PHOTOGRAPHER' && (
+               {user.userData.account.role === 'PHOTOGRAPHER' && (
                   <Fragment >
                      <TextField type='text' placeholder='Enter your location' name='location'
                         error={profileForm.touched.location && profileForm.errors.location !== undefined}
@@ -201,6 +207,18 @@ const Profile = () => {
                         helperText={profileForm.touched.description && profileForm.errors.description}
                         minRows={4} multiline fullWidth maxRows={6}
                         label='Mô Tả Về Bạn'
+                     />
+                     <TextField type='text' placeholder='Nhập số tài khoản của bạn' name='serialNumber'
+                        value={profileForm.values.serialNumber} onChange={profileForm.handleChange}
+                        error={profileForm.touched.serialNumber && profileForm.errors.serialNumber !== undefined}
+                        helperText={profileForm.touched.serialNumber && profileForm.errors.serialNumber}
+                        label='Số Tài Khoản Của Bạn'
+                     />
+                     <TextField type='text' placeholder='Nhập tên ngân hàng của bạn' name='bankName'
+                        value={profileForm.values.bankName} onChange={profileForm.handleChange}
+                        error={profileForm.touched.bankName && profileForm.errors.bankName !== undefined}
+                        helperText={profileForm.touched.bankName && profileForm.errors.bankName}
+                        label='Tên Ngân Hàng Của Bạn'
                      />
                   </Fragment>
                )}

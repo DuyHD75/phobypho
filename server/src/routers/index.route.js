@@ -8,6 +8,7 @@ import uploadRouter from './upload.route.js';
 import serviceRouter from './service.route.js';
 import voucherRouter from './voucher.route.js';
 import adminRouter from './admin.route.js';
+import bookingRouter from './booking.route.js'
 
 const router = express.Router();
 
@@ -25,17 +26,11 @@ router.use("/upload-image", uploadRouter);
 
 router.use("/services", serviceRouter);
 
-router.use("/vouchers", voucherRouter); 
+router.use("/vouchers", voucherRouter);
 
 router.use("/admins", adminRouter);
 
-
-
-
-
-
-// router.use("/checkout", )
-
+router.use("/bookings", bookingRouter);
 
 
 export default router;

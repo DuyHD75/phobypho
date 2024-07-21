@@ -10,8 +10,7 @@ import { LoadingButton } from "@mui/lab";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import { routesGen } from '../../routers/routes';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { setAuthModalOpen } from '../../redux/features/authModalSlice';
 import moment from 'moment';
@@ -29,6 +28,27 @@ const style = {
      borderRadius: '5px',
      overflow: 'hidden'
 };
+
+const isMatchingLocation = (inputLocation, bookingLocation) => {
+     if (!inputLocation || !bookingLocation) return false;
+
+     const inputWords = inputLocation.toLowerCase().split(',').map(s => s.trim()).join(' ').split(' ');
+
+     const bookingWords = bookingLocation.toLowerCase().split(',').map(s => s.trim()).join(' ').split(' ');
+
+     const matchedWords = inputWords.filter(word => bookingWords.includes(word));
+
+     return matchedWords.length > 0;
+};
+
+Yup.addMethod(Yup.string, 'isMatchingLocation', function (message, bookingLocation) {
+     return this.test('isMatchingLocation', message, function (value) {
+          const { path, createError } = this;
+
+          const valid = isMatchingLocation(value, bookingLocation);
+          return valid || createError({ path, message });
+     });
+});
 
 const ConfirmModal = ({ setOpenModal, openModal, bookingData }) => {
 
@@ -56,7 +76,8 @@ const ConfirmModal = ({ setOpenModal, openModal, bookingData }) => {
           },
           validationSchema: Yup.object({
                location: Yup.string()
-                    .required("Location is required !"),
+                    .required("Location is required !")
+                    .isMatchingLocation("Địa điểm không hợp lệ!", bookingData.photo.location),
           }),
           onSubmit: async values => {
 

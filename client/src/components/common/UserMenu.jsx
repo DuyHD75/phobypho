@@ -22,9 +22,6 @@ const UserMenu = () => {
           <div>
                {user && (
                     <Box sx={{ position: 'relative' }}>
-                    
-
-
                          <Button
                               component={Link}
                               to={'/profile'}
@@ -37,10 +34,10 @@ const UserMenu = () => {
                                    alignItems: "center",
                               }}
                          >
-                              {user.avatar ? (
+                              {user.userData.account.avatar ? (
                                    <img
-                                        src={user.avatar}
-                                        alt={user.displayName}
+                                        src={user.userData.account.avatar}
+                                        alt={user.userData.account.displayName}
                                         style={{
                                              width: '1.8rem',
                                              height: '1.8rem',
@@ -53,7 +50,7 @@ const UserMenu = () => {
                               <Typography sx={{
                                    ml: { sx: '0', md: 1 }, ...uiConfigs.style.typoLines(1, 'center'),
                                    textTransform: 'capitalize', color: 'primary.main'
-                              }}>{user.displayName}</Typography>
+                              }}>{user.userData.account.displayName}</Typography>
                          </Button>
                     </Box>
                )}

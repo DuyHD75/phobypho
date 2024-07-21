@@ -8,7 +8,7 @@ import { setUser } from '../../redux/features/userSlice';
 import { toast } from 'react-toastify';
 import { Box, Stack, TextField, Button, Alert, Select, MenuItem, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-
+import uiConfigs from '../../configs/ui.config';
 
 const SignUpModal = ({ switchAuthState }) => {
 
@@ -76,6 +76,29 @@ const SignUpModal = ({ switchAuthState }) => {
     <Box
       component={'form'} onSubmit={signUpForm.handleSubmit}
     >
+
+      <Typography
+        sx={{
+          fontSize: '1.2rem',
+          fontWeight: 800,
+          textAlign: 'center',
+          marginBottom: '10px',
+          ...uiConfigs.style.typoLines(1, "left")
+        }}
+      >
+        Đăng ký
+        <Typography
+          sx={{
+            fontSize: '0.9rem',
+            fontWeight: 400,
+            textAlign: 'center',
+            marginBottom: '10px',
+            ...uiConfigs.style.typoLines(1, "left")
+          }}
+        >Nhập các thông tin bên dưới để đăng ký!</Typography>
+      </Typography>
+
+
       <Stack spacing={2}>
         <TextField type='text' placeholder='Nhập username' name='username'
           fullWidth value={signUpForm.values.username} onChange={signUpForm.handleChange} color='warning'
@@ -143,17 +166,30 @@ const SignUpModal = ({ switchAuthState }) => {
         fullWidth
         size='large'
         variant='contained'
-        sx={{ marginTop: 4, fontFamily: '"Nunito", sans-serif', fontSize: '0.9rem' }}
+        sx={{ marginTop: 4, fontFamily: '"Nunito", sans-serif', fontSize: '1rem', textTransform: 'none' }}
         loading={isSignUpRequest}
 
       >
         Đăng ký
       </LoadingButton>
 
-      <Button fullWidth sx={{ marginTop: 1, fontFamily: '"Nunito", sans-serif', fontSize: '0.9rem' }}
-        onClick={() => switchAuthState()} >
-        Đăng nhập
-      </Button>
+      <Stack justifyContent={"center"} alignItems={"center"} direction={"row"}>
+        <Typography sx={{
+          fontSize: '0.9rem',
+          ...uiConfigs.style.typoLines(1, "left"),
+        }}>
+          Bạn đã có tài khoản?
+        </Typography>
+
+        <Button sx={{ fontFamily: '"Nunito", sans-serif', fontSize: '0.9rem', textTransform: 'none' }}
+          onClick={() => switchAuthState()} >
+          Đăng nhập
+        </Button>
+      </Stack>
+
+
+
+
 
       {errorMessage && (
         <Box sx={{ marginTop: 2 }}>

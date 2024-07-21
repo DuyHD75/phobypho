@@ -10,7 +10,7 @@ const members = [
    {
       "name": "Ngoc Duong",
       "title": "Founder",
-      "image": "https://firebasestorage.googleapis.com/v0/b/phobypho-2dbae.appspot.com/o/avatars%2Fd47f2fb31098bec6e789.jpg?alt=media&token=700993a4-7f60-41a3-b86f-b2d62f982ace"
+      "image": "https://firebasestorage.googleapis.com/v0/b/phobypho-2dbae.appspot.com/o/avatars%2F1.jpg%20%20%20%20%20%20%202024-7-16%2015%3A13%3A49?alt=media&token=94593804-b562-411b-a356-206bb24142e8" 
    },
    {
       "name": "Kim Ngan",
@@ -30,7 +30,7 @@ const members = [
    {
       "name": "Bao An",
       "title": "Finance Manager",
-      "image": "https://scontent.fdad3-6.fna.fbcdn.net/v/t39.30808-1/331968902_1361095038025317_4816663891989595398_n.jpg?stp=dst-jpg_p200x200&_nc_cat=110&ccb=1-7&_nc_sid=5f2048&_nc_ohc=1yyxYuhdwRcQ7kNvgFd7pJi&_nc_ht=scontent.fdad3-6.fna&oh=00_AfCh1gKN2NXSCvw_lXriiRTyYAPZ7Q4KebddV8Oj6yOYFg&oe=663ED3BB"
+      "image": "https://firebasestorage.googleapis.com/v0/b/phobypho-2dbae.appspot.com/o/avatars%2Fc3c68ae1394b9b15c25a.jpg%20%20%20%20%20%20%202024-7-16%202%3A40%3A25?alt=media&token=366ac3e0-6224-421b-9a22-a6b26edc9f96"
    },
    {
       "name": "Duc Duy",

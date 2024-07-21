@@ -8,46 +8,36 @@ import uiConfigs from '../configs/ui.config';
 import customerApi from '../api/modules/customer.api';
 import { toast } from 'react-toastify';
 import moment from 'moment';
-
-
+import { useDispatch, useSelector } from 'react-redux';
+import { setBookingData } from '../redux/features/bookingSlice';
 const Checkout = () => {
 
      const locationHook = useLocation();
-     const [bookingData, setBookingData] = useState(locationHook.state);
+     const dispatch = useDispatch();
+     if (locationHook.state)
+          dispatch(setBookingData(locationHook.state));
+
+     const bookingData = useSelector(state => state.bookingReducer.bookingData);
+     const { user } = useSelector(state => state.user);
      const [errorMessage, setErrorMessage] = useState(null);
      const [vouchers, setVouchers] = useState([]);
-     const [transactionCode, setTransactionCode] = useState("");
      const [isProcessing, setIsProcessing] = useState(false);
      const [voucherCode, setVoucherCode] = useState('');
+     const [isPayment, setIsPayment] = useState(false);
+
      const navigate = useNavigate();
 
      const currentPrice = bookingData.service_package.price;
 
-     const generateTransactionCode = () => {
-          const length = 7;
-          const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-          let code = '';
-
-          for (let i = 0; i < length; i++) {
-               const randomIndex = Math.floor(Math.random() * characters.length);
-               code += characters.charAt(randomIndex);
-          }
-          setTransactionCode(code);
-     };
-
      useEffect(() => {
-          generateTransactionCode();
           const getCustomerVouchers = async () => {
                const { response, err } = await customerApi.getCustomerVouchers();
-
-               if (response) {
-                    setVouchers(response.vouchers);
-               }
-               if (err) {
-                    return toast.error('Lỗi khi lấy thông tin voucher !');
-               }
+               if (response) setVouchers(response.vouchers);
+               if (err) return toast.error('Lỗi khi lấy thông tin voucher !');
           }
+
           getCustomerVouchers();
+
      }, []);
 
      const [totalPrice, setTotalPrice] = useState(currentPrice);
@@ -62,7 +52,6 @@ const Checkout = () => {
                const voucher = vouchers.find(voucher => voucher.code === userEntryCode);
 
                if (voucher) {
-
                     setVoucherCode(voucher.code);
                     setTotalPrice(currentPrice * (1 - voucher.value / 100));
                     setErrorMessage(undefined);
@@ -74,22 +63,32 @@ const Checkout = () => {
           }, 1000);
      };
 
+
      const handleCheckoutProcess = async () => {
-          const updatedBookingData = { ...bookingData, voucher_code: voucherCode, total_price: totalPrice, };
+          // Check for pending bookings
+          const { response: bookingsResponse, err: bookingsErr } = await customerApi.getBookings(user.userData.account.id);
+          if (bookingsErr) {
+               toast.error(bookingsErr.message);
+               return;
+          }
 
-          setBookingData(updatedBookingData);
+          // Check if there are any pending bookings
+          const pendingBooking = bookingsResponse.find(booking => booking.status === 'PENDING');
+          if (pendingBooking) {
+               toast.error('Bạn có một lịch hẹn đang chờ xử lý, vui lòng chờ cho đến khi lịch hẹn được xác nhận !');
+               return;
+          }
 
+          const updatedBookingData = { ...bookingData, voucher_code: voucherCode, total_price: totalPrice };
+
+          dispatch(setBookingData(updatedBookingData));
           setIsProcessing(true);
-          const { response, err } = await customerApi.createBooking(updatedBookingData);
+
+          const { response, err } = await customerApi.createPaymentLink(updatedBookingData);
+          if (response) window.open(response.url, '_self');
+          if (err) toast.error(err.message);
           setIsProcessing(false);
-          if (response) {
-               navigate(`/booking_history`);
-               return toast.success('Thanh toán thành công !');
-          }
-          if (err) {
-               return toast.error(err.message);
-          }
-     };
+     }
 
      return (
           <Fragment>
@@ -129,67 +128,7 @@ const Checkout = () => {
                               sx={{ marginTop: '2rem ' }}
                               justifyContent={"space-around"}
                          >
-                              <Box
-                                   sx={{
-                                        position: 'relative',
-                                        width: { xs: '100%', md: '50%' },
-                                        height: 'max-content'
-                                   }}
 
-                              >
-
-                                   <Stack
-                                        direction={'column'}
-                                        alignItems={"center"}
-
-                                        sx={{
-                                             zIndex: 99,
-                                        }}
-                                   >
-                                        <Box
-                                             sx={{
-                                                  borderRadius: '10rem 20rem',
-                                                  overflow: 'hidden',
-                                                  boxShadow: '1px 10px 10px rgba(255, 255, 255, 0.5)',
-                                                  width: { xs: '20rem', md: '30rem' },
-
-                                             }}
-                                        >
-                                             <img
-                                                  src='https://cdn.tgdd.vn/hoi-dap/1309185/ma-qr-code-la-gi-dung-de-lam-gi-cach-tao-ma-qr-nhanh-chong%20(1).jpg'
-                                                  alt='QR code'
-                                             />
-                                        </Box>
-
-                                        <Typography
-                                             sx={{
-                                                  marginTop: '2rem',
-                                                  fontSize: '1.2rem',
-                                                  fontWeight: 500,
-                                                  color: 'red',
-                                                  ...uiConfigs.style.typoLines(2, 'center'),
-                                             }}
-
-                                        > ! Vui lòng nhập mã code bên dưới vào mục nội dung thanh toán !</Typography>
-                                        <Typography
-                                             sx={{
-                                                  marginTop: '2rem',
-                                                  fontSize: '1.4rem',
-                                                  width: 'fit-content',
-                                                  padding: '0.4rem 4rem',
-                                                  fontWeight: 700,
-                                                  ...uiConfigs.style.typoLines(1, 'center'),
-                                                  border: '1px groove #2D89E5',
-                                                  letterSpacing: '2px',
-                                                  color: 'secondary.colorText',
-
-                                             }}
-
-                                        >{transactionCode}</Typography>
-                                   </Stack>
-
-
-                              </Box>
 
                               {/* Bill*/}
                               <Stack
@@ -295,7 +234,7 @@ const Checkout = () => {
                                                   ...uiConfigs.style.typoLines(3, 'right')
                                              }}
                                         >
-                                             {moment(new Date().getTime()).format('dddd, MMMM YYYY  HH:mm')}
+                                             {moment(new Date().getTime()).format('DD-MM-YYYY  HH:mm')}
                                         </Typography>
 
 
@@ -322,7 +261,7 @@ const Checkout = () => {
                                                   ...uiConfigs.style.typoLines(3, 'right')
                                              }}
                                         >
-                                             {moment(bookingData.photo_session).format('dddd, MMMM YYYY  HH:mm')}
+                                             {moment(bookingData.photo_session).format('DD-MM-YYYY  HH:mm')}
                                         </Typography>
 
 
@@ -459,19 +398,9 @@ const Checkout = () => {
                                         onClick={handleCheckoutProcess}
                                         loading={isProcessing}
                                    >
-                                        {isProcessing ? 'Đang xử lý...' : 'Hoàn tất thanh toán'}
+                                        {isProcessing ? 'Đang xử lý...' : isPayment ? 'Hoàn tất thanh toán' : 'Thanh toán'}
                                    </LoadingButton>
-
-                                   <Typography
-                                        sx={{
-                                             color: 'primary.main',
-                                             ...uiConfigs.style.typoLines(2, 'center')
-                                        }}
-
-
-                                   >
-                                        Chỉ bấm hoàn tất thanh toán sau khi bạn đã chuyển khoảng gói dịch vụ để chúng tôi có thể kiểm tra hóa đơn của bạn
-                                   </Typography>
+                                 
                               </Stack>
                          </Stack>
                     </Box>

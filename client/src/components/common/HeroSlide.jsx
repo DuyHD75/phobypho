@@ -88,7 +88,7 @@ const HeroSlide = () => {
               paddingTop: '90px'
             }}
           >
-            <img src='https://firebasestorage.googleapis.com/v0/b/phobypho-2dbae.appspot.com/o/banner%2FScreenshot%202024-06-13%20171117.png?alt=media&token=a1d16cbf-0981-49cf-8e8a-1738082ea10a' alt="" style={{
+            <img src='https://firebasestorage.googleapis.com/v0/b/phobypho-2dbae.appspot.com/o/banner%2FScreenshot%202024-07-19%20154604.png?alt=media&token=ae36230a-6f98-4792-a084-fe70c461e6d1' alt="" style={{
               position: "relative",
               width: "100%",
               height: "100%",

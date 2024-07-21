@@ -75,7 +75,7 @@ const UserSidebar = ({ children }) => {
                               </Button>
                            )
                         } else {
-                           if (user && item.role === user.role) {
+                           if (user && item.role === user.userData.account.role) {
 
                               return (
                                  <Button

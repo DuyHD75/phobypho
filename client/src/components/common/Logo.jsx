@@ -38,7 +38,7 @@ const Logo = ({ isHeader }) => {
                          color: 'secondary.colorText',
                     }}
                >
-                    <CameraIcon sx={{ color: 'secondary.colorText', fontSize: { xs: '1rem', md: '2rem' } }} />
+                    <CameraIcon sx={{ color: 'secondary.colorText', fontSize: { xs: '1rem', md: '1.8rem' } }} />
 
                     <span style={{
                          color: 'secondary.colorText',

@@ -10,6 +10,7 @@ import routes from "./routers/routes";
 import PageWrapper from './components/common/PageWrapper';
 import './style.css';
 import themeConfigs from "./configs/them.config";
+import ResetPassword from "./pages/ResetPassword";
 
 
 function App() {
@@ -51,8 +52,10 @@ function App() {
                     <PageWrapper state={route.state}>{route.element}</PageWrapper>
                   ) : route.element}
                 />
+
               )
             ))}
+            <Route path="/reset-password" element={<ResetPassword />} />
           </Route>
         </Routes>
       </BrowserRouter>
