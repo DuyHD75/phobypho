@@ -19,26 +19,20 @@ const MainLayout = () => {
 
   useEffect(() => {
     const authUser = async () => {
-      const { response, err } = await userApi.getInfo();
-     //  if (response) dispatch(setUser({ ...response }));
-     console.log("response", response);
-         
-      if (response && response.userData.isGgLogin) { 
-        const value = Cookies.get("user");
-        console.log("Cookie value:", value);
-        if (value && value.startsWith("j:")) {
-          try {
-            const parsedValue = JSON.parse(value.slice(2));
-            console.log("Parsed cookie value:", parsedValue);
-            dispatch(setUser(parsedValue));
-          } catch (error) {
-            console.error("Error parsing cookie value to JSON:", error);
-          }
-        } else {
-          dispatch(setUser(null));
+
+      const value = Cookies.get("user");
+      if(value && value.startsWith("j:")){
+        try {
+          const parsedValue = JSON.parse(value.slice(2));
+          console.log("Parsed cookie value:", parsedValue);
+          dispatch(setUser(parsedValue));
+        } catch (error) {
+          console.error("Error parsing cookie value to JSON:", error);
         }
-      } else {
-        dispatch(setUser(null));
+      }else{
+        const { response, err } = await userApi.getInfo();
+        if (response) dispatch(setUser({ ...response }));
+        if (err) dispatch(setUser(null));
       }
     };
     authUser();

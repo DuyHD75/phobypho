@@ -34,6 +34,9 @@ passport.use(
 					role: ROLES_LIST.customer,
 				});
 				await user.save();
+				const customer = await customerModel.create({
+					account: user._id,
+				});
 			}
 			
 			const token = createToken(user._id);
@@ -57,13 +60,11 @@ passport.use(
 				updatedAt: customerDetail.updatedAt,
 				id: customerDetail._id,
 				vouchers: customerDetail.vouchers,
-				isGgLogin: true,
 			},
 			token: token,}
 			
 
-      request.res.cookie('user', finalUser, { maxAge: 900000, httpOnly: false });
-			// console.log("account", user);
+      request.res.cookie('user', finalUser, { maxAge: 21600000, httpOnly: false });
 			return done(null, user);
       
 			

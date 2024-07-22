@@ -151,7 +151,7 @@ router.put(
 );
 
 router.get("/info", 
-  // tokenMiddleware.authenticate, 
+  tokenMiddleware.authenticate, 
   accountController.getInfo);
 
 router.put(

@@ -31,7 +31,7 @@ app.use(cookieParser());
 app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 
 app.use(session({
-    secret: '982034929dream',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
 }));

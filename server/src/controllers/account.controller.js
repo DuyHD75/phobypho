@@ -192,15 +192,7 @@ const updatePassword = async (req, res) => {
 
 const getInfo = async (req, res) => {
   try {
-    // console.log("req.account.id", req.session.passport.user.id);
     let userData = {};
-     let isGgLogin = false;
-    if(req.session.passport.user){
-      userData = await customerModel
-      .findOne({ account: req.session.passport.user.id })
-      .populate("account");
-      isGgLogin = true;
-    }else{
     if (req.account.role === ROLES_LIST.customer) {
       userData = await customerModel
         .findOne({ account: req.account.id })
@@ -210,9 +202,7 @@ const getInfo = async (req, res) => {
         .findOne({ account: req.account.id })
         .populate("account");
     }
-  }
     userData = userData.toObject();
-    userData.isGgLogin = isGgLogin;
     return responseHandler.ok(res, { userData });
   } catch (error) {
     console.log(error);
