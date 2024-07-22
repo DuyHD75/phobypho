@@ -89,11 +89,19 @@ const getBookings = async (req, res) => {
     }
     const bookingCount = bookings.length;
     const transformedBookings = await transformBookingData(bookings);
-    responseHandler.ok(res, { bookings: transformedBookings, bookingCount });
+
+    const finalBookings = await Promise.all(transformedBookings.map(async (booking) => {
+      const photographerInfo = await photographerModel.findOne({account: booking.photographer}); 
+      const refundAmountPhotographer = Math.round(booking.total_price * (1 - booking.photographer_rate));
+      return { ...booking, photographer: photographerInfo, refundAmountPhotographer}; 
+    }));
+    responseHandler.ok(res, { bookings: finalBookings, bookingCount });
   } catch (error) {
+    console.error("Error in admin.controller.getBookings", error);
     responseHandler.error(res);
   };
 }
+
 
 const transformBookingData = async (bookings) => {
   const transformedBookings = await Promise.all(bookings.map(async (booking) => {
