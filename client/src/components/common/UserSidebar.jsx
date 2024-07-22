@@ -7,6 +7,7 @@ import { RiLogoutCircleLine } from "react-icons/ri";
 import { setUser } from '../../redux/features/userSlice';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
+import userApi from '../../api/modules/user.api';
 
 
 const UserSidebar = ({ children }) => {
@@ -17,7 +18,8 @@ const UserSidebar = ({ children }) => {
 
    const { appState } = useSelector((state) => state.appState);
 
-   const logout = () => {
+   const logout = async() => {
+      const { response, err } = await userApi.logout();
       dispatch(setUser(null));
       navigate('/');
    }

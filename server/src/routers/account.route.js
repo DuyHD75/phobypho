@@ -6,20 +6,29 @@ import tokenMiddleware from "../middlewares/token.middleware.js";
 import requestHandler from "../handlers/request.handler.js";
 import favoriteController from "../controllers/favorite.controller.js";
 import passport from "../../passport.js";
+import responseHandler from "../handlers/response.handler.js";
 const router = express.Router({ mergeParams: true });
 
 router.get("/failure", (req, res) => {
   res.send("Login failure");
 });
 // Auth Callback
+// router.get(
+//   "/google/callback",
+//   passport.authenticate("google", {
+//     failureRedirect: "/api/v1/accounts/failure", failureMessage: true
+//   }),
+//   async function (req, res) {
+//     await accountController.gglogin(req, res);
+//   });
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "/api/v1/accounts/failure", failureMessage: true
-  }),
-  async function (req, res) {
-    await accountController.gglogin(req, res);
-  });
+    // successRedirect: "http://localhost:3000",
+    successRedirect: "http://localhost:3000",
+    failureRedirect: "/api/v1/accounts/failure", 
+  }))
+  
 
 router.get("/google",
   passport.authenticate("google", {
@@ -28,8 +37,10 @@ router.get("/google",
 );
 
 router.get("/logout", (req, res) => {
-  req.logout();
-  res.redirect(process.env.CLIENT_URL);
+  req.logOut(function(err) {
+    if (err) { return next(err); }
+     return responseHandler.ok(res, "Logout success");
+  });
 });
 
 router.post("/forgot-password", accountController.forgotPassword);
@@ -106,7 +117,12 @@ router.post(
   requestHandler.validate,
   accountController.login
 );
-
+router.get("/logout", (req, res) => {
+  req.logOut(function(err) {
+    if (err) { return next(err); }
+    return responseHandler.ok(res, "Logout success");
+  });
+});
 router.put(
   "/update-password",
   tokenMiddleware.authenticate,
@@ -134,7 +150,9 @@ router.put(
   accountController.updatePassword
 );
 
-router.get("/info", tokenMiddleware.authenticate, accountController.getInfo);
+router.get("/info", 
+  // tokenMiddleware.authenticate, 
+  accountController.getInfo);
 
 router.put(
   "/update-info",

@@ -192,7 +192,15 @@ const updatePassword = async (req, res) => {
 
 const getInfo = async (req, res) => {
   try {
+    // console.log("req.account.id", req.session.passport.user.id);
     let userData = {};
+     let isGgLogin = false;
+    if(req.session.passport.user){
+      userData = await customerModel
+      .findOne({ account: req.session.passport.user.id })
+      .populate("account");
+      isGgLogin = true;
+    }else{
     if (req.account.role === ROLES_LIST.customer) {
       userData = await customerModel
         .findOne({ account: req.account.id })
@@ -202,8 +210,12 @@ const getInfo = async (req, res) => {
         .findOne({ account: req.account.id })
         .populate("account");
     }
+  }
+    userData = userData.toObject();
+    userData.isGgLogin = isGgLogin;
     return responseHandler.ok(res, { userData });
-  } catch {
+  } catch (error) {
+    console.log(error);
     responseHandler.error(res);
   }
 };
@@ -265,6 +277,7 @@ const updateInfo = async (req, res) => {
 
 const gglogin = async (req, res) => {
   try {
+    let userData = {};
     const user = req.user;
     const account = await accountModel.findOne({ email: user.email }).select(
       "id username displayName password salt phoneNumber email role avatar"
@@ -287,17 +300,24 @@ const gglogin = async (req, res) => {
       });
       await customer.save();
     }
-    const token = createToken(account.id);
+    const token = createToken(account._id);
     const expirationDate = new Date(Date.now() + 6 * 60 * 60 * 1000);
 
     console.log("Generated Token:", token);
-
-    res.cookie('jwtToken', token, {
-      httpOnly: true,
-      expires: expirationDate,
+    userData = account;
+    req.account = account;
+    responseHandler.created(res, {
+      token,
+      id: account.id,
+      userData,
     });
 
-    return res.status(200).redirect("http://localhost:3000/");
+    // res.cookie('jwtToken', token, {
+    //   httpOnly: true,
+    //   expires: expirationDate,
+    // });
+
+    // return res.status(200).redirect("http://localhost:3000/");
   } catch (error) {
     console.error(error);
     responseHandler.error(res);
