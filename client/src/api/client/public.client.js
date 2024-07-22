@@ -1,12 +1,14 @@
 import axios from 'axios';
 import queryString from 'query-string'; // parse param to object 
 
+
 // const baseURL = "http://localhost:5000/api/v1/";
 const baseURL = "https://phobypho.onrender.com/api/v1/";
 
+
 const publicClient = axios.create({
      baseURL,
-     // withCredentials: true, // Thêm dòng này
+     withCredentials: true, // Thêm dòng này
 
      paramsSerializer: {
           encode: params => queryString.stringify(params)

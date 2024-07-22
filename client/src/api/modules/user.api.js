@@ -9,7 +9,8 @@ const userEndpoints = {
      updateInfo: "accounts/update-info",
      googleLogin: "accounts/getUser",
      forgotPassword: "accounts/forgot-password",
-     resetPassword: "accounts/reset-password"
+     resetPassword: "accounts/reset-password",
+     logout: "accounts/logout",
 };
 
 const userApi = {
@@ -75,8 +76,14 @@ const userApi = {
                const response = await publicClient.post(userEndpoints.resetPassword, { password, confirmPassword, token });
                return { response };
           } catch (err) { return { err } }
-     }
+     },
+     logout: async () => {
+          try {
+               const response = await privateClient.get(userEndpoints.logout);
+               return { response };
+          } catch (err) { return { err } }
+     },
 }
-
+ 
 
 export default userApi;

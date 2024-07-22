@@ -12,7 +12,8 @@ const tokenDecode = (req) => {
             )
         }
         return false;
-    } catch {
+    } catch (error) {
+        console.log("error at tokenDecode", error);
         return false;
     }
 }

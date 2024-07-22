@@ -7,6 +7,8 @@ import { RiLogoutCircleLine } from "react-icons/ri";
 import { setUser } from '../../redux/features/userSlice';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
+import userApi from '../../api/modules/user.api';
+import { toast } from 'react-toastify';
 
 
 const UserSidebar = ({ children }) => {
@@ -17,11 +19,17 @@ const UserSidebar = ({ children }) => {
 
    const { appState } = useSelector((state) => state.appState);
 
-   const logout = () => {
+   const logout = async() => {
+      const { response, err } = await userApi.logout();
+      // need xom oăn sp :))
+      // if (response) toast.success(response.message);
+      deleteCookie("user")
       dispatch(setUser(null));
       navigate('/');
    }
-
+   const deleteCookie = (name) => {
+      document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    };
    return (
       <Box sx={{ ...uiConfigs.style.mainContent, paddingTop: '5rem', marginTop: '5rem' }}>
          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
