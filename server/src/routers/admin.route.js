@@ -37,8 +37,8 @@ router.get(
 
 router.get(
   "/bookings/limit",
-  // tokenMiddleware.authenticate,
-  // tokenMiddleware.adminAuthorize,
+  tokenMiddleware.authenticate,
+  tokenMiddleware.adminAuthorize,
   adminController.getBookings
 );
 // ex: http://localhost:5000/api/v1/admins/bookings/2024-05-27
