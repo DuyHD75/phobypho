@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import logo from '../../assets/img/avatars/logo1.png';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCypU58yX2MF7WLHnVrigFveubIFJAtWEg",
@@ -35,6 +36,7 @@ const ChatPopup = () => {
   const [chatRooms, setChatRooms] = useState([]);
 
   const { user } = useSelector((state) => state.user);
+  console.log(user);
   const [error, setError] = useState(null);
 
   const messagesEndRef = useRef(null);
@@ -45,7 +47,7 @@ const ChatPopup = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages,isVisible]); // Depend on messages to scroll down on new messages
+  }, [messages, isVisible]); // Depend on messages to scroll down on new messages
 
   useEffect(() => {
     const savedRoomId = localStorage.getItem('roomId');
@@ -71,6 +73,8 @@ const ChatPopup = () => {
     addDoc(collection(db, 'chatRooms'), {
       createdAt: serverTimestamp(),
       roomId: newRoomId,
+      avatar: user ? user.userData.account.avatar : null,
+
     })
       .then(() => {
         console.log('Room created successfully');
@@ -101,20 +105,22 @@ const ChatPopup = () => {
   }, [roomId]);
 
   const sendMessage = async (e) => {
+    e.preventDefault();
     console.log('Sending message: ', input);
     if (!roomId) {
       // setMessages([]);
       createRoomIfNeeded();
     }
-    e.preventDefault();
-    console.log('Sending message: ', input);
+
 
     if (roomId) {
       try {
         await addDoc(collection(db, `chatRooms/${roomId}/messages`), {
           text: input,
           timestamp: serverTimestamp(),
-          sender: user ? user.userData.account.username : 'Anonymous User'
+          sender: user ? user.userData.account.username : 'Anonymous User',
+          avatar: user ? user.userData.account.avatar : null,
+
         });
         setInput('');
       } catch (error) {
@@ -169,7 +175,7 @@ const ChatPopup = () => {
         >
           <Stack width='100%' display='flex' direction='row' justifyContent='space-between' alignItems='center' bgcolor='#2D89E5' p={1} borderRadius='8px 8px 0 0'>
             <Stack direction='row' alignItems='center'>
-              <Avatar size='xs' />
+              <Avatar size='xs' src={logo} />
               <Stack ml={1} direction='column'>
                 <Typography variant="h7" color='white'>Admin</Typography>
                 <Typography variant="body2" color='white'>Chat với chúng tôi</Typography>
@@ -182,7 +188,7 @@ const ChatPopup = () => {
             {messagesWithAvatarVisibility.map((message, index) => (
               <Flex mb={1} alignItems='center' direction={message.sender === 'Admin' ? 'row' : 'row-reverse'} key={index}>
                 {message.showAvatar ? (
-                  <Avatar name="Ad" size="md" />
+                  <Avatar name="Admin" src={logo} size="md" />
                 ) : message.sender === 'Admin' ? (
                   <Box width="30px" height="30px" /> // Hiển thị Box trống chỉ khi là tin nhắn của Admin và không có avatar
                 ) : null}
