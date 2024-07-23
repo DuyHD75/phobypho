@@ -12,7 +12,6 @@ import { useDispatch } from "react-redux";
 import { setUser } from "../redux/features/userSlice";
 import userApi from "../api/modules/user.api";
 import Cookies from "js-cookie";
-import ChatPopup from '../components/common/ChatPopup';
 
 const MainLayout = () => {
   const dispatch = useDispatch();
@@ -50,9 +49,8 @@ const MainLayout = () => {
       {/*  <AuthModal />*/}
       <AuthModal />
 
-               <ReceiveVouchersModal />
-               {/* login modal */}
-               <ChatPopup />
+      <ReceiveVouchersModal />
+      {/* login modal */}
 
       <Box
         display="flex"

@@ -25,8 +25,6 @@ const UserSidebar = ({ children }) => {
       // if (response) toast.success(response.message);
       deleteCookie("user")
       dispatch(setUser(null));
-      localStorage.clear();
-
       navigate('/');
    }
    const deleteCookie = (name) => {

@@ -65,18 +65,18 @@ const receiveHookPayment = async (req, res) => {
           const { account } = req;
           console.log(req.body);
        
-          // if (req.body.code === "00")
-          //      responseHandler.ok(res, { message: "Thanh toán thành công !", data: req.body });
-          // else {
-          //      const booking = await bookingModel.findOne({ customer: account.id }).sort({ createdAt: -1 });
-          //      if (booking) {
-          //           await bookingModel.deleteOne({ _id: booking._id });
-          //           console.log("Most recent booking deleted:", booking);
-          //      } else {
-          //           console.log("No bookings found for this account.");
-          //      }
-          //      responseHandler.ok(res, { message: "Thanh toán thất bại !", data: req.body });
-          // }
+          if (req.body.code === "00")
+               responseHandler.ok(res, { message: "Thanh toán thành công !", data: req.body });
+          else {
+               const booking = await bookingModel.findOne({ customer: account.id }).sort({ createdAt: -1 });
+               if (booking) {
+                    await bookingModel.deleteOne({ _id: booking._id });
+                    console.log("Most recent booking deleted:", booking);
+               } else {
+                    console.log("No bookings found for this account.");
+               }
+               responseHandler.ok(res, { message: "Thanh toán thất bại !", data: req.body });
+          }
      } catch (error) {
           console.error("receive hook payment: ", error);
           responseHandler.error(res, error.message);
