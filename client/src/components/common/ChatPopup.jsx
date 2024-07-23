@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
-import logo from '../../assets/img/avatars/logo1.png';
+import logo from '../../assets/img/avatars/administrator.svg';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCypU58yX2MF7WLHnVrigFveubIFJAtWEg",

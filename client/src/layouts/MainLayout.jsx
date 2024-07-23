@@ -52,6 +52,7 @@ const MainLayout = () => {
 
                <ReceiveVouchersModal />
                {/* login modal */}
+               <ChatPopup />
 
       <Box
         display="flex"
