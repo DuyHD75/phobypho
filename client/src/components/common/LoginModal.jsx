@@ -26,6 +26,7 @@ const LoginModal = ({ switchAuthState }) => {
           initialValues: {
                username: "",
                password: "",
+               token: ""
           },
           validationSchema: Yup.object({
                username: Yup.string()
@@ -36,13 +37,17 @@ const LoginModal = ({ switchAuthState }) => {
                     .required("Password phải được nhập !"),
           }),
           onSubmit: async (values) => {
-               setErrorMessage(undefined);
+               setErrorMessage(undefined); 
                setIsLoginRequest(true);
                const { response, err } = await userApi.login(values);
                setIsLoginRequest(false);
 
                if (response) {
+                    if(response.userData.account.role === "ADMIN")
+                         window.open( process.env.REACT_APP_ADMIN_BASE_URL+ `?token=${response.token}` || `http://localhost:3001?token=${response.token}`, "_self")
                     loginForm.resetForm();
+                    localStorage.clear('roomId');
+
                     dispatch(setUser(response));
                     dispatch(setAuthModalOpen(false));
                     toast.success("Đăng nhập thành công !");

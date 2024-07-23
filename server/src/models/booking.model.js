@@ -70,6 +70,9 @@ const bookingSchema = new Schema({
      photographerCompleted: {
           type: Boolean,
           default: false
+     },
+     bookingCode: {
+          type: String,
      }
 }, modelOptions);
 
