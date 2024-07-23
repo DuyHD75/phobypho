@@ -168,7 +168,7 @@ const getAllBookingsByDate = async (req, res) => {
 const getAllBookingsByMonth = async (req, res) => {
   try {
     const year = parseInt(req.params.year);
-    const month = parseInt(req.params.month) - 1; // JavaScript counts months from 0
+    const month = parseInt(req.params.month) - 1; 
     const startDate = new Date(year, month, 1);
     const endDate = new Date(year, month + 1, 1);
     const bookings = await bookingModel
