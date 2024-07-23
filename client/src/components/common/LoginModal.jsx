@@ -20,7 +20,7 @@ const LoginModal = ({ switchAuthState }) => {
      const [errorMessage, setErrorMessage] = useState();
 
      const handleLoginWithGoogle = async () => {
-          window.open(process.env.REACT_APP_GOOGLE_LOGIN, "_self");
+          window.open('https://phobypho.onrender.com/api/v1/accounts/google', "_self");
      }
      const loginForm = useFormik({
           initialValues: {
@@ -37,14 +37,14 @@ const LoginModal = ({ switchAuthState }) => {
                     .required("Password phải được nhập !"),
           }),
           onSubmit: async (values) => {
-               setErrorMessage(undefined); 
+               setErrorMessage(undefined);
                setIsLoginRequest(true);
                const { response, err } = await userApi.login(values);
                setIsLoginRequest(false);
 
                if (response) {
-                    if(response.userData.account.role === "ADMIN")
-                         window.open( process.env.REACT_APP_ADMIN_BASE_URL+ `?token=${response.token}` || `http://localhost:3001?token=${response.token}`, "_self")
+                    if (response.userData.account.role === "ADMIN")
+                         window.open(`https://phobyphoadmin.vercel.app?token=${response.token}`, "_self")
                     loginForm.resetForm();
                     localStorage.clear('roomId');
 
