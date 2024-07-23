@@ -12,20 +12,10 @@ const router = express.Router({ mergeParams: true });
 router.get("/failure", (req, res) => {
   res.send("Login failure");
 });
-// Auth Callback
-// router.get(
-//   "/google/callback",
-//   passport.authenticate("google", {
-//     failureRedirect: "/api/v1/accounts/failure", failureMessage: true
-//   }),
-//   async function (req, res) {
-//     await accountController.gglogin(req, res);
-//   });
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    // successRedirect: "http://localhost:3000",
-    successRedirect: "http://localhost:3000",
+    successRedirect: process.env.CLIENT_URL,
     failureRedirect: "/api/v1/accounts/failure", 
   }))
   
