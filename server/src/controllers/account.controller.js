@@ -86,6 +86,22 @@ const login = async (req, res, next) => {
         "id username displayName password salt phoneNumber email role avatar"
       );
 
+    if (account.role === ROLES_LIST.photographer) {
+      const photographer = await photographerModel
+        .findOne({ account: account.id })
+        .select(
+          "location status gender age description experienceYears bookingCount type_of_account bankName serialNumber"
+        );
+      userData.location = photographer.location;
+      userData.status = photographer.status;
+      userData.gender = photographer.gender;
+      userData.age = photographer.age;
+      userData.description = photographer.description; 
+      userData.experienceYears = photographer.experienceYears;
+      userData.bookingCount = photographer.bookingCount;
+      userData.type_of_account = photographer.type_of_account;
+    }
+
     if (account == null)
       return responseHandler.notfound(res, "Tài khoản không tìm thấy !");
 
@@ -186,8 +202,10 @@ const getInfo = async (req, res) => {
         .findOne({ account: req.account.id })
         .populate("account");
     }
+    userData = userData.toObject();
     return responseHandler.ok(res, { userData });
-  } catch {
+  } catch (error) {
+    console.log(error);
     responseHandler.error(res);
   }
 };
@@ -222,6 +240,8 @@ const updateInfo = async (req, res) => {
             age: req.body.age,
             description: req.body.description,
             experienceYears: req.body.experienceYears,
+            bankName: req.body.bankName,
+            serialNumber: req.body.serialNumber,
           },
         },
         { new: true }
@@ -247,6 +267,7 @@ const updateInfo = async (req, res) => {
 
 const gglogin = async (req, res) => {
   try {
+    let userData = {};
     const user = req.user;
     const account = await accountModel.findOne({ email: user.email }).select(
       "id username displayName password salt phoneNumber email role avatar"
@@ -269,17 +290,24 @@ const gglogin = async (req, res) => {
       });
       await customer.save();
     }
-    const token = createToken(account.id);
+    const token = createToken(account._id);
     const expirationDate = new Date(Date.now() + 6 * 60 * 60 * 1000);
 
     console.log("Generated Token:", token);
-
-    res.cookie('jwtToken', token, {
-      httpOnly: true,
-      expires: expirationDate,
+    userData = account;
+    req.account = account;
+    responseHandler.created(res, {
+      token,
+      id: account.id,
+      userData,
     });
 
-    return res.status(200).redirect("http://localhost:3000/");
+    // res.cookie('jwtToken', token, {
+    //   httpOnly: true,
+    //   expires: expirationDate,
+    // });
+
+    // return res.status(200).redirect("http://localhost:3000/");
   } catch (error) {
     console.error(error);
     responseHandler.error(res);

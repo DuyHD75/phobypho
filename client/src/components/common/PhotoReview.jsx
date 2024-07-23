@@ -61,7 +61,7 @@ const PhotoReviewItem = ({ review, onRemoved }) => {
                                              {review.account.displayName}
                                         </Typography>
 
-                                        {user && user.userData.account.id === review.account.id && (<LoadingButton
+                                        {/* {user && user.userData.account.id === review.account.id && (<LoadingButton
                                              variant="text"
                                              startIcon={<DeleteIcon />}
                                              loadingPosition="start"
@@ -76,7 +76,7 @@ const PhotoReviewItem = ({ review, onRemoved }) => {
                                              }}
                                         >
                                              remove
-                                        </LoadingButton>)}
+                                        </LoadingButton>)} */}
 
                                    </Stack>
 
@@ -169,7 +169,14 @@ const PhotoReview = ({ bookingId, photo, bookedInfo }) => {
                rating: rating, 
                point: bookingPoint
           };
-
+          if (!rating) {
+               setOnRequest(false);
+               return toast.error("Bạn chưa đánh giá sao cho photographer");
+          }
+          if (!content) {
+               setOnRequest(false);
+               return toast.error("Bạn chưa nhập nội dung đánh giá");
+          }  
           setBookedId(undefined);
 
           const { response, err } = await reviewApi.add(body);
