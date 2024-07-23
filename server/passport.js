@@ -9,7 +9,7 @@ import customerModel from './src/models/customer.model.js';
 passport.serializeUser((user, done) => {
 	done(null, user);
 });
-
+ 
 passport.deserializeUser((user, done) => {
 	done(null, user);
 });
@@ -19,7 +19,7 @@ passport.use(
 	new GoogleStrategy({
 		clientID: process.env.GOOGLE_CLIENT_ID, // Your Credentials here.
 		clientSecret: process.env.GOOGLE_CLIENT_SECRET, // Your Credentials here.
-		callbackURL: process.env.SERVER_URL+ '/accounts/google/callback',
+		callbackURL:  'https://phobypho.onrender.com/api/v1/accounts/google/callback',
 		passReqToCallback: true
 	},
 	async (request, accessToken, refreshToken, profile, done) => {

@@ -15,7 +15,7 @@ router.get("/failure", (req, res) => {
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    successRedirect: process.env.CLIENT_URL,
+    successRedirect: "https://phobypho.vercel.app",
     failureRedirect: "/api/v1/accounts/failure", 
   }))
   
