@@ -64,7 +64,7 @@ passport.use(
 			token: token,}
 			
 
-      request.res.cookie('user', finalUser, { maxAge: 21600000, httpOnly: false });
+      request.res.cookie('user', finalUser, { maxAge: 21600000, httpOnly: false, sameSite: 'None' });
 			return done(null, user);
       
 			
