@@ -19,8 +19,13 @@ const MainLayout = () => {
   const { user } = useSelector((state) => state.user);
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      authUser();
+    }, 3000); 
+
     const authUser = async () => {
 
+      
       const value = Cookies.get("user");
       if(value && value.startsWith("j:")){
         try {
@@ -36,7 +41,7 @@ const MainLayout = () => {
         if (err) dispatch(setUser(null));
       }
     };
-    authUser();
+    return () => clearTimeout(timer);
   }, [dispatch]);
 
   return (
