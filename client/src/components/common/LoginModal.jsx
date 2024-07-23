@@ -46,6 +46,8 @@ const LoginModal = ({ switchAuthState }) => {
                     if(response.userData.account.role === "ADMIN")
                          window.open( process.env.REACT_APP_ADMIN_BASE_URL+ `?token=${response.token}` || `http://localhost:3001?token=${response.token}`, "_self")
                     loginForm.resetForm();
+                    localStorage.clear('roomId');
+
                     dispatch(setUser(response));
                     dispatch(setAuthModalOpen(false));
                     toast.success("Đăng nhập thành công !");
