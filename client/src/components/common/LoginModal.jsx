@@ -20,7 +20,7 @@ const LoginModal = ({ switchAuthState }) => {
      const [errorMessage, setErrorMessage] = useState();
 
      const handleLoginWithGoogle = async () => {
-          window.open("http://localhost:5000/api/v1/accounts/google", "_self");
+          window.open(process.env.REACT_APP_GOOGLE_LOGIN, "_self");
      }
      const loginForm = useFormik({
           initialValues: {

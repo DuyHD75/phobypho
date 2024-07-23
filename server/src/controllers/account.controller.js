@@ -336,7 +336,7 @@ const forgotPassword = async (req, res) => {
     user.passwordResetExpires = Date.now() + 3600000; // 1 hour
     await user.save();
 
-    const resetUrl = `${'http://localhost:3000' || process.env.CLIENT_URL}/reset-password?token=${token}`;
+    const resetUrl = `${process.env.CLIENT_URL || 'http://localhost:3000'}/reset-password?token=${token}`;
     const mailOptions = {
       from: process.env.EMAIL_ADDRESS,
       to: user.email,
