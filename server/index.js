@@ -9,6 +9,7 @@ import session from 'express-session';
 import path from 'path';
 import fs from 'fs';
 import swaggerUi from 'swagger-ui-express';
+import passport from './passport.js';
 
 const app = express();
 const jsonPath = path.resolve('./api/swagger_output.json');
@@ -30,10 +31,13 @@ app.use(cookieParser());
 app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 
 app.use(session({
-    secret: '982034929dream',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
 }));
+// Initialize Passport and restore authentication state, if any, from the session.
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use("/api/v1", routes);
 
