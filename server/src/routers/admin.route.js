@@ -6,14 +6,14 @@ const router = express.Router({ mergeParams: true });
 
 router.get(
   "/customers",
-  // tokenMiddleware.authenticate,
-  // tokenMiddleware.adminAuthorize,
+  tokenMiddleware.authenticate,
+  tokenMiddleware.adminAuthorize,
   adminController.getAllCustomers
 );
 router.get(
   "/photographers",
-  // tokenMiddleware.authenticate,
-  // tokenMiddleware.adminAuthorize,
+  tokenMiddleware.authenticate,
+  tokenMiddleware.adminAuthorize,
   adminController.getAllPhotographers
 );
 
@@ -21,8 +21,8 @@ router.get(
 //ex: http://localhost:5000/api/v1/admins/bookings/search?status=PENDING
 router.get(
   "/bookings/search",
-  // tokenMiddleware.authenticate,
-  // tokenMiddleware.adminAuthorize,
+  tokenMiddleware.authenticate,
+  tokenMiddleware.adminAuthorize,
   adminController.searchBookingsByStatus
 );
 
@@ -58,23 +58,23 @@ router.get(
 
 router.get(
   "/dashboard",
-  // tokenMiddleware.authenticate,
-  // tokenMiddleware.adminAuthorize,
+  tokenMiddleware.authenticate,
+  tokenMiddleware.adminAuthorize,
   adminController.getExtractDashboardInfo
 )
 
 router.put(
   "/update-status-booking",
-  // tokenMiddleware.authenticate,
-  // tokenMiddleware.adminAuthorize,
+  tokenMiddleware.authenticate,
+  tokenMiddleware.adminAuthorize,
   adminController.completeBooking
 )
 
 
 router.put(
   "/update-status-photographer",
-  // tokenMiddleware.authenticate,
-  // tokenMiddleware.adminAuthorize,
+  tokenMiddleware.authenticate,
+  tokenMiddleware.adminAuthorize,
   adminController.updatePhotographerStatus
 )
 

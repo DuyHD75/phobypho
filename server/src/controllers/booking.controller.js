@@ -1,6 +1,7 @@
 import bookingModel from "../models/booking.model.js";
 import responseHandler from "../handlers/response.handler.js";
 import { ORDER_STATUS, ROLES_LIST } from "../configs/enum.config.js";
+
 const confirmCompleted = async (req, res) => {
     try {
       console.log("confirmCompleted");
@@ -12,14 +13,13 @@ const confirmCompleted = async (req, res) => {
             return;
         }
        // Corrected logical check for photographer or customer
-       console.log("hee")
        console.log(booking.customer.toString());
        console.log(user.id.toString());
        if (booking.photographer.toString() !== user.id.toString() && booking.customer.toString() !== user.id.toString()){
            responseHandler.unAuthorize(res);
            return;
        }
-        // Corrected comparison for user roles
+       
         if(user.role === ROLES_LIST.customer){
            booking.customerCompleted = true;
         }
@@ -27,8 +27,8 @@ const confirmCompleted = async (req, res) => {
             booking.photographerCompleted = true;
             console.log("photographerConfirmCompleted");
         }
-        if(booking.customerCompleted && booking.photographerCompleted)
-            booking.status = ORDER_STATUS.completed;
+        // if(booking.customerCompleted && booking.photographerCompleted)
+        //     booking.status = ORDER_STATUS.completed;
         await booking.save();
         responseHandler.ok(res, booking);
 

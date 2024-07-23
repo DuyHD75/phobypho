@@ -9,7 +9,6 @@ const baseURL = "https://phobypho.onrender.com/api/v1/";
 const publicClient = axios.create({
      baseURL,
      withCredentials: true, // Thêm dòng này
-
      paramsSerializer: {
           encode: params => queryString.stringify(params)
      },
